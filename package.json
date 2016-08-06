@@ -1,0 +1,26 @@
+{
+  "name": "smartsocket",
+  "version": "1.0.0",
+  "description": "easy and secure websocket communication",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "(npmts)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/pushrocks/smartsocket.git"
+  },
+  "author": "Lossless GmbH",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/pushrocks/smartsocket/issues"
+  },
+  "homepage": "https://gitlab.com/pushrocks/smartsocket#README",
+  "dependencies": {
+    "beautylog": "^5.0.20",
+    "lik": "^1.0.9",
+    "q": "^1.4.1",
+    "socket.io": "^1.4.8",
+    "taskbuffer": "^1.0.7"
+  }
+}
