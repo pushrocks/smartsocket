@@ -1,7 +1,7 @@
 {
   "name": "smartsocket",
   "version": "1.0.2",
-  "description": "easy and secure websocket communication",
+  "description": "easy and secure websocket communication, Typescript ready",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -29,6 +29,7 @@
     "taskbuffer": "^1.0.7"
   },
   "devDependencies": {
+    "npmts-g": "^5.2.8",
     "should": "^10.0.0",
     "typings-test": "^1.0.1"
   }

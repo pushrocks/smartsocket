@@ -1,11 +1,12 @@
 # smartsocket
-easy and secure websocket communication
+easy and secure websocket communication, Typescript ready
 
 ## Status
 [![build status](https://gitlab.com/pushrocks/smartsocket/badges/master/build.svg)](https://gitlab.com/pushrocks/smartsocket/commits/master)
 
 ## Usage
 We recommend the use of typescript.
+Under the hood we use socket.io and shortid for managed data exchange.
 
 ### Serverside
 ```typescript
@@ -50,7 +51,6 @@ let mySmartsocketClient = new smartsocket.SmartsocketClient({
 let mySocketFunction2 = new smartsocket.SocketFunction({
     name:"restart",
     func:(data) => {}, the function to execute
-    roles: [mySocketRole] // all roles that have access to a specific function
 });
 
 mySmartsocketClient.registerFunction(mySocketFunction2);
@@ -60,3 +60,5 @@ mySmartsocketClient.serverCall("newService",data)
         
     });;
 ```
+
+> **NOTE:** you can easily chain dependent requests on eiter the server or client side with promises. `data` is always a js object that you can design for your specific. It supports buffers for large binary data network exchange.
