@@ -1,0 +1,8 @@
+"use strict";
+require("typings-global");
+exports.beautylog = require("beautylog");
+exports.lik = require("lik");
+exports.q = require("q");
+exports.socketIo = require("socket.io");
+exports.taskbuffer = require("taskbuffer");
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic21hcnRzb2NrZXQucGx1Z2lucy5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3RzL3NtYXJ0c29ja2V0LnBsdWdpbnMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBLFFBQU8sZ0JBQWdCLENBQUMsQ0FBQTtBQUNWLGlCQUFTLFdBQVcsV0FBVyxDQUFDLENBQUM7QUFDakMsV0FBRyxXQUFZLEtBQUssQ0FBQyxDQUFDO0FBQ3RCLFNBQUMsV0FBVyxHQUFHLENBQUMsQ0FBQztBQUNqQixnQkFBUSxXQUFXLFdBQVcsQ0FBQyxDQUFDO0FBQ2hDLGtCQUFVLFdBQVcsWUFBWSxDQUFDLENBQUMifQ==

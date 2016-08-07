@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "easy and secure websocket communication",
   "main": "dist/index.js",
+  "typings":"dist/index.d.ts",
   "scripts": {
     "test": "(npmts)"
   },
@@ -17,10 +18,18 @@
   },
   "homepage": "https://gitlab.com/pushrocks/smartsocket#README",
   "dependencies": {
+    "@types/q": "0.x.x",
+    "@types/socket.io": "^1.4.26",
+    "@types/socket.io-client": "^1.4.26",
     "beautylog": "^5.0.20",
     "lik": "^1.0.9",
     "q": "^1.4.1",
     "socket.io": "^1.4.8",
+    "socket.io-client": "^1.4.8",
     "taskbuffer": "^1.0.7"
+  },
+  "devDependencies": {
+    "should": "^10.0.0",
+    "typings-test": "^1.0.1"
   }
 }
