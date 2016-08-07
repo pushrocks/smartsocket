@@ -61,4 +61,7 @@ mySmartsocketClient.serverCall("newService",data)
     });;
 ```
 
-> **NOTE:** you can easily chain dependent requests on eiter the server or client side with promises. `data` is always a js object that you can design for your specific. It supports buffers for large binary data network exchange.
+> **NOTE:**  
+you can easily chain dependent requests on eiter the server or client side with promises.  
+`data` is always a js object that you can design for your specific needs.  
+It supports buffers for large binary data network exchange.  
