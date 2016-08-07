@@ -1,5 +1,8 @@
 import * as plugins from "./smartsocket.plugins";
 
+// import classes
+import { Stringmap } from "lik";
+
 /**
  * interface for class SocketRole
  */

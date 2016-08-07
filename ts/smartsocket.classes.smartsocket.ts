@@ -8,9 +8,10 @@ import {SocketFunction} from "./smartsocket.classes.socketfunction";
 
 
 export interface ISocketObject {
-    group?:string,
-    socket: SocketIO.Socket,
+    alias?:string;
     authenticated: boolean
+    role?:string,
+    socket: SocketIO.Socket,
 };
 
 export interface ISmartsocketConstructorOptions {
@@ -19,12 +20,12 @@ export interface ISmartsocketConstructorOptions {
 };
 
 export class Smartsocket {
+    options:ISmartsocketConstructorOptions
     io: SocketIO.Server;
     openSockets = new Objectmap();
     registeredRoles = new Objectmap();
-    constructor(options: ISmartsocketConstructorOptions) {
-        this.io = plugins.socketIo(options.port);
-        this.io.on('connection', this._handleSocket);
+    constructor(optionsArg: ISmartsocketConstructorOptions) {
+        this.options = optionsArg;
     };
 
     /**
@@ -35,22 +36,33 @@ export class Smartsocket {
             socket: socket,
             authenticated: false
         };
+        plugins.beautylog.log("Socket connected. Trying to authenticate...")
         this.openSockets.add(socketObject);
         helpers.authenticateSocket(socketObject)
             .then();
     }
 
-    registerRole(socketRoleArg:SocketRole){
+    registerFunctions(socketRoleArg:SocketRole){
         this.registeredRoles.add(socketRoleArg);
     };
 
 
+    /**
+     * starts listening to incling sockets:
+     */
 
+    startServer = () => {
+        this.io = plugins.socketIo(this.options.port);
+        this.io.on('connection', (socketArg) => {
+            this._handleSocket(socketArg);
+        });
+    }
     closeServer = () => {
-        this.io.close();
         this.openSockets.forEach((socketObjectArg: ISocketObject) => {
+            plugins.beautylog.log(`disconnect socket with >>alias ${socketObjectArg.alias}`);
             socketObjectArg.socket.disconnect();
         });
         this.openSockets.wipe();
+        this.io.close();
     }
 }

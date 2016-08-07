@@ -1,19 +1,29 @@
 /// <reference types="socket.io" />
-/// <reference types="q" />
-import * as plugins from "./smartsocket.plugins";
 import { Objectmap } from "lik";
+import { SocketRole } from "./smartsocket.classes.socketrole";
 export interface ISocketObject {
-    socket: SocketIO.Socket;
+    alias?: string;
     authenticated: boolean;
+    role?: string;
+    socket: SocketIO.Socket;
 }
 export interface ISmartsocketConstructorOptions {
     port: number;
 }
 export declare class Smartsocket {
+    options: ISmartsocketConstructorOptions;
     io: SocketIO.Server;
     openSockets: Objectmap;
-    constructor(options: ISmartsocketConstructorOptions);
-    startListening: any;
-    authenticateSocket(socketObjectArg: ISocketObject): plugins.q.Promise<{}>;
+    registeredRoles: Objectmap;
+    constructor(optionsArg: ISmartsocketConstructorOptions);
+    /**
+     * the standard handler for new socket connections
+     */
+    private _handleSocket(socket);
+    registerFunctions(socketRoleArg: SocketRole): void;
+    /**
+     * starts listening to incling sockets:
+     */
+    startServer: () => void;
     closeServer: () => void;
 }

@@ -1,0 +1,7 @@
+"use strict";
+class SmartsocketClient {
+    constructor() {
+    }
+}
+exports.SmartsocketClient = SmartsocketClient;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic21hcnRzb2NrZXQuY2xhc3Nlcy5zbWFydHNvY2tldGNsaWVudC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3RzL3NtYXJ0c29ja2V0LmNsYXNzZXMuc21hcnRzb2NrZXRjbGllbnQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQVVBO0lBQ0k7SUFFQSxDQUFDO0FBQ0wsQ0FBQztBQUpZLHlCQUFpQixvQkFJN0IsQ0FBQSJ9

@@ -1,6 +1,7 @@
 import * as plugins from "./smartsocket.plugins";
 
 // import classes
+import { Stringmap } from "lik";
 import { SocketRole } from "./smartsocket.classes.socketrole";
 
 
