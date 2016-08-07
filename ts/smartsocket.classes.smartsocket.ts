@@ -3,6 +3,9 @@ import * as helpers from "./smartsocket.helpers";
 
 // classes
 import { Objectmap } from "lik";
+import {SocketRole} from "./smartsocket.classes.socketrole";
+import {SocketFunction} from "./smartsocket.classes.socketfunction";
+
 
 export interface ISocketObject {
     group?:string,
@@ -13,11 +16,12 @@ export interface ISocketObject {
 export interface ISmartsocketConstructorOptions {
     port: number;
 
-}
+};
 
 export class Smartsocket {
     io: SocketIO.Server;
     openSockets = new Objectmap();
+    registeredRoles = new Objectmap();
     constructor(options: ISmartsocketConstructorOptions) {
         this.io = plugins.socketIo(options.port);
         this.io.on('connection', this._handleSocket);
@@ -36,9 +40,11 @@ export class Smartsocket {
             .then();
     }
 
-    registerGroup(string){
-        
-    }
+    registerRole(socketRoleArg:SocketRole){
+        this.registeredRoles.add(socketRoleArg);
+    };
+
+
 
     closeServer = () => {
         this.io.close();

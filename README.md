@@ -9,7 +9,6 @@ We recommend the use of typescript.
 
 ### Serverside
 ```typescript
-
 import * as smartsocket from "smartsocket";
 
 let mySmartsocket = new smartsocket.Smartsocket({
