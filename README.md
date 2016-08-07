@@ -7,9 +7,9 @@ easy and secure websocket communication
 ## Usage
 We recommend the use of typescript.
 
+### Serverside
 ```typescript
 
-// serverside
 import * as smartsocket from "smartsocket"
 let mySmartsocket = new smartsocket.Smartsocket({
     port: 3000 // the port smartsocket will listen on
@@ -17,30 +17,44 @@ let mySmartsocket = new smartsocket.Smartsocket({
 
 let mySocketRole = new smartsocket.SocketRole({
     name: "someRoleName",
-    passwordHash: "someHasedString"
+    passwordHash: "someHashedString"
 });
 
 let mySocketFunction = new smartsocket.SocketFunction({
-    func:() => {}, the function to execute
+    name:"newService",
+    func:(data) => {
+        
+    }, the function to execute
     roles:[mySocketRole] // all roles that have access to a specific function
 });
 
 mySmartsocket.registerRole(mySocketRole);
+mySmartsocket.clientCall.select("client1","restart",data)
+    .then((responseData) => {
 
-// Client side
+    });
+```
+
+#### Client side
+```typescript
 let mySmartsocketClient = new smartsocket.SmartsocketClient({
     url: "somedomain.com", // url, note: will only work over https, no http supported.
     port: 3000
     role:"dockerhost", // some role, in this example a dockerhost vm,
-    password:"somePassword"
+    password:"somePassword",
+    alias:"client1"
 });
 
 let mySocketFunction2 = new smartsocket.SocketFunction({
-    func:() => {}, the function to execute
+    name:"restart",
+    func:(data) => {}, the function to execute
     roles: [mySocketRole] // all roles that have access to a specific function
 });
 
 mySmartsocketClient.registerFunction(mySocketFunction2);
 
-
+mySmartsocketClient.serverCall("newService",data)
+    .then((responseData) => {
+        
+    });;
 ```
