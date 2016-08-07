@@ -10,7 +10,8 @@ We recommend the use of typescript.
 ### Serverside
 ```typescript
 
-import * as smartsocket from "smartsocket"
+import * as smartsocket from "smartsocket";
+
 let mySmartsocket = new smartsocket.Smartsocket({
     port: 3000 // the port smartsocket will listen on
 });
@@ -37,6 +38,8 @@ mySmartsocket.clientCall.select("client1","restart",data)
 
 #### Client side
 ```typescript
+import * as smartsocket from "smartsocket";
+
 let mySmartsocketClient = new smartsocket.SmartsocketClient({
     url: "somedomain.com", // url, note: will only work over https, no http supported.
     port: 3000
