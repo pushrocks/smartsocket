@@ -3,16 +3,9 @@ import * as helpers from "./smartsocket.helpers";
 
 // classes
 import { Objectmap } from "lik";
-import {SocketRole} from "./smartsocket.classes.socketrole";
-import {SocketFunction} from "./smartsocket.classes.socketfunction";
-
-
-export interface ISocketObject {
-    alias?:string;
-    authenticated: boolean
-    role?:string,
-    socket: SocketIO.Socket,
-};
+import { SocketRole } from "./smartsocket.classes.socketrole";
+import { SocketFunction } from "./smartsocket.classes.socketfunction";
+import { SocketConnection } from "./smartsocket.classes.socketconnection";
 
 export interface ISmartsocketConstructorOptions {
     port: number;
@@ -20,10 +13,9 @@ export interface ISmartsocketConstructorOptions {
 };
 
 export class Smartsocket {
-    options:ISmartsocketConstructorOptions
+    options: ISmartsocketConstructorOptions
     io: SocketIO.Server;
-    openSockets = new Objectmap();
-    registeredRoles = new Objectmap();
+    openSockets = new Objectmap<SocketConnection>();
     constructor(optionsArg: ISmartsocketConstructorOptions) {
         this.options = optionsArg;
     };
@@ -31,21 +23,16 @@ export class Smartsocket {
     /**
      * the standard handler for new socket connections
      */
-    private _handleSocket(socket) {
-        let socketObject: ISocketObject = {
-            socket: socket,
-            authenticated: false
-        };
+    private _handleSocket(socketArg) {
+        let socketConnection: SocketConnection =  new SocketConnection({
+            authenticated:false,
+            socket:socketArg
+        });
         plugins.beautylog.log("Socket connected. Trying to authenticate...")
-        this.openSockets.add(socketObject);
-        helpers.authenticateSocket(socketObject)
-            .then();
-    }
-
-    registerFunctions(socketRoleArg:SocketRole){
-        this.registeredRoles.add(socketRoleArg);
+        this.openSockets.add(socketConnection);
+        socketConnection.authenticate()
+            .then(socketConnection.listenToFunctionRequests);
     };
-
 
     /**
      * starts listening to incling sockets:
@@ -58,7 +45,7 @@ export class Smartsocket {
         });
     }
     closeServer = () => {
-        this.openSockets.forEach((socketObjectArg: ISocketObject) => {
+        this.openSockets.forEach((socketObjectArg: SocketConnection) => {
             plugins.beautylog.log(`disconnect socket with >>alias ${socketObjectArg.alias}`);
             socketObjectArg.socket.disconnect();
         });
