@@ -2,8 +2,8 @@ import * as plugins from "./smartsocket.plugins";
 import * as helpers from "./smartsocket.helpers";
 
 // import classes
-import { SocketFunction, ISocketFunctionRequestObject } from "./smartsocket.classes.socketfunction";
-import { SocketRequest } from "./smartsocket.classes.socketrequest";
+import { SocketFunction } from "./smartsocket.classes.socketfunction";
+import { SocketRequest, ISocketRequestDataObject } from "./smartsocket.classes.socketrequest";
 import { SocketRole } from "./smartsocket.classes.socketrole";
 
 // export interfaces
@@ -73,21 +73,22 @@ export class SocketConnection {
     listenToFunctionRequests() {
         let done = plugins.q.defer();
         if(this.authenticated){
-            this.socket.on("function", (dataArg:ISocketFunctionRequestObject) => {
+            this.socket.on("function", (dataArg:ISocketRequestDataObject) => {
                 let referencedFunction:SocketFunction = this.role.allowedFunctions.find((socketFunctionArg) => {
-                    return socketFunctionArg.name === dataArg.functionName
+                    return socketFunctionArg.name === dataArg.funcName
                 });
                 if(referencedFunction !== undefined){
                     let localSocketRequest = new SocketRequest({
                         side:"responding",
-                        shortid:dataArg.shortId,
+                        originSocketConnection:this,
+                        shortId:dataArg.shortId,
                         requestData:dataArg
                     });
                 } else {
                     plugins.beautylog.warn("function not existent or out of access scope");
                 };
             });
-            this.socket.on("functionResponse", (dataArg:ISocketFunctionRequestObject) => {
+            this.socket.on("functionResponse", (dataArg:ISocketRequestDataObject) => {
                 
             })
         } else {

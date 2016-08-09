@@ -6,28 +6,30 @@ import { SocketRole } from "./smartsocket.classes.socketrole";
 
 // export interfaces
 
-export interface ISocketFunctionRequestObject {
-    functionName:string,
-    argumentObject:any,
-    shortId:string,
-    responseTimeout?:number
+
+
+
+/**
+ * interface of the contructor options of class SocketFunction
+ */
+export interface ISocketFunctionOptions {
+    funcName: string;
+    funcDef: any;
+    allowedRoles: SocketRole[]; // all roles that are allowed to execute a SocketFunction
 };
 
-export interface ISocketFunctionResponseObject {
-    shortId:string;
-    argumentObject:any;
-};
-
-export interface SocketFunctionOptions {
-    name: string;
-    func: any;
-    roles: SocketRole[]; // all roles that are allowed to execute a SocketFunction
-};
+/**
+ * interface of the Socket Function call 
+ */
+export interface ISocketFunctionCall {
+    funcName:string;
+    funcDataArg:any;
+}
 
 // export classes
 
 /**
- * class SocketFunction respresents a function that can be transparently called using a SocketConnection
+ * class that respresents a function that can be transparently called using a SocketConnection
  */
 export class SocketFunction {
     name: string;
@@ -37,10 +39,10 @@ export class SocketFunction {
     /**
      * the constructor for SocketFunction
      */
-    constructor(optionsArg: SocketFunctionOptions) {
-        this.name = optionsArg.name;
-        this.func = optionsArg.func;
-        this.roles = optionsArg.roles;
+    constructor(optionsArg: ISocketFunctionOptions) {
+        this.name = optionsArg.funcName;
+        this.func = optionsArg.funcDef;
+        this.roles = optionsArg.allowedRoles;
         for (let socketRoleArg of this.roles){
             this._notifyRole(socketRoleArg);
         }
@@ -56,8 +58,9 @@ export class SocketFunction {
     /**
      * invokes the function of this SocketFunction
      */
-    invoke(dataArg:ISocketFunctionRequestObject){
-        
+    invoke(dataArg:any):plugins.q.Promise<any> {
+        let done = plugins.q.defer();
+        return done.promise;        
     };
 
 }

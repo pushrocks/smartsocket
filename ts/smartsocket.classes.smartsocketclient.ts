@@ -2,11 +2,13 @@ import * as plugins from "./smartsocket.plugins"
 
 
 // import interfaces
-import { ISocketFunctionRequestObject, ISocketFunctionResponseObject } from "./smartsocket.classes.socketfunction";
+import { ISocketFunctionCall } from "./smartsocket.classes.socketfunction";
+import { ISocketRequestDataObject } from "./smartsocket.classes.socketrequest"
 
 // import classes
+import { SocketConnection } from "./smartsocket.classes.socketconnection";
 import { SocketFunction } from "./smartsocket.classes.socketfunction";
-
+import { SocketRequest } from "./smartsocket.classes.socketrequest";
 /**
  * interface for class SmartsocketClient
  */
@@ -16,13 +18,21 @@ export interface ISmartsocketClientOptions {
 }
 
 export class SmartsocketClient {
-    constructor() {
+    socketConnection:SocketConnection;
+    constructor(){
 
-    }
-    dispatchFunctionRequest(dataArg:ISocketFunctionRequestObject): plugins.q.Promise<ISocketFunctionResponseObject> {
-        let done = plugins.q.defer<ISocketFunctionResponseObject>();
-        let responseData:ISocketFunctionResponseObject;
-        done.resolve(responseData);
-        return done.promise;
     };
+    serverCall(functionNameArg:string,dataArg:ISocketFunctionCall){
+        let socketRequest = new SocketRequest({
+            side:"requesting",
+            originSocketConnection:this.socketConnection,
+            shortId:plugins.shortid.generate(),
+            funcCallData:{
+                funcName: functionNameArg,
+                funcDataArg:dataArg
+
+            }
+        });
+    }
+    
 }

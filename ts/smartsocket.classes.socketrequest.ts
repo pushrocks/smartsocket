@@ -1,21 +1,32 @@
 import * as plugins from "./smartsocket.plugins";
 
 // import interfaces
-import { ISocketFunctionRequestObject, ISocketFunctionResponseObject } from "./smartsocket.classes.socketfunction";
+import { ISocketFunctionCall } from "./smartsocket.classes.socketfunction";
 
 // import classes
 import { Objectmap } from "lik";
 import { SocketFunction } from "./smartsocket.classes.socketfunction";
+import { SocketConnection } from "./smartsocket.classes.socketconnection";
 
 // export interfaces
 export type TSocketRequestStatus = "new" | "pending" | "finished";
 export type TSocketRequestSide = "requesting" | "responding";
 
+/**
+ * request object that is sent initially and may or may not receive a response
+ */
+export interface ISocketRequestDataObject {
+    funcName:string,
+    funcDataArg:any,
+    shortId:string,
+    responseTimeout?:number
+};
+
 export interface SocketRequestConstructorOptions {
     side: TSocketRequestSide;
-    shortid: string;
-    requestData?: ISocketFunctionRequestObject;
-    responseData?:ISocketFunctionResponseObject;
+    originSocketConnection:SocketConnection;
+    shortId: string;
+    funcCallData?: ISocketFunctionCall;
 };
 
 //export objects
@@ -27,13 +38,12 @@ export class SocketRequest {
     status: TSocketRequestStatus = "new";
     side: TSocketRequestSide;
     shortid: string;
-    requestData: ISocketFunctionRequestObject;
-    responseData: ISocketFunctionResponseObject;
+    originSocketConnection:SocketConnection;
+    requestData: ISocketRequestDataObject;
+    responseData: ISocketRequestDataObject;
     constructor(optionsArg: SocketRequestConstructorOptions) {
         this.side = optionsArg.side;
-        this.shortid = optionsArg.shortid;
-        this.requestData = optionsArg.requestData;
-        this.responseData = optionsArg.responseData;
+        this.shortid = optionsArg.shortId;
         if(this.side === "requesting"){
             allRequestingSocketRequests.add(this);
         } else {
@@ -41,19 +51,23 @@ export class SocketRequest {
         };
     };
     
-    private _sendRequest(dataArg:ISocketFunctionRequestObject){
-
-    };
-    private _receiveRequest(dataArg:ISocketFunctionRequestObject){
-
-    };
-    private _sendResponse(dataArg:ISocketFunctionResponseObject){
+    respond(dataArg){
 
     }
-    private _receiveResponse(dataArg:ISocketFunctionResponseObject){
+    // private functions
+    private _sendRequest(dataArg:ISocketRequestDataObject){
         
     };
-    private _dispatch(dataArg:ISocketFunctionRequestObject){ // note: dispatch is private as it will be fired from the constructor
+    private _receiveRequest(dataArg:ISocketRequestDataObject){
+
+    };
+    private _sendResponse(dataArg:ISocketRequestDataObject){
+
+    }
+    private _receiveResponse(dataArg:ISocketRequestDataObject){
+        
+    };
+    private _dispatch(dataArg:ISocketRequestDataObject){ // note: dispatch is private as it will be fired from the constructor
 
     };
 };
