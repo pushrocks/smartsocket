@@ -78,10 +78,17 @@ export class SocketConnection {
                     return socketFunctionArg.name === dataArg.functionName
                 });
                 if(referencedFunction !== undefined){
-                    referencedFunction.invoke(dataArg);
+                    let localSocketRequest = new SocketRequest({
+                        side:"responding",
+                        shortid:dataArg.shortId,
+                        requestData:dataArg
+                    });
                 } else {
                     plugins.beautylog.warn("function not existent or out of access scope");
                 };
+            });
+            this.socket.on("functionResponse", (dataArg:ISocketFunctionRequestObject) => {
+                
             })
         } else {
             done.reject("socket needs to be authenticated first");
