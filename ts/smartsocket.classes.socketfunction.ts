@@ -4,10 +4,18 @@ import * as plugins from "./smartsocket.plugins";
 import { Stringmap } from "lik";
 import { SocketRole } from "./smartsocket.classes.socketrole";
 
-export interface ISocketFunctionData {
+// export interfaces
+
+export interface ISocketFunctionRequestObject {
     functionName:string,
-    functionData:any,
+    argumentObject:any,
+    shortId:string,
     responseTimeout?:number
+};
+
+export interface ISocketFunctionResponseObject {
+    shortId:string;
+    argumentObject:any;
 };
 
 export interface SocketFunctionOptions {
@@ -16,6 +24,11 @@ export interface SocketFunctionOptions {
     roles: SocketRole[]; // all roles that are allowed to execute a SocketFunction
 };
 
+// export classes
+
+/**
+ * class SocketFunction respresents a function that can be transparently called using a SocketConnection
+ */
 export class SocketFunction {
     name: string;
     func: any;
@@ -41,9 +54,9 @@ export class SocketFunction {
     }
     
     /**
-     * handles a function request to this SocketFunction
+     * invokes the function of this SocketFunction
      */
-    functionRequest(dataArg:ISocketFunctionData){
+    invoke(dataArg:ISocketFunctionRequestObject){
         
     };
 

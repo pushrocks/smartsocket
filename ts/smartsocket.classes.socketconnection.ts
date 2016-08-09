@@ -2,9 +2,15 @@ import * as plugins from "./smartsocket.plugins";
 import * as helpers from "./smartsocket.helpers";
 
 // import classes
+import { SocketFunction, ISocketFunctionRequestObject } from "./smartsocket.classes.socketfunction";
+import { SocketRequest } from "./smartsocket.classes.socketrequest";
 import { SocketRole } from "./smartsocket.classes.socketrole";
-import { SocketFunction, ISocketFunctionData } from "./smartsocket.classes.socketfunction";
 
+// export interfaces
+
+/**
+ * interface for constructor of class SocketConnection
+ */
 export interface ISocketConnectionOptions {
     alias?: string;
     authenticated: boolean;
@@ -12,6 +18,20 @@ export interface ISocketConnectionOptions {
     socket: SocketIO.Socket;
 };
 
+/**
+ * interface for authentication data
+ */
+export interface ISocketConnectionAuthenticationObject {
+    role: "coreflowContainer",
+    password: "somePassword",
+    alias: "coreflow1"
+}
+
+// export classes
+
+/**
+ * class SocketConnection represents a websocket connection
+ */
 export class SocketConnection {
     alias?: string;
     authenticated: boolean;
@@ -53,8 +73,15 @@ export class SocketConnection {
     listenToFunctionRequests() {
         let done = plugins.q.defer();
         if(this.authenticated){
-            this.socket.on("function", (dataArg:ISocketFunctionData) => {
-                this.role.allowedFunctions
+            this.socket.on("function", (dataArg:ISocketFunctionRequestObject) => {
+                let referencedFunction:SocketFunction = this.role.allowedFunctions.find((socketFunctionArg) => {
+                    return socketFunctionArg.name === dataArg.functionName
+                });
+                if(referencedFunction !== undefined){
+                    referencedFunction.invoke(dataArg);
+                } else {
+                    plugins.beautylog.warn("function not existent or out of access scope");
+                };
             })
         } else {
             done.reject("socket needs to be authenticated first");
