@@ -74,16 +74,18 @@ export class SocketConnection {
         let done = plugins.q.defer();
         if(this.authenticated){
             this.socket.on("function", (dataArg:ISocketRequestDataObject) => {
+                // check if requested function is available to the socket's scope
                 let referencedFunction:SocketFunction = this.role.allowedFunctions.find((socketFunctionArg) => {
-                    return socketFunctionArg.name === dataArg.funcName
+                    return socketFunctionArg.name === dataArg.funcCallData.funcName;
                 });
                 if(referencedFunction !== undefined){
                     let localSocketRequest = new SocketRequest({
                         side:"responding",
                         originSocketConnection:this,
                         shortId:dataArg.shortId,
-                        requestData:dataArg
+                        funcCallData:dataArg.funcCallData
                     });
+                    localSocketRequest
                 } else {
                     plugins.beautylog.warn("function not existent or out of access scope");
                 };

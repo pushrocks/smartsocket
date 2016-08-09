@@ -1,21 +1,23 @@
+/// <reference types="q" />
+import * as plugins from "./smartsocket.plugins";
 import { SocketRole } from "./smartsocket.classes.socketrole";
-export interface ISocketFunctionRequestObject {
-    functionName: string;
-    argumentObject: any;
-    shortId: string;
-    responseTimeout?: number;
-}
-export interface ISocketFunctionResponseObject {
-    shortId: string;
-    argumentObject: any;
-}
-export interface SocketFunctionOptions {
-    name: string;
-    func: any;
-    roles: SocketRole[];
+/**
+ * interface of the contructor options of class SocketFunction
+ */
+export interface ISocketFunctionOptions {
+    funcName: string;
+    funcDef: any;
+    allowedRoles: SocketRole[];
 }
 /**
- * class SocketFunction respresents a function that can be transparently called using a SocketConnection
+ * interface of the Socket Function call
+ */
+export interface ISocketFunctionCall {
+    funcName: string;
+    funcDataArg: any;
+}
+/**
+ * class that respresents a function that can be transparently called using a SocketConnection
  */
 export declare class SocketFunction {
     name: string;
@@ -24,7 +26,7 @@ export declare class SocketFunction {
     /**
      * the constructor for SocketFunction
      */
-    constructor(optionsArg: SocketFunctionOptions);
+    constructor(optionsArg: ISocketFunctionOptions);
     /**
      * notifies a role about access to this SocketFunction
      */
@@ -32,5 +34,5 @@ export declare class SocketFunction {
     /**
      * invokes the function of this SocketFunction
      */
-    invoke(dataArg: ISocketFunctionRequestObject): void;
+    invoke(dataArg: any): plugins.q.Promise<any>;
 }

@@ -13,20 +13,22 @@ export type TSocketRequestStatus = "new" | "pending" | "finished";
 export type TSocketRequestSide = "requesting" | "responding";
 
 /**
- * request object that is sent initially and may or may not receive a response
+ * interface of constructor of class SocketRequest
  */
-export interface ISocketRequestDataObject {
-    funcName:string,
-    funcDataArg:any,
-    shortId:string,
-    responseTimeout?:number
-};
-
 export interface SocketRequestConstructorOptions {
     side: TSocketRequestSide;
     originSocketConnection:SocketConnection;
     shortId: string;
     funcCallData?: ISocketFunctionCall;
+};
+
+/**
+ * request object that is sent initially and may or may not receive a response
+ */
+export interface ISocketRequestDataObject {
+    funcCallData:ISocketFunctionCall;
+    shortId:string;
+    responseTimeout?:number;
 };
 
 //export objects
@@ -40,7 +42,7 @@ export class SocketRequest {
     shortid: string;
     originSocketConnection:SocketConnection;
     requestData: ISocketRequestDataObject;
-    responseData: ISocketRequestDataObject;
+    done = plugins.q.defer();
     constructor(optionsArg: SocketRequestConstructorOptions) {
         this.side = optionsArg.side;
         this.shortid = optionsArg.shortId;
@@ -49,25 +51,23 @@ export class SocketRequest {
         } else {
             allRespondingSocketRequests.add(this);
         };
+        // build request and response dataArg
+        this.requestData = {
+            funcCallData:optionsArg.funcCallData,
+            shortId:optionsArg.shortId
+        }
     };
-    
-    respond(dataArg){
+    /**
+     * 
+     */
+    dispatch(){
+        this.originSocketConnection.socket.emit("function",this.requestData);
+        return this.done.promise;
+    };
+    handleResponse(responseDataArg:ISocketRequestDataObject){
+        this.done.resolve(responseDataArg);
+    }
+    createResponse(){
 
     }
-    // private functions
-    private _sendRequest(dataArg:ISocketRequestDataObject){
-        
-    };
-    private _receiveRequest(dataArg:ISocketRequestDataObject){
-
-    };
-    private _sendResponse(dataArg:ISocketRequestDataObject){
-
-    }
-    private _receiveResponse(dataArg:ISocketRequestDataObject){
-        
-    };
-    private _dispatch(dataArg:ISocketRequestDataObject){ // note: dispatch is private as it will be fired from the constructor
-
-    };
 };

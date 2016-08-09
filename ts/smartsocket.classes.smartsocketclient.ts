@@ -19,8 +19,8 @@ export interface ISmartsocketClientOptions {
 
 export class SmartsocketClient {
     socketConnection:SocketConnection;
-    constructor(){
-
+    constructor(optionsArg:ISmartsocketClientOptions){
+        // TODO: implement Socket init
     };
     serverCall(functionNameArg:string,dataArg:ISocketFunctionCall){
         let socketRequest = new SocketRequest({
@@ -30,9 +30,9 @@ export class SmartsocketClient {
             funcCallData:{
                 funcName: functionNameArg,
                 funcDataArg:dataArg
-
             }
         });
+        socketRequest.dispatch();
     }
     
 }

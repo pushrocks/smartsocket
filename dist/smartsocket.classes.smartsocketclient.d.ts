@@ -1,6 +1,5 @@
-/// <reference types="q" />
-import * as plugins from "./smartsocket.plugins";
-import { ISocketFunctionRequestObject, ISocketFunctionResponseObject } from "./smartsocket.classes.socketfunction";
+import { ISocketFunctionCall } from "./smartsocket.classes.socketfunction";
+import { SocketConnection } from "./smartsocket.classes.socketconnection";
 /**
  * interface for class SmartsocketClient
  */
@@ -9,6 +8,7 @@ export interface ISmartsocketClientOptions {
     url: string;
 }
 export declare class SmartsocketClient {
-    constructor();
-    dispatchFunctionRequest(dataArg: ISocketFunctionRequestObject): plugins.q.Promise<ISocketFunctionResponseObject>;
+    socketConnection: SocketConnection;
+    constructor(optionsArg: ISmartsocketClientOptions);
+    serverCall(functionNameArg: string, dataArg: ISocketFunctionCall): void;
 }
