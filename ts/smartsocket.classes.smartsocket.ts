@@ -23,7 +23,7 @@ export class Smartsocket {
     /**
      * the standard handler for new socket connections
      */
-    private _handleSocket(socketArg) {
+    private _handleSocketConnection(socketArg) {
         let socketConnection: SocketConnection =  new SocketConnection({
             authenticated:false,
             socket:socketArg
@@ -41,7 +41,7 @@ export class Smartsocket {
     startServer = () => {
         this.io = plugins.socketIo(this.options.port);
         this.io.on('connection', (socketArg) => {
-            this._handleSocket(socketArg);
+            this._handleSocketConnection(socketArg);
         });
     }
     closeServer = () => {
@@ -51,5 +51,10 @@ export class Smartsocket {
         });
         this.openSockets.wipe();
         this.io.close();
+    };
+
+    // communication
+    clientCall(){
+        // TODO: target specific client and initiate response        
     }
 }

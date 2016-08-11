@@ -11,11 +11,11 @@ import { SocketRole } from "./smartsocket.classes.socketrole";
 /**
  * interface for constructor of class SocketConnection
  */
-export interface ISocketConnectionOptions {
+export interface ISocketConnectionConstructorOptions {
     alias?: string;
     authenticated: boolean;
     role?: SocketRole;
-    socket: SocketIO.Socket;
+    socket?: SocketIO.Socket | SocketIOClient.Socket;
 };
 
 /**
@@ -36,8 +36,8 @@ export class SocketConnection {
     alias?: string;
     authenticated: boolean;
     role?: SocketRole;
-    socket: SocketIO.Socket;
-    constructor(optionsArg: ISocketConnectionOptions) {
+    socket: SocketIO.Socket | SocketIOClient.Socket;
+    constructor(optionsArg: ISocketConnectionConstructorOptions) {
         this.alias = optionsArg.alias;
         this.authenticated = optionsArg.authenticated;
         this.role = optionsArg.role;

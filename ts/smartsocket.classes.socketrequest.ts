@@ -57,17 +57,30 @@ export class SocketRequest {
             shortId:optionsArg.shortId
         }
     };
+    
+    // requesting --------------------------
+    
     /**
-     * 
+     * dispatches a socketrequest from the requesting to the receiving side
      */
     dispatch(){
         this.originSocketConnection.socket.emit("function",this.requestData);
         return this.done.promise;
     };
-    handleResponse(responseDataArg:ISocketRequestDataObject){
+
+    /**
+     * handles the response that is received by the requesting side
+     */
+    private _handleResponse(responseDataArg:ISocketRequestDataObject){
         this.done.resolve(responseDataArg);
     }
-    createResponse(){
 
+    // responding --------------------------
+
+    /**
+     * creates the response on the responding side
+     */
+    createResponse(){
+        
     }
 };
