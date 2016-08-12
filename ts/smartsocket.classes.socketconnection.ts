@@ -3,7 +3,7 @@ import * as helpers from "./smartsocket.helpers";
 
 // import classes
 import { SocketFunction } from "./smartsocket.classes.socketfunction";
-import { SocketRequest, ISocketRequestDataObject } from "./smartsocket.classes.socketrequest";
+import { SocketRequest, ISocketRequestDataObject, allSocketRequests } from "./smartsocket.classes.socketrequest";
 import { SocketRole } from "./smartsocket.classes.socketrole";
 
 // export interfaces
@@ -96,7 +96,8 @@ export class SocketConnection {
                 };
             });
             this.socket.on("functionResponse", (dataArg:ISocketRequestDataObject) => {
-                
+                let targetSocketRequest = helpers.getSocketRequestById(dataArg.shortId);
+                targetSocketRequest.handleResponse(dataArg);
             })
         } else {
             done.reject("socket needs to be authenticated first");

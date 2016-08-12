@@ -6,9 +6,6 @@ import { SocketRole } from "./smartsocket.classes.socketrole";
 
 // export interfaces
 
-
-
-
 /**
  * interface of the contructor options of class SocketFunction
  */
@@ -24,6 +21,13 @@ export interface ISocketFunctionConstructorOptions {
 export interface ISocketFunctionCall {
     funcName:string;
     funcDataArg:any;
+};
+
+/**
+ * interface for function definition of SocketFunction
+ */
+export interface IFuncDef {
+    (dataArg:any):PromiseLike<any>
 }
 
 // export objects
@@ -36,7 +40,7 @@ export let allSocketFunctions = new Objectmap<SocketFunction>();
  */
 export class SocketFunction {
     name: string;
-    func: any;
+    funcDef: IFuncDef;
     roles: SocketRole[];
 
     /**
@@ -44,7 +48,7 @@ export class SocketFunction {
      */
     constructor(optionsArg: ISocketFunctionConstructorOptions) {
         this.name = optionsArg.funcName;
-        this.func = optionsArg.funcDef;
+        this.funcDef = optionsArg.funcDef;
         this.roles = optionsArg.allowedRoles;
         for (let socketRoleArg of this.roles){
             this._notifyRole(socketRoleArg);
@@ -62,9 +66,17 @@ export class SocketFunction {
     /**
      * invokes the function of this SocketFunction
      */
-    invoke(dataArg:any):plugins.q.Promise<any> {
+    invoke(dataArg:ISocketFunctionCall):plugins.q.Promise<any> {
         let done = plugins.q.defer();
-
+        if(dataArg.funcName === this.name){
+            this.funcDef(dataArg.funcDataArg)
+                .then((resultData:any) => {
+                    done.resolve(resultData);
+                });
+                
+        } else {
+            throw new Error("SocketFunction.name does not match the data argument's .name!");
+        }
         return done.promise;        
     };
 

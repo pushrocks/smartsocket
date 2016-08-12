@@ -1,4 +1,5 @@
 import * as plugins from "./smartsocket.plugins";
+import * as helpers from "./smartsocket.helpers";
 
 // import interfaces
 import { ISocketFunctionCall } from "./smartsocket.classes.socketfunction";
@@ -17,7 +18,7 @@ export type TSocketRequestSide = "requesting" | "responding";
  */
 export interface SocketRequestConstructorOptions {
     side: TSocketRequestSide;
-    originSocketConnection:SocketConnection;
+    originSocketConnection: SocketConnection;
     shortId: string;
     funcCallData?: ISocketFunctionCall;
 };
@@ -26,52 +27,47 @@ export interface SocketRequestConstructorOptions {
  * request object that is sent initially and may or may not receive a response
  */
 export interface ISocketRequestDataObject {
-    funcCallData:ISocketFunctionCall;
-    shortId:string;
-    responseTimeout?:number;
+    funcCallData: ISocketFunctionCall;
+    shortId: string;
+    responseTimeout?: number;
 };
 
 //export objects
-export let allRequestingSocketRequests = new Objectmap<SocketRequest>();
-export let allRespondingSocketRequests = new Objectmap<SocketRequest>();
+export let allSocketRequests = new Objectmap<SocketRequest>();
 
 // export classes
 export class SocketRequest {
     status: TSocketRequestStatus = "new";
     side: TSocketRequestSide;
     shortid: string;
-    originSocketConnection:SocketConnection;
+    originSocketConnection: SocketConnection;
     funcCallData: ISocketFunctionCall
     done = plugins.q.defer();
     constructor(optionsArg: SocketRequestConstructorOptions) {
         this.side = optionsArg.side;
         this.shortid = optionsArg.shortId;
         this.funcCallData = optionsArg.funcCallData;
-        if(this.side === "requesting"){
-            allRequestingSocketRequests.add(this);
-        } else {
-            allRespondingSocketRequests.add(this);
-        };
+        allSocketRequests.add(this);
     };
-    
+
     // requesting --------------------------
-    
+
     /**
      * dispatches a socketrequest from the requesting to the receiving side
      */
-    dispatch(){
-        let requestData:ISocketRequestDataObject = {
-            funcCallData:this.funcCallData,
-            shortId:this.shortid
+    dispatch() {
+        let requestData: ISocketRequestDataObject = {
+            funcCallData: this.funcCallData,
+            shortId: this.shortid
         }
-        this.originSocketConnection.socket.emit("function",requestData);
+        this.originSocketConnection.socket.emit("function", requestData);
         return this.done.promise;
     };
 
     /**
      * handles the response that is received by the requesting side
      */
-    private _handleResponse(responseDataArg:ISocketRequestDataObject){
+    handleResponse(responseDataArg: ISocketRequestDataObject) {
         this.done.resolve(responseDataArg);
     }
 
@@ -80,7 +76,15 @@ export class SocketRequest {
     /**
      * creates the response on the responding side
      */
-    createResponse(){
-        
+    createResponse() {
+        let targetSocketFunction: SocketFunction = helpers.getSocketFunctionByName(this.funcCallData.funcName);
+        targetSocketFunction.invoke(this.funcCallData)
+            .then((resultData) => {
+                let requestData: ISocketRequestDataObject = {
+                    funcCallData: resultData,
+                    shortId: this.shortid
+                }
+                this.originSocketConnection.socket.emit("functionResponse",requestData);
+            });
     }
 };
