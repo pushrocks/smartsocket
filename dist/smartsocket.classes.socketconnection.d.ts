@@ -1,15 +1,16 @@
 /// <reference types="socket.io" />
+/// <reference types="socket.io-client" />
 /// <reference types="q" />
 import * as plugins from "./smartsocket.plugins";
 import { SocketRole } from "./smartsocket.classes.socketrole";
 /**
  * interface for constructor of class SocketConnection
  */
-export interface ISocketConnectionOptions {
+export interface ISocketConnectionConstructorOptions {
     alias?: string;
     authenticated: boolean;
     role?: SocketRole;
-    socket: SocketIO.Socket;
+    socket?: SocketIO.Socket | SocketIOClient.Socket;
 }
 /**
  * interface for authentication data
@@ -26,8 +27,8 @@ export declare class SocketConnection {
     alias?: string;
     authenticated: boolean;
     role?: SocketRole;
-    socket: SocketIO.Socket;
-    constructor(optionsArg: ISocketConnectionOptions);
+    socket: SocketIO.Socket | SocketIOClient.Socket;
+    constructor(optionsArg: ISocketConnectionConstructorOptions);
     /**
      * authenticate the socket
      */

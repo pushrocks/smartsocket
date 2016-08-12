@@ -22,17 +22,25 @@ export interface ISocketRequestDataObject {
     shortId: string;
     responseTimeout?: number;
 }
-export declare let allRequestingSocketRequests: Objectmap<SocketRequest>;
-export declare let allRespondingSocketRequests: Objectmap<SocketRequest>;
+export declare let allSocketRequests: Objectmap<SocketRequest>;
 export declare class SocketRequest {
     status: TSocketRequestStatus;
     side: TSocketRequestSide;
     shortid: string;
     originSocketConnection: SocketConnection;
-    requestData: ISocketRequestDataObject;
+    funcCallData: ISocketFunctionCall;
     done: plugins.q.Deferred<{}>;
     constructor(optionsArg: SocketRequestConstructorOptions);
+    /**
+     * dispatches a socketrequest from the requesting to the receiving side
+     */
     dispatch(): plugins.q.Promise<{}>;
+    /**
+     * handles the response that is received by the requesting side
+     */
     handleResponse(responseDataArg: ISocketRequestDataObject): void;
-    respond(dataArg: any): void;
+    /**
+     * creates the response on the responding side
+     */
+    createResponse(): void;
 }

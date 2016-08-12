@@ -69,6 +69,7 @@ export class SocketRequest {
      */
     handleResponse(responseDataArg: ISocketRequestDataObject) {
         this.done.resolve(responseDataArg);
+        allSocketRequests.remove(this);
     }
 
     // responding --------------------------
@@ -85,6 +86,7 @@ export class SocketRequest {
                     shortId: this.shortid
                 }
                 this.originSocketConnection.socket.emit("functionResponse",requestData);
+                allSocketRequests.remove(this);
             });
     }
 };

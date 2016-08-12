@@ -4,35 +4,33 @@ import socketIoClient = require("socket.io-client");
 import smartsocket = require("../dist/index");
 
 let testSmartsocket: smartsocket.Smartsocket;
+let testSmartsocketClient: smartsocket.SmartsocketClient;
+
+let testConfig = {
+    port:3000
+}
 
 describe("smartsocket", function () {
     it("should create a new smartsocket", function () {
-        testSmartsocket = new smartsocket.Smartsocket({ port: 3000 });
+        testSmartsocket = new smartsocket.Smartsocket({ port: testConfig.port });
         testSmartsocket.should.be.instanceOf(smartsocket.Smartsocket);
     });
-    it("should register a new Function",function(){
-        
+    it("should register a new Function", function () {
+
     })
-    it("should start listening when .started is called",function(){
+    it("should start listening when .started is called", function () {
         testSmartsocket.startServer();
     })
     it("should react to a new websocket connection", function (done) {
         this.timeout(10000);
-        let socket = socketIoClient("http://localhost:3000", {});
-        socket.on("requestAuth", function () {
-            console.log("server requested authentication");
-            socket.emit("dataAuth", {
-                role: "coreflowContainer",
-                password: "somePassword",
-                alias: "coreflow1"
-            });
-            socket.on("authenticated",() => {
-                console.log("client is authenticated");
-                done();
-            });
+        testSmartsocketClient = new smartsocket.SmartsocketClient({
+            port: testConfig.port,
+            url: "http://localhost",
+            password:"testPassword",
+            alias: "testClient1"
         });
     });
-    it("should close the server",function(){
+    it("should close the server", function () {
         testSmartsocket.closeServer();
-    })
+    });
 });

@@ -12,10 +12,11 @@ export declare class Smartsocket {
     /**
      * the standard handler for new socket connections
      */
-    private _handleSocket(socketArg);
+    private _handleSocketConnection(socketArg);
     /**
      * starts listening to incling sockets:
      */
     startServer: () => void;
     closeServer: () => void;
+    clientCall(): void;
 }
