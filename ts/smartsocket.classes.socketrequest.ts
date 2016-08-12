@@ -41,21 +41,17 @@ export class SocketRequest {
     side: TSocketRequestSide;
     shortid: string;
     originSocketConnection:SocketConnection;
-    requestData: ISocketRequestDataObject;
+    funcCallData: ISocketFunctionCall
     done = plugins.q.defer();
     constructor(optionsArg: SocketRequestConstructorOptions) {
         this.side = optionsArg.side;
         this.shortid = optionsArg.shortId;
+        this.funcCallData = optionsArg.funcCallData;
         if(this.side === "requesting"){
             allRequestingSocketRequests.add(this);
         } else {
             allRespondingSocketRequests.add(this);
         };
-        // build request and response dataArg
-        this.requestData = {
-            funcCallData:optionsArg.funcCallData,
-            shortId:optionsArg.shortId
-        }
     };
     
     // requesting --------------------------
@@ -64,7 +60,11 @@ export class SocketRequest {
      * dispatches a socketrequest from the requesting to the receiving side
      */
     dispatch(){
-        this.originSocketConnection.socket.emit("function",this.requestData);
+        let requestData:ISocketRequestDataObject = {
+            funcCallData:this.funcCallData,
+            shortId:this.shortid
+        }
+        this.originSocketConnection.socket.emit("function",requestData);
         return this.done.promise;
     };
 

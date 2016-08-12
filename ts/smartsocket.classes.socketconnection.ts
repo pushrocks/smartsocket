@@ -43,6 +43,9 @@ export class SocketConnection {
         this.role = optionsArg.role;
         this.socket = optionsArg.socket;
     }
+
+    // authenticating --------------------------
+
     /**
      * authenticate the socket
      */
@@ -54,7 +57,7 @@ export class SocketConnection {
             if ((true)) { // TODO: authenticate password
                 this.alias = dataArg.alias
                 this.authenticated = true;
-                this.role = helpers.findSocketRoleByString(dataArg.role);
+                this.role = helpers.getSocketRoleByName(dataArg.role);
                 this.socket.emit("authenticated");
                 plugins.beautylog.ok(`socket with >>alias ${this.alias} >>role ${this.role} is authenticated!`);
                 done.resolve(this);
@@ -66,6 +69,8 @@ export class SocketConnection {
         this.socket.emit("requestAuth");
         return done.promise;
     };
+
+    // listening -------------------------------
 
     /**
      * listen to function requests
@@ -85,7 +90,7 @@ export class SocketConnection {
                         shortId:dataArg.shortId,
                         funcCallData:dataArg.funcCallData
                     });
-                    localSocketRequest
+                    localSocketRequest.createResponse(); // takes care of creating response and sending it back 
                 } else {
                     plugins.beautylog.warn("function not existent or out of access scope");
                 };
@@ -97,5 +102,8 @@ export class SocketConnection {
             done.reject("socket needs to be authenticated first");
         };
         return done.promise;
-    }
+    };
+
+    // sending ----------------------
+    
 };

@@ -1,7 +1,7 @@
 import * as plugins from "./smartsocket.plugins";
 
 // import classes
-import { Stringmap } from "lik";
+import { Objectmap } from "lik";
 import { SocketRole } from "./smartsocket.classes.socketrole";
 
 // export interfaces
@@ -12,19 +12,22 @@ import { SocketRole } from "./smartsocket.classes.socketrole";
 /**
  * interface of the contructor options of class SocketFunction
  */
-export interface ISocketFunctionOptions {
+export interface ISocketFunctionConstructorOptions {
     funcName: string;
     funcDef: any;
     allowedRoles: SocketRole[]; // all roles that are allowed to execute a SocketFunction
 };
 
 /**
- * interface of the Socket Function call 
+ * interface of the Socket Function call, in other words the object that routes a call to a function
  */
 export interface ISocketFunctionCall {
     funcName:string;
     funcDataArg:any;
 }
+
+// export objects
+export let allSocketFunctions = new Objectmap<SocketFunction>();
 
 // export classes
 
@@ -39,13 +42,14 @@ export class SocketFunction {
     /**
      * the constructor for SocketFunction
      */
-    constructor(optionsArg: ISocketFunctionOptions) {
+    constructor(optionsArg: ISocketFunctionConstructorOptions) {
         this.name = optionsArg.funcName;
         this.func = optionsArg.funcDef;
         this.roles = optionsArg.allowedRoles;
         for (let socketRoleArg of this.roles){
             this._notifyRole(socketRoleArg);
-        }
+        };
+        allSocketFunctions.add(this); // map instance with Objectmap
     };
 
     /** 
@@ -60,6 +64,7 @@ export class SocketFunction {
      */
     invoke(dataArg:any):plugins.q.Promise<any> {
         let done = plugins.q.defer();
+
         return done.promise;        
     };
 
