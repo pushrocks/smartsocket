@@ -71,7 +71,11 @@ export class SocketFunction {
         if(dataArg.funcName === this.name){
             this.funcDef(dataArg.funcDataArg)
                 .then((resultData:any) => {
-                    done.resolve(resultData);
+                    let funcResponseData:ISocketFunctionCall = {
+                        funcName:this.name,
+                        funcDataArg:resultData
+                    }
+                    done.resolve(funcResponseData);
                 });
                 
         } else {

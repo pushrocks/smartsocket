@@ -47,6 +47,7 @@ export class SocketRequest {
         this.side = optionsArg.side;
         this.shortid = optionsArg.shortId;
         this.funcCallData = optionsArg.funcCallData;
+        this.originSocketConnection = optionsArg.originSocketConnection;
         allSocketRequests.add(this);
     };
 
@@ -68,7 +69,8 @@ export class SocketRequest {
      * handles the response that is received by the requesting side
      */
     handleResponse(responseDataArg: ISocketRequestDataObject) {
-        this.done.resolve(responseDataArg);
+        plugins.beautylog.log("handling response!");
+        this.done.resolve(responseDataArg.funcCallData);
         allSocketRequests.remove(this);
     }
 
@@ -79,12 +81,14 @@ export class SocketRequest {
      */
     createResponse() {
         let targetSocketFunction: SocketFunction = helpers.getSocketFunctionByName(this.funcCallData.funcName);
+        plugins.beautylog.info(`invoking ${targetSocketFunction.name}`);
         targetSocketFunction.invoke(this.funcCallData)
             .then((resultData) => {
+                plugins.beautylog.log("got resultData. Sending it to requesting party.")
                 let requestData: ISocketRequestDataObject = {
                     funcCallData: resultData,
                     shortId: this.shortid
-                }
+                };
                 this.originSocketConnection.socket.emit("functionResponse",requestData);
                 allSocketRequests.remove(this);
             });

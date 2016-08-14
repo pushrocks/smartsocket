@@ -33,7 +33,12 @@ export class Smartsocket {
         plugins.beautylog.log("Socket connected. Trying to authenticate...")
         this.openSockets.add(socketConnection);
         socketConnection.authenticate()
-            .then(socketConnection.listenToFunctionRequests);
+            .then(() => {
+                return socketConnection.listenToFunctionRequests();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     /**

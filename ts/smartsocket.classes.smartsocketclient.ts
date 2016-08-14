@@ -57,6 +57,8 @@ export class SmartsocketClient {
             });
             this.socketConnection.socket.on("authenticated",() => {
                 console.log("client is authenticated");
+                this.socketConnection.authenticated = true;
+                this.socketConnection.listenToFunctionRequests();
                 done.resolve();
             });
         });
@@ -70,7 +72,7 @@ export class SmartsocketClient {
         done.resolve();
         return done.promise;
     }
-    serverCall(functionNameArg:string,dataArg:ISocketFunctionCall){
+    serverCall(functionNameArg:string,dataArg:any){
         let done = plugins.q.defer();
         let socketRequest = new SocketRequest({
             side:"requesting",
@@ -82,8 +84,8 @@ export class SmartsocketClient {
             }
         });
         socketRequest.dispatch()
-            .then(() => {
-                done.resolve();
+            .then((dataArg:ISocketFunctionCall) => {
+                done.resolve(dataArg.funcDataArg);
             });
         return done.promise;
     };

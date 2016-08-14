@@ -6,6 +6,7 @@ import q = require("q");
 
 let testSmartsocket: smartsocket.Smartsocket;
 let testSmartsocketClient: smartsocket.SmartsocketClient;
+let testSocketRole1: smartsocket.SocketRole;
 let testSocketFunction1:smartsocket.SocketFunction;
 
 let testConfig = {
@@ -23,17 +24,21 @@ describe("smartsocket", function () {
         });
     });
     describe("class SocketRole", function(){
-
+        testSocketRole1 = new smartsocket.SocketRole({
+            name:"testRole1",
+            passwordHash:"somehash"
+        })
     })
     describe("class SocketFunction", function () {
         it("should register a new Function", function () {
             testSocketFunction1 = new smartsocket.SocketFunction({
                 funcName:"testFunction1",
-                funcDef: () => {
+                funcDef: (dataArg) => {
                     let done = q.defer();
+                    done.resolve(dataArg);
                     return done.promise;
                 },
-                allowedRoles:[]
+                allowedRoles:[testSocketRole1]
             });
         });
     });
@@ -45,7 +50,7 @@ describe("smartsocket", function () {
                 url: "http://localhost",
                 password: "testPassword",
                 alias: "testClient1",
-                role: undefined
+                role: "testRole1"
             });
             testSmartsocketClient.connect()
                 .then(() => {
@@ -70,6 +75,15 @@ describe("smartsocket", function () {
         it("2 clients should connect in parallel", function () {
 
         });
+        it("should be able to make a functionCall",function(done){
+            this.timeout(5000);
+            testSmartsocketClient.serverCall("testFunction1",{
+                value1:"hello"
+            }).then((dataArg) => {
+                console.log(dataArg);
+                done();
+            });
+        })
     });
     describe("terminating smartsocket", function () {
         it("should close the server", function () {

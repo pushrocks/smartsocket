@@ -34,7 +34,7 @@ export interface ISocketConnectionAuthenticationObject {
  */
 export class SocketConnection {
     alias: string;
-    authenticated: boolean;
+    authenticated: boolean = false;
     role: SocketRole;
     socket: SocketIO.Socket | SocketIOClient.Socket;
     constructor(optionsArg: ISocketConnectionConstructorOptions) {
@@ -67,6 +67,7 @@ export class SocketConnection {
                 plugins.beautylog.ok(`socket with >>alias ${this.alias} >>role ${this.role} is authenticated!`);
                 done.resolve(this);
             } else {
+                this.authenticated = false;
                 this.socket.disconnect();
                 done.reject("not authenticated");
             };
@@ -80,15 +81,17 @@ export class SocketConnection {
     /**
      * listen to function requests
      */
-    listenToFunctionRequests() {
+    listenToFunctionRequests(){
         let done = plugins.q.defer();
         if(this.authenticated){
             this.socket.on("function", (dataArg:ISocketRequestDataObject) => {
                 // check if requested function is available to the socket's scope
+                plugins.beautylog.log("function request received");
                 let referencedFunction:SocketFunction = this.role.allowedFunctions.find((socketFunctionArg) => {
                     return socketFunctionArg.name === dataArg.funcCallData.funcName;
                 });
                 if(referencedFunction !== undefined){
+                    plugins.beautylog.ok!("function in access scope");
                     let localSocketRequest = new SocketRequest({
                         side:"responding",
                         originSocketConnection:this,
@@ -101,11 +104,16 @@ export class SocketConnection {
                 };
             });
             this.socket.on("functionResponse", (dataArg:ISocketRequestDataObject) => {
+                plugins.beautylog.info(`received response for request with id ${dataArg.shortId}`);
                 let targetSocketRequest = helpers.getSocketRequestById(dataArg.shortId);
                 targetSocketRequest.handleResponse(dataArg);
-            })
+            });
+            plugins.beautylog.log(`now listening to function requests for ${this.alias}`);
+            done.resolve(this);
         } else {
-            done.reject("socket needs to be authenticated first");
+            let errMessage: "socket needs to be authenticated first";
+            plugins.beautylog.error(errMessage);
+            done.reject(errMessage);
         };
         return done.promise;
     };
