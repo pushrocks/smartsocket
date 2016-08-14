@@ -57,6 +57,7 @@ export class Smartsocket {
 
     // communication
     clientCall(){
+        
         // TODO: target specific client and initiate response        
     }
 }

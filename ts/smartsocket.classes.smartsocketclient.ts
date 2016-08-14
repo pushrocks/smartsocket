@@ -46,7 +46,7 @@ export class SmartsocketClient {
             alias:this.alias,
             authenticated:false,
             role:undefined,
-            socket: plugins.socketIoClient(socketUrl,{})
+            socket: plugins.socketIoClient(socketUrl,{multiplex:false})
         });
         this.socketConnection.socket.on("requestAuth", () => {
             console.log("server requested authentication");
@@ -65,6 +65,7 @@ export class SmartsocketClient {
     disconnect(){
         let done = plugins.q.defer();
         this.socketConnection.socket.disconnect();
+        this.socketConnection = undefined;
         plugins.beautylog.ok("disconnected!");
         done.resolve();
         return done.promise;
