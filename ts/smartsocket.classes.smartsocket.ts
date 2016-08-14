@@ -25,7 +25,9 @@ export class Smartsocket {
      */
     private _handleSocketConnection(socketArg) {
         let socketConnection: SocketConnection =  new SocketConnection({
+            alias:undefined,
             authenticated:false,
+            role:undefined,
             socket:socketArg
         });
         plugins.beautylog.log("Socket connected. Trying to authenticate...")
@@ -40,7 +42,7 @@ export class Smartsocket {
 
     startServer = () => {
         this.io = plugins.socketIo(this.options.port);
-        this.io.on('connection', (socketArg) => {
+        this.io.on("connection", (socketArg) => {
             this._handleSocketConnection(socketArg);
         });
     }

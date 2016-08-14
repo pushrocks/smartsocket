@@ -12,10 +12,10 @@ import { SocketRole } from "./smartsocket.classes.socketrole";
  * interface for constructor of class SocketConnection
  */
 export interface ISocketConnectionConstructorOptions {
-    alias?: string;
+    alias: string;
     authenticated: boolean;
-    role?: SocketRole;
-    socket?: SocketIO.Socket | SocketIOClient.Socket;
+    role: SocketRole;
+    socket: SocketIO.Socket | SocketIOClient.Socket;
 };
 
 /**
@@ -33,16 +33,21 @@ export interface ISocketConnectionAuthenticationObject {
  * class SocketConnection represents a websocket connection
  */
 export class SocketConnection {
-    alias?: string;
+    alias: string;
     authenticated: boolean;
-    role?: SocketRole;
+    role: SocketRole;
     socket: SocketIO.Socket | SocketIOClient.Socket;
     constructor(optionsArg: ISocketConnectionConstructorOptions) {
         this.alias = optionsArg.alias;
         this.authenticated = optionsArg.authenticated;
         this.role = optionsArg.role;
         this.socket = optionsArg.socket;
-    }
+        
+        // standard behaviour that is always true
+        this.socket.on("disconnect", () => {
+            plugins.beautylog.info(`Client ${this.alias} disconnected`);
+        });
+    };
 
     // authenticating --------------------------
 

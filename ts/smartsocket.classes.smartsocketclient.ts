@@ -15,35 +15,45 @@ import { SocketRequest } from "./smartsocket.classes.socketrequest";
 export interface ISmartsocketClientOptions {
     port: number;
     url: string;
-    alias?:string; // an alias makes ir easier to identify this client in a multo client environment
+    alias:string; // an alias makes it easier to identify this client in a multo client environment
+    role:string;
     password: string; // by setting a password access to functions can be limited
 }
 
 export class SmartsocketClient {
+    alias:string;
+    role:string;
     socketConnection:SocketConnection;
     serverUrl:string;
     serverPort:number;
     serverPassword:string;
     constructor(optionsArg:ISmartsocketClientOptions){
+        this.alias = optionsArg.alias;
+        this.role = optionsArg.role;
         this.serverUrl = optionsArg.url
         this.serverPort = optionsArg.port;
         this.serverPassword = optionsArg.password
     };
 
-    // authenticates the socket against the server
-    private _handleSocketConnection() {
+    /**
+     * connect the client to the server
+     */
+    connect(){
         let done = plugins.q.defer();
+        plugins.beautylog.log("trying to connect...");
         let socketUrl = `${this.serverUrl}:${this.serverPort}`;
         this.socketConnection = new SocketConnection({
+            alias:this.alias,
             authenticated:false,
-            socket: plugins.socketIoClient(this.serverUrl,{})
+            role:undefined,
+            socket: plugins.socketIoClient(socketUrl,{})
         });
-        this.socketConnection.socket.on("requestAuth", function () {
+        this.socketConnection.socket.on("requestAuth", () => {
             console.log("server requested authentication");
             this.socketConnection.socket.emit("dataAuth", {
-                role: "coreflowContainer",
-                password: "somePassword",
-                alias: "coreflow1"
+                role: this.role,
+                password: this.serverPassword,
+                alias: this.alias
             });
             this.socketConnection.socket.on("authenticated",() => {
                 console.log("client is authenticated");
@@ -52,6 +62,13 @@ export class SmartsocketClient {
         });
         return done.promise;
     };
+    disconnect(){
+        let done = plugins.q.defer();
+        this.socketConnection.socket.disconnect();
+        plugins.beautylog.ok("disconnected!");
+        done.resolve();
+        return done.promise;
+    }
     serverCall(functionNameArg:string,dataArg:ISocketFunctionCall){
         let done = plugins.q.defer();
         let socketRequest = new SocketRequest({

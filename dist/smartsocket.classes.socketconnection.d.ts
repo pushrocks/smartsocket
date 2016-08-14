@@ -7,10 +7,10 @@ import { SocketRole } from "./smartsocket.classes.socketrole";
  * interface for constructor of class SocketConnection
  */
 export interface ISocketConnectionConstructorOptions {
-    alias?: string;
+    alias: string;
     authenticated: boolean;
-    role?: SocketRole;
-    socket?: SocketIO.Socket | SocketIOClient.Socket;
+    role: SocketRole;
+    socket: SocketIO.Socket | SocketIOClient.Socket;
 }
 /**
  * interface for authentication data
@@ -24,9 +24,9 @@ export interface ISocketConnectionAuthenticationObject {
  * class SocketConnection represents a websocket connection
  */
 export declare class SocketConnection {
-    alias?: string;
+    alias: string;
     authenticated: boolean;
-    role?: SocketRole;
+    role: SocketRole;
     socket: SocketIO.Socket | SocketIOClient.Socket;
     constructor(optionsArg: ISocketConnectionConstructorOptions);
     /**

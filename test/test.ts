@@ -21,7 +21,7 @@ describe("smartsocket", function () {
     it("should start listening when .started is called", function () {
         testSmartsocket.startServer();
     })
-    it("should react to a new websocket connection", function (done) {
+    it("should react to a new websocket connection from client", function (done) {
         this.timeout(10000);
         testSmartsocketClient = new smartsocket.SmartsocketClient({
             port: testConfig.port,
@@ -29,6 +29,18 @@ describe("smartsocket", function () {
             password:"testPassword",
             alias: "testClient1"
         });
+        testSmartsocketClient.connect()
+            .then(() => {
+                done();
+            });
+    });
+    it("client should disconnect and reconnect", function (done) {
+        this.timeout(10000);
+        testSmartsocketClient.disconnect()
+            .then(testSmartsocketClient.connect)
+            .then(() => {
+                done();
+            });
     });
     it("should close the server", function () {
         testSmartsocket.closeServer();
