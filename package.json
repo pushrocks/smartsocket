@@ -1,6 +1,6 @@
 {
   "name": "smartsocket",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "easy and secure websocket communication, Typescript ready",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
