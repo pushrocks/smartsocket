@@ -1,4 +1,6 @@
 /// <reference types="socket.io" />
+/// <reference types="q" />
+import * as plugins from "./smartsocket.plugins";
 import { Objectmap } from "lik";
 import { SocketConnection } from "./smartsocket.classes.socketconnection";
 export interface ISmartsocketConstructorOptions {
@@ -18,5 +20,8 @@ export declare class Smartsocket {
      */
     startServer: () => void;
     closeServer: () => void;
-    clientCall(): void;
+    /**
+     * allows call to specific client.
+     */
+    clientCall(functionNameArg: string, dataArg: any, targetSocketConnectionArg: SocketConnection): plugins.q.Promise<{}>;
 }

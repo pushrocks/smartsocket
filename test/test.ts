@@ -75,7 +75,7 @@ describe("smartsocket", function () {
         it("2 clients should connect in parallel", function () {
 
         });
-        it("should be able to make a functionCall",function(done){
+        it("should be able to make a functionCall from client to server",function(done){
             this.timeout(5000);
             testSmartsocketClient.serverCall("testFunction1",{
                 value1:"hello"
@@ -83,7 +83,22 @@ describe("smartsocket", function () {
                 console.log(dataArg);
                 done();
             });
-        })
+        });
+        it("should be able to make a functionCall from server to client",function(done){
+            this.timeout(5000);
+            let targetSocket = (() => {
+                return smartsocket.allSocketConnections.find((socketConnectionArg)=>{
+                    return socketConnectionArg.alias === "testClient1";
+                });
+            })();
+            testSmartsocket.clientCall("testFunction1",{
+                value1:"helloFromServer"
+            },targetSocket).then((dataArg) => {
+                console.log(dataArg);
+                done();
+            });
+        });
+
     });
     describe("terminating smartsocket", function () {
         it("should close the server", function () {

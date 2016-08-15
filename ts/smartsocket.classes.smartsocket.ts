@@ -3,13 +3,13 @@ import * as helpers from "./smartsocket.helpers";
 
 // classes
 import { Objectmap } from "lik";
-import { SocketRole } from "./smartsocket.classes.socketrole";
-import { SocketFunction } from "./smartsocket.classes.socketfunction";
+import { SocketFunction,ISocketFunctionCall} from "./smartsocket.classes.socketfunction";
 import { SocketConnection } from "./smartsocket.classes.socketconnection";
+import { SocketRequest } from "./smartsocket.classes.socketrequest";
+import { SocketRole } from "./smartsocket.classes.socketrole";
 
 export interface ISmartsocketConstructorOptions {
     port: number;
-
 };
 
 export class Smartsocket {
@@ -28,6 +28,7 @@ export class Smartsocket {
             alias:undefined,
             authenticated:false,
             role:undefined,
+            side:"server",
             socket:socketArg
         });
         plugins.beautylog.log("Socket connected. Trying to authenticate...")
@@ -61,8 +62,25 @@ export class Smartsocket {
     };
 
     // communication
-    clientCall(){
-        
-        // TODO: target specific client and initiate response        
+
+    /**
+     * allows call to specific client. 
+     */
+    clientCall(functionNameArg:string,dataArg:any,targetSocketConnectionArg:SocketConnection){
+        let done = plugins.q.defer();
+        let socketRequest = new SocketRequest({
+            side:"requesting",
+            originSocketConnection:targetSocketConnectionArg,
+            shortId:plugins.shortid.generate(),
+            funcCallData:{
+                funcName: functionNameArg,
+                funcDataArg:dataArg
+            }
+        });
+        socketRequest.dispatch()
+            .then((dataArg:ISocketFunctionCall) => {
+                done.resolve(dataArg.funcDataArg);
+            });
+        return done.promise;
     }
 }

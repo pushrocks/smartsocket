@@ -1,6 +1,8 @@
 import * as plugins from "./smartsocket.plugins";
 import * as helpers from "./smartsocket.helpers";
 
+import {Objectmap} from "lik";
+
 // import classes
 import { SocketFunction } from "./smartsocket.classes.socketfunction";
 import { SocketRequest, ISocketRequestDataObject, allSocketRequests } from "./smartsocket.classes.socketrequest";
@@ -9,12 +11,18 @@ import { SocketRole } from "./smartsocket.classes.socketrole";
 // export interfaces
 
 /**
+ * defines is a SocketConnection is server or client side. Important for mesh setups.
+ */
+export type TSocketConnectionSide = "server" | "client";
+
+/**
  * interface for constructor of class SocketConnection
  */
 export interface ISocketConnectionConstructorOptions {
     alias: string;
     authenticated: boolean;
     role: SocketRole;
+    side: TSocketConnectionSide;
     socket: SocketIO.Socket | SocketIOClient.Socket;
 };
 
@@ -25,15 +33,17 @@ export interface ISocketConnectionAuthenticationObject {
     role: "coreflowContainer",
     password: "somePassword",
     alias: "coreflow1"
-}
+};
 
 // export classes
+export let allSocketConnections = new Objectmap<SocketConnection>();
 
 /**
  * class SocketConnection represents a websocket connection
  */
 export class SocketConnection {
     alias: string;
+    side:TSocketConnectionSide;
     authenticated: boolean = false;
     role: SocketRole;
     socket: SocketIO.Socket | SocketIOClient.Socket;
@@ -41,11 +51,14 @@ export class SocketConnection {
         this.alias = optionsArg.alias;
         this.authenticated = optionsArg.authenticated;
         this.role = optionsArg.role;
+        this.side = optionsArg.side;
         this.socket = optionsArg.socket;
         
         // standard behaviour that is always true
+        allSocketConnections.add(this);
         this.socket.on("disconnect", () => {
-            plugins.beautylog.info(`Client ${this.alias} disconnected`);
+            plugins.beautylog.info(`SocketConnection with >alias ${this.alias} on >side ${this.side} disconnected`);
+            allSocketConnections.remove(this);
         });
     };
 
