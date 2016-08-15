@@ -21,16 +21,15 @@ let mySocketRole = new smartsocket.SocketRole({
     passwordHash: "someHashedString"
 });
 
-let mySocketFunction = new smartsocket.SocketFunction({
-    name:"newService",
-    func:(data) => {
+let testSocketFunction1 = new smartsocket.SocketFunction({
+    funcName:"testSocketFunction1",
+    funcDef:(data) => {
         
-    }, the function to execute
-    roles:[mySocketRole] // all roles that have access to a specific function
+    }, // the function to execute
+    allowedRoles:[mySocketRole] // all roles that have access to a specific function
 });
 
-mySmartsocket.registerRole(mySocketRole);
-mySmartsocket.clientCall.select("client1","restart",data)
+mySmartsocket.clientCall("","restart",data,someTargetConnection)
     .then((responseData) => {
 
     });
@@ -40,28 +39,38 @@ mySmartsocket.clientCall.select("client1","restart",data)
 ```typescript
 import * as smartsocket from "smartsocket";
 
-let mySmartsocketClient = new smartsocket.SmartsocketClient({
-    url: "somedomain.com", // url, note: will only work over https, no http supported.
-    port: 3000
-    role:"dockerhost", // some role, in this example a dockerhost vm,
-    password:"somePassword",
-    alias:"client1"
+let testSmartsocketClient = new smartsocket.SmartsocketClient({
+    port: testConfig.port,
+    url: "http://localhost",
+    password: "testPassword",
+    alias: "testClient1",
+    role: "testRole1"
+});
+testSmartsocketClient.connect()
+    .then(() => {
+        done();
+    });
+
+let testSocketFunction2 = new smartsocket.SocketFunction({
+    funcName: "testSocketFunction2",
+    funcDef: (data) => {}, // the function to execute, has to return promise
+    allowedRoles:[]
 });
 
-let mySocketFunction2 = new smartsocket.SocketFunction({
-    name:"restart",
-    func:(data) => {}, the function to execute
-});
+let functionCalldata = {
+    funcName: "",
+    funcData: {
+        someKey:"someValue"
+    }
+}
 
-mySmartsocketClient.registerFunction(mySocketFunction2);
-
-mySmartsocketClient.serverCall("newService",data)
-    .then((responseData) => {
+mySmartsocketClient.serverCall("function",functionCallData)
+    .then((functionResponseData) => { // the functionResponseData comes from the server... awesome, right?
         
     });;
 ```
 
 > **NOTE:**  
-you can easily chain dependent requests on eiter the server or client side with promises.  
+you can easily chain dependent requests on either the server or client side with promises.  
 `data` is always a js object that you can design for your specific needs.  
 It supports buffers for large binary data network exchange.  
