@@ -3,6 +3,7 @@ import "should";
 import socketIoClient = require("socket.io-client");
 import smartsocket = require("../dist/index");
 import q = require("q");
+import nodehash = require("nodehash");
 
 let testSmartsocket: smartsocket.Smartsocket;
 let testSmartsocketClient: smartsocket.SmartsocketClient;
@@ -26,7 +27,7 @@ describe("smartsocket", function () {
     describe("class SocketRole", function(){
         testSocketRole1 = new smartsocket.SocketRole({
             name:"testRole1",
-            passwordHash:"somehash"
+            passwordHash:nodehash.sha256FromStringSync("testPassword")
         })
     })
     describe("class SocketFunction", function () {

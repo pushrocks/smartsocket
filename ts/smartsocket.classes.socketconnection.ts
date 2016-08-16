@@ -69,10 +69,10 @@ export class SocketConnection {
      */
     authenticate() {
         let done = plugins.q.defer();
-        this.socket.on("dataAuth", dataArg => {
+        this.socket.on("dataAuth", (dataArg:ISocketConnectionAuthenticationObject) => {
             plugins.beautylog.log("received authentication data. now hashing and comparing...");
             this.socket.removeListener("dataAuth", () => { });
-            if ((true)) { // TODO: authenticate password
+            if (helpers.checkPasswordForRole(dataArg)) { // TODO: authenticate password
                 this.alias = dataArg.alias
                 this.authenticated = true;
                 this.role = helpers.getSocketRoleByName(dataArg.role);
