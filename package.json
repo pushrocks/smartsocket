@@ -22,18 +22,18 @@
     "@types/shortid": "0.0.27",
     "@types/socket.io": "^1.4.26",
     "@types/socket.io-client": "^1.4.26",
-    "beautylog": "^5.0.20",
+    "beautylog": "^5.0.23",
     "lik": "^1.0.15",
     "nodehash": "^1.0.4",
     "q": "^1.4.1",
     "shortid": "^2.2.6",
     "socket.io": "^1.4.8",
     "socket.io-client": "^1.4.8",
-    "taskbuffer": "^1.0.7"
+    "taskbuffer": "^1.0.8"
   },
   "devDependencies": {
     "npmts-g": "^5.2.8",
-    "should": "^11.0.0",
-    "typings-test": "^1.0.1"
+    "should": "^11.1.0",
+    "typings-test": "^1.0.2"
   }
 }
