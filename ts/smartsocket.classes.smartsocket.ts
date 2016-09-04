@@ -45,7 +45,6 @@ export class Smartsocket {
     /**
      * starts listening to incling sockets:
      */
-
     startServer = () => {
         this.io = plugins.socketIo(this.options.port);
         this.io.on("connection", (socketArg) => {
