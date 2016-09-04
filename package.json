@@ -34,6 +34,6 @@
   "devDependencies": {
     "npmts-g": "^5.2.8",
     "should": "^11.1.0",
-    "typings-test": "^1.0.2"
+    "typings-test": "^1.0.3"
   }
 }

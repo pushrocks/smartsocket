@@ -3,6 +3,7 @@
 /// <reference types="q" />
 import * as plugins from "./smartsocket.plugins";
 import { Objectmap } from "lik";
+import { Smartsocket } from "./smartsocket.classes.smartsocket";
 import { SocketRole } from "./smartsocket.classes.socketrole";
 /**
  * defines is a SocketConnection is server or client side. Important for mesh setups.
@@ -16,6 +17,7 @@ export interface ISocketConnectionConstructorOptions {
     authenticated: boolean;
     role: SocketRole;
     side: TSocketConnectionSide;
+    smartsocketHost: Smartsocket;
     socket: SocketIO.Socket | SocketIOClient.Socket;
 }
 /**
@@ -35,6 +37,7 @@ export declare class SocketConnection {
     side: TSocketConnectionSide;
     authenticated: boolean;
     role: SocketRole;
+    smartsocketHost: Smartsocket;
     socket: SocketIO.Socket | SocketIOClient.Socket;
     constructor(optionsArg: ISocketConnectionConstructorOptions);
     /**

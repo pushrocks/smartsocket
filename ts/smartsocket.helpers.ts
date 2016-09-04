@@ -5,11 +5,11 @@ import { Smartsocket } from "./smartsocket.classes.smartsocket";
 import { SocketFunction, allSocketFunctions } from "./smartsocket.classes.socketfunction";
 import { SocketConnection, ISocketConnectionAuthenticationObject } from "./smartsocket.classes.socketconnection";
 import { SocketRequest, allSocketRequests, TSocketRequestSide } from "./smartsocket.classes.socketrequest";
-import { SocketRole, allSocketRoles } from "./smartsocket.classes.socketrole";
+import { SocketRole } from "./smartsocket.classes.socketrole";
 
 // SocketConnection helpers
-export let checkPasswordForRole = (dataArg: ISocketConnectionAuthenticationObject): boolean => {
-    let targetPasswordHash = getSocketRoleByName(dataArg.role).passwordHash;
+export let checkPasswordForRole = (dataArg: ISocketConnectionAuthenticationObject, referenceSmartsocket:Smartsocket): boolean => {
+    let targetPasswordHash = getSocketRoleByName(dataArg.role,referenceSmartsocket).passwordHash;
     let computedCompareHash = plugins.nodehash.sha256FromStringSync(dataArg.password);
     return targetPasswordHash === computedCompareHash;
 }
@@ -34,7 +34,7 @@ export let getSocketRequestById = (shortIdArg: string, requestSide?: TSocketRequ
 /**
  * get corresponding SocketRole instance by name
  */
-export let getSocketRoleByName = (socketRoleNameArg: string): SocketRole => {
-    return allSocketRoles.find((socketRoleArg) => { return socketRoleArg.name === socketRoleNameArg })
+export let getSocketRoleByName = (socketRoleNameArg: string,referenceSmartsocket:Smartsocket): SocketRole => {
+    return referenceSmartsocket.socketRoles.find((socketRoleArg) => { return socketRoleArg.name === socketRoleNameArg })
 };
 

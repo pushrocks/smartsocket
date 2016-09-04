@@ -1,6 +1,5 @@
 import { Objectmap } from "lik";
 import { SocketFunction } from "./smartsocket.classes.socketfunction";
-export declare let allSocketRoles: Objectmap<SocketRole>;
 /**
  * interface for class SocketRole
  */

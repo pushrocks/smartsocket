@@ -47,6 +47,7 @@ export class SmartsocketClient {
             authenticated:false,
             role:undefined,
             side:"client",
+            smartsocketHost: null,
             socket: plugins.socketIoClient(socketUrl,{multiplex:false})
         });
         this.socketConnection.socket.on("requestAuth", () => {

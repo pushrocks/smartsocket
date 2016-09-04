@@ -16,6 +16,7 @@ export class Smartsocket {
     options: ISmartsocketConstructorOptions
     io: SocketIO.Server;
     openSockets = new Objectmap<SocketConnection>();
+    socketRoles = new Objectmap<SocketRole>();
     constructor(optionsArg: ISmartsocketConstructorOptions) {
         this.options = optionsArg;
     };
@@ -29,6 +30,7 @@ export class Smartsocket {
             authenticated:false,
             role:undefined,
             side:"server",
+            smartsocketHost: this,
             socket:socketArg
         });
         plugins.beautylog.log("Socket connected. Trying to authenticate...")
@@ -81,5 +83,16 @@ export class Smartsocket {
                 done.resolve(dataArg.funcDataArg);
             });
         return done.promise;
-    }
+    };
+
+    /**
+     * adds socketRoles
+     */
+    addSocketRoles(socketRolesArray:SocketRole[]):void{
+        for(let socketRole of socketRolesArray){
+            this.socketRoles.add(socketRole);
+        };
+        return;
+    };
+
 }

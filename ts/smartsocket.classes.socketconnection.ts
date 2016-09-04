@@ -4,6 +4,7 @@ import * as helpers from "./smartsocket.helpers";
 import {Objectmap} from "lik";
 
 // import classes
+import { Smartsocket } from "./smartsocket.classes.smartsocket"
 import { SocketFunction } from "./smartsocket.classes.socketfunction";
 import { SocketRequest, ISocketRequestDataObject, allSocketRequests } from "./smartsocket.classes.socketrequest";
 import { SocketRole } from "./smartsocket.classes.socketrole";
@@ -23,6 +24,7 @@ export interface ISocketConnectionConstructorOptions {
     authenticated: boolean;
     role: SocketRole;
     side: TSocketConnectionSide;
+    smartsocketHost: Smartsocket;
     socket: SocketIO.Socket | SocketIOClient.Socket;
 };
 
@@ -46,12 +48,14 @@ export class SocketConnection {
     side:TSocketConnectionSide;
     authenticated: boolean = false;
     role: SocketRole;
+    smartsocketHost:Smartsocket;
     socket: SocketIO.Socket | SocketIOClient.Socket;
     constructor(optionsArg: ISocketConnectionConstructorOptions) {
         this.alias = optionsArg.alias;
         this.authenticated = optionsArg.authenticated;
         this.role = optionsArg.role;
         this.side = optionsArg.side;
+        this.smartsocketHost = optionsArg.smartsocketHost;
         this.socket = optionsArg.socket;
         
         // standard behaviour that is always true
@@ -72,10 +76,10 @@ export class SocketConnection {
         this.socket.on("dataAuth", (dataArg:ISocketConnectionAuthenticationObject) => {
             plugins.beautylog.log("received authentication data. now hashing and comparing...");
             this.socket.removeListener("dataAuth", () => { });
-            if (helpers.checkPasswordForRole(dataArg)) { // TODO: authenticate password
+            if (helpers.checkPasswordForRole(dataArg,this.smartsocketHost)) { // TODO: authenticate password
                 this.alias = dataArg.alias
                 this.authenticated = true;
-                this.role = helpers.getSocketRoleByName(dataArg.role);
+                this.role = helpers.getSocketRoleByName(dataArg.role,this.smartsocketHost);
                 this.socket.emit("authenticated");
                 plugins.beautylog.ok(`socket with >>alias ${this.alias} >>role ${this.role} is authenticated!`);
                 done.resolve(this);

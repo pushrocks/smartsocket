@@ -5,9 +5,6 @@ import { Objectmap } from "lik";
 import { SocketFunction } from "./smartsocket.classes.socketfunction";
 
 
-export let allSocketRoles = new Objectmap<SocketRole>();
-
-
 /**
  * interface for class SocketRole
  */
@@ -26,7 +23,6 @@ export class SocketRole {
     constructor(optionsArg: SocketRoleOptions) {
         this.name = optionsArg.name;
         this.passwordHash = optionsArg.passwordHash;
-        allSocketRoles.add(this);
     };
     addSocketFunction(socketFunctionArg:SocketFunction){
         this.allowedFunctions.add(socketFunctionArg);
