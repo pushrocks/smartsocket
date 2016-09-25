@@ -23,25 +23,38 @@ Under the hood we use socket.io and shortid for managed data exchange.
 ### Serverside
 ```typescript
 import * as smartsocket from "smartsocket";
+import * as q from q // q is a promise library
 
+// The smartsocket listens on a port and can receive new socketconnection requests.
 let mySmartsocket = new smartsocket.Smartsocket({
     port: 3000 // the port smartsocket will listen on
 });
 
+// A socket role can be referenced by SocketFunctions.
+// All SocketRequests carry authentication data for a specific role.
+// SocketFunctions now which roles are allowed to execute them
 let mySocketRole = new smartsocket.SocketRole({
     name: "someRoleName",
     passwordHash: "someHashedString"
 });
 
+// A SocketFunction executes a referenced function and passes in any data of the corresponding request.
+// The referenced function must return a promise and resolve with any data
+// Any request will be carries a unique identifier. If the referenced function's promise resolved any passed on argument will be returned to the requesting party 
 let testSocketFunction1 = new smartsocket.SocketFunction({
     funcName:"testSocketFunction1",
     funcDef:(data) => {
-        
-    }, // the function to execute
+        console.log('testSocketFunction1 executed successfully!')
+    },
     allowedRoles:[mySocketRole] // all roles that have access to a specific function
 });
 
-mySmartsocket.clientCall("","restart",data,someTargetConnection)
+// A smartsocket exposes a .clientCall() that gets
+// 1. the name of the SocketFunctin on the client side
+// 2. the data to pass in
+// 3. And a target connection (there can be multiple connections at once)
+// any unique id association is done internally
+mySmartsocket.clientCall("restart",data,someTargetConnection)
     .then((responseData) => {
 
     });
@@ -51,6 +64,8 @@ mySmartsocket.clientCall("","restart",data,someTargetConnection)
 ```typescript
 import * as smartsocket from "smartsocket";
 
+// A SmartsocketClient is different from a Smartsocket in that it doesn't expose any public address
+// Thus any new connections must be innitiated from the client
 let testSmartsocketClient = new smartsocket.SmartsocketClient({
     port: testConfig.port,
     url: "http://localhost",
@@ -58,24 +73,22 @@ let testSmartsocketClient = new smartsocket.SmartsocketClient({
     alias: "testClient1",
     role: "testRole1"
 });
+
+// You can .connect() and .disconnect() from a Smartsocket
 testSmartsocketClient.connect()
     .then(() => {
         done();
     });
 
+// The client can also specify SocketFunctions. It can also specify Roles in case a client connects to multiple servers at once
 let testSocketFunction2 = new smartsocket.SocketFunction({
     funcName: "testSocketFunction2",
     funcDef: (data) => {}, // the function to execute, has to return promise
     allowedRoles:[]
 });
 
-let functionCalldata = {
-    funcName: "",
-    funcData: {
-        someKey:"someValue"
-    }
-}
 
+// A SmartsocketClient can call functions on the serverside using .serverCall() analog to the Smartsocket's .clientCall method.
 mySmartsocketClient.serverCall("function",functionCallData)
     .then((functionResponseData) => { // the functionResponseData comes from the server... awesome, right?
         

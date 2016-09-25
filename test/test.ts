@@ -3,12 +3,12 @@ import should = require("should");
 import socketIoClient = require("socket.io-client");
 import smartsocket = require("../dist/index");
 import q = require("q");
-import nodehash = require("nodehash");
+import nodehash = require("nodehash")
 
-let testSmartsocket: smartsocket.Smartsocket;
-let testSmartsocketClient: smartsocket.SmartsocketClient;
-let testSocketRole1: smartsocket.SocketRole;
-let testSocketFunction1: smartsocket.SocketFunction;
+let testSmartsocket: smartsocket.Smartsocket
+let testSmartsocketClient: smartsocket.SmartsocketClient
+let testSocketRole1: smartsocket.SocketRole
+let testSocketFunction1: smartsocket.SocketFunction
 
 let testConfig = {
     port: 3000
