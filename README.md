@@ -1,5 +1,5 @@
 # smartsocket
-easy and secure websocket communication, Typescript ready
+easy and secure websocket communication, TypeScript ready
 
 ## Availabililty
 [![npm](https://push.rocks/assets/repo-button-npm.svg)](https://www.npmjs.com/package/smartsocket)
@@ -17,7 +17,7 @@ easy and secure websocket communication, Typescript ready
 [![node](https://img.shields.io/badge/node->=%206.x.x-blue.svg)](https://nodejs.org/dist/latest-v6.x/docs/api/)
 
 ## Usage
-We recommend the use of typescript.
+We recommend the use of TypeScript.
 Under the hood we use socket.io and shortid for managed data exchange.
 
 ### Serverside
