@@ -27,8 +27,8 @@
     "nodehash": "^1.0.4",
     "q": "^1.4.1",
     "shortid": "^2.2.6",
-    "socket.io": "^1.4.8",
-    "socket.io-client": "^1.4.8",
+    "socket.io": "^2.0.0",
+    "socket.io-client": "^2.0.0",
     "taskbuffer": "^1.0.8"
   },
   "devDependencies": {
