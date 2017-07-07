@@ -6,4 +6,3 @@ export import smartq = require('smartq');
 export import shortid = require('shortid');
 export import socketIo = require('socket.io');
 export import socketIoClient = require('socket.io-client');
-export import taskbuffer = require('taskbuffer');

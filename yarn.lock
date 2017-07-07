@@ -23,11 +23,7 @@
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-3.5.2.tgz#c11cd2817d3a401b7ba0f5a420f35c56139b1c1e"
 
-"@types/cron@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@types/cron/-/cron-1.2.1.tgz#95c1e432d6106ca34c92f0743638bc786c073faa"
-
-"@types/lodash@4.x.x", "@types/lodash@^4.14.55", "@types/lodash@^4.14.67":
+"@types/lodash@^4.14.55", "@types/lodash@^4.14.67":
   version "4.14.68"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.68.tgz#754fbab68bd2bbb69547dc8ce7574f7012eed7f6"
 
@@ -239,12 +235,6 @@ core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
-cron@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/cron/-/cron-1.2.1.tgz#3a86c09b41b8f261ac863a7cc85ea4735857eab2"
-  dependencies:
-    moment-timezone "^0.5.x"
-
 debug@2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.3.3.tgz#40c453e67e6e13c901ddec317af8986cda9eff8c"
@@ -455,7 +445,7 @@ left-pad@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/left-pad/-/left-pad-1.1.3.tgz#612f61c033f3a9e08e939f1caebeea41b6f3199a"
 
-lik@^1.0.32, lik@^1.0.38:
+lik@^1.0.38:
   version "1.0.38"
   resolved "https://registry.yarnpkg.com/lik/-/lik-1.0.38.tgz#ccff0abd3d9236a5e4b7d80d514c5c210f18469b"
   dependencies:
@@ -509,16 +499,6 @@ minimatch@^3.0.4:
 minimist@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
-
-moment-timezone@^0.5.x:
-  version "0.5.13"
-  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.13.tgz#99ce5c7d827262eb0f1f702044177f60745d7b90"
-  dependencies:
-    moment ">= 2.9.0"
-
-"moment@>= 2.9.0":
-  version "2.18.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
 
 ms@0.7.2:
   version "0.7.2"
@@ -808,21 +788,6 @@ tapbundle@^1.1.0:
     smartq "^1.1.1"
     typings-global "^1.0.19"
 
-taskbuffer@^1.0.17:
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/taskbuffer/-/taskbuffer-1.0.17.tgz#3d304cb80449ff536aacf92f8a051a34620c223e"
-  dependencies:
-    "@types/cron" "^1.2.1"
-    "@types/lodash" "4.x.x"
-    beautylog "^6.1.10"
-    cron "^1.2.1"
-    lik "^1.0.32"
-    lodash "^4.17.4"
-    rxjs "^5.4.1"
-    smartdelay "^1.0.3"
-    smartq "^1.1.1"
-    typings-global "^1.0.17"
-
 through2@^2.0.1:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/through2/-/through2-2.0.3.tgz#0004569b37c7c74ba39c43f3ced78d1ad94140be"
@@ -842,7 +807,7 @@ type-detect@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-1.0.0.tgz#762217cc06db258ec48908a1298e8b95121e8ea2"
 
-typings-global@^1.0.14, typings-global@^1.0.16, typings-global@^1.0.17, typings-global@^1.0.19, typings-global@^1.0.6:
+typings-global@^1.0.14, typings-global@^1.0.16, typings-global@^1.0.19, typings-global@^1.0.6:
   version "1.0.19"
   resolved "https://registry.yarnpkg.com/typings-global/-/typings-global-1.0.19.tgz#3376a72d4de1e5541bf5702248ff64c3e6ea316c"
   dependencies:
