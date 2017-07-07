@@ -37,17 +37,15 @@ tap.test('should add a socketrole', async () => {
 tap.test('should register a new Function', async () => {
   testSocketFunction1 = new smartsocket.SocketFunction({
     funcName: 'testFunction1',
-    funcDef: (dataArg) => {
-      let done = smartq.defer()
-      done.resolve(dataArg)
-      return done.promise
+    funcDef: async (dataArg) => {
+      return dataArg
     },
     allowedRoles: [ testSocketRole1 ]
   })
 })
 
 // class SmartsocketClient
-tap.test('should react to a new websocket connection from client',async () => {
+tap.test('should react to a new websocket connection from client', async () => {
   let done = smartq.defer()
   testSmartsocketClient = new smartsocket.SmartsocketClient({
     port: testConfig.port,
