@@ -1,6 +1,4 @@
-/// <reference types="q" />
-import * as plugins from "./smartsocket.plugins";
-import { SocketConnection } from "./smartsocket.classes.socketconnection";
+import { SocketConnection } from './smartsocket.classes.socketconnection';
 /**
  * interface for class SmartsocketClient
  */
@@ -22,7 +20,7 @@ export declare class SmartsocketClient {
     /**
      * connect the client to the server
      */
-    connect(): plugins.q.Promise<{}>;
-    disconnect(): plugins.q.Promise<{}>;
-    serverCall(functionNameArg: string, dataArg: any): plugins.q.Promise<{}>;
+    connect(): Promise<{}>;
+    disconnect(): Promise<{}>;
+    serverCall(functionNameArg: string, dataArg: any): Promise<{}>;
 }

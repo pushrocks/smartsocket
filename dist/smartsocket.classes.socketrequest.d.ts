@@ -1,10 +1,9 @@
-/// <reference types="q" />
-import * as plugins from "./smartsocket.plugins";
-import { ISocketFunctionCall } from "./smartsocket.classes.socketfunction";
-import { Objectmap } from "lik";
-import { SocketConnection } from "./smartsocket.classes.socketconnection";
-export declare type TSocketRequestStatus = "new" | "pending" | "finished";
-export declare type TSocketRequestSide = "requesting" | "responding";
+import * as plugins from './smartsocket.plugins';
+import { ISocketFunctionCall } from './smartsocket.classes.socketfunction';
+import { Objectmap } from 'lik';
+import { SocketConnection } from './smartsocket.classes.socketconnection';
+export declare type TSocketRequestStatus = 'new' | 'pending' | 'finished';
+export declare type TSocketRequestSide = 'requesting' | 'responding';
 /**
  * interface of constructor of class SocketRequest
  */
@@ -29,12 +28,12 @@ export declare class SocketRequest {
     shortid: string;
     originSocketConnection: SocketConnection;
     funcCallData: ISocketFunctionCall;
-    done: plugins.q.Deferred<{}>;
+    done: plugins.smartq.Deferred<{}>;
     constructor(optionsArg: SocketRequestConstructorOptions);
     /**
      * dispatches a socketrequest from the requesting to the receiving side
      */
-    dispatch(): plugins.q.Promise<{}>;
+    dispatch(): Promise<{}>;
     /**
      * handles the response that is received by the requesting side
      */

@@ -1,7 +1,5 @@
-/// <reference types="q" />
-import * as plugins from "./smartsocket.plugins";
-import { Objectmap } from "lik";
-import { SocketRole } from "./smartsocket.classes.socketrole";
+import { Objectmap } from 'lik';
+import { SocketRole } from './smartsocket.classes.socketrole';
 /**
  * interface of the contructor options of class SocketFunction
  */
@@ -36,11 +34,11 @@ export declare class SocketFunction {
      */
     constructor(optionsArg: ISocketFunctionConstructorOptions);
     /**
+     * invokes the function of this SocketFunction
+     */
+    invoke(dataArg: ISocketFunctionCall): Promise<any>;
+    /**
      * notifies a role about access to this SocketFunction
      */
     private _notifyRole(socketRoleArg);
-    /**
-     * invokes the function of this SocketFunction
-     */
-    invoke(dataArg: ISocketFunctionCall): plugins.q.Promise<any>;
 }

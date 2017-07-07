@@ -1,14 +1,12 @@
 /// <reference types="socket.io" />
 /// <reference types="socket.io-client" />
-/// <reference types="q" />
-import * as plugins from "./smartsocket.plugins";
-import { Objectmap } from "lik";
-import { Smartsocket } from "./smartsocket.classes.smartsocket";
-import { SocketRole } from "./smartsocket.classes.socketrole";
+import { Objectmap } from 'lik';
+import { Smartsocket } from './smartsocket.classes.smartsocket';
+import { SocketRole } from './smartsocket.classes.socketrole';
 /**
  * defines is a SocketConnection is server or client side. Important for mesh setups.
  */
-export declare type TSocketConnectionSide = "server" | "client";
+export declare type TSocketConnectionSide = 'server' | 'client';
 /**
  * interface for constructor of class SocketConnection
  */
@@ -24,9 +22,9 @@ export interface ISocketConnectionConstructorOptions {
  * interface for authentication data
  */
 export interface ISocketConnectionAuthenticationObject {
-    role: "coreflowContainer";
-    password: "somePassword";
-    alias: "coreflow1";
+    role: 'coreflowContainer';
+    password: 'somePassword';
+    alias: 'coreflow1';
 }
 export declare let allSocketConnections: Objectmap<SocketConnection>;
 /**
@@ -38,14 +36,14 @@ export declare class SocketConnection {
     authenticated: boolean;
     role: SocketRole;
     smartsocketHost: Smartsocket;
-    socket: SocketIO.Socket | SocketIOClient.Socket;
+    socket: any;
     constructor(optionsArg: ISocketConnectionConstructorOptions);
     /**
      * authenticate the socket
      */
-    authenticate(): plugins.q.Promise<{}>;
+    authenticate(): Promise<{}>;
     /**
      * listen to function requests
      */
-    listenToFunctionRequests(): plugins.q.Promise<{}>;
+    listenToFunctionRequests(): Promise<{}>;
 }
