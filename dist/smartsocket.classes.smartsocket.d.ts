@@ -12,10 +12,13 @@ export declare class Smartsocket {
     socketRoles: Objectmap<SocketRole>;
     constructor(optionsArg: ISmartsocketConstructorOptions);
     /**
-     * starts listening to incling sockets:
+     * starts listening to incoming sockets:
      */
-    startServer: () => void;
-    closeServer: () => void;
+    startServer(): Promise<void>;
+    /**
+     * closes the server
+     */
+    closeServer(): Promise<void>;
     /**
      * allows call to specific client.
      */

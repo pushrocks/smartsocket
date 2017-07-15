@@ -22,15 +22,19 @@ export class Smartsocket {
   }
 
   /**
-   * starts listening to incling sockets:
+   * starts listening to incoming sockets:
    */
-  startServer = () => {
+  async startServer () {
     this.io = plugins.socketIo(this.options.port)
     this.io.on('connection', (socketArg) => {
       this._handleSocketConnection(socketArg)
     })
   }
-  closeServer = () => {
+
+  /**
+   * closes the server
+   */
+  async closeServer () {
     this.openSockets.forEach((socketObjectArg: SocketConnection) => {
       plugins.beautylog.log(`disconnect socket with >>alias ${socketObjectArg.alias}`)
       socketObjectArg.socket.disconnect()
