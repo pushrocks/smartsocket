@@ -49,7 +49,7 @@ export class SocketConnection {
   authenticated: boolean = false
   role: SocketRole
   smartsocketHost: Smartsocket
-  socket: any //: SocketIO.Socket | SocketIOClient.Socket
+  socket: any // SocketIO.Socket | SocketIOClient.Socket
   constructor (optionsArg: ISocketConnectionConstructorOptions) {
     this.alias = optionsArg.alias
     this.authenticated = optionsArg.authenticated
@@ -62,6 +62,7 @@ export class SocketConnection {
     allSocketConnections.add(this)
     this.socket.on('disconnect', () => {
       plugins.beautylog.info(`SocketConnection with >alias ${this.alias} on >side ${this.side} disconnected`)
+      this.socket.disconnect()
       allSocketConnections.remove(this)
     })
   }

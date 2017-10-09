@@ -66,6 +66,7 @@ export class SmartsocketClient {
     })
     return done.promise
   }
+
   disconnect () {
     let done = plugins.smartq.defer()
     this.socketConnection.socket.disconnect()
@@ -74,6 +75,7 @@ export class SmartsocketClient {
     done.resolve()
     return done.promise
   }
+  
   serverCall (functionNameArg: string, dataArg: any) {
     let done = plugins.smartq.defer()
     let socketRequest = new SocketRequest({

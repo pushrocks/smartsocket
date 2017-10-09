@@ -16,6 +16,10 @@ export declare class Smartsocket {
      */
     startServer(): Promise<void>;
     /**
+     * starts the server with another server
+     */
+    startWithSpecificServer(): Promise<void>;
+    /**
      * closes the server
      */
     closeServer(): Promise<void>;
