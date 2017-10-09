@@ -1,4 +1,6 @@
+/// <reference types="node" />
 /// <reference types="socket.io" />
+import * as http from 'http';
 import { Objectmap } from 'lik';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
 import { SocketRole } from './smartsocket.classes.socketrole';
@@ -7,6 +9,7 @@ export interface ISmartsocketConstructorOptions {
 }
 export declare class Smartsocket {
     options: ISmartsocketConstructorOptions;
+    httpServer: http.Server;
     io: SocketIO.Server;
     openSockets: Objectmap<SocketConnection>;
     socketRoles: Objectmap<SocketRole>;
@@ -14,11 +17,11 @@ export declare class Smartsocket {
     /**
      * starts listening to incoming sockets:
      */
-    startServer(): Promise<void>;
+    startServer(): Promise<{}>;
     /**
      * starts the server with another server
      */
-    startWithSpecificServer(): Promise<void>;
+    setServer(httpServerArg: http.Server): Promise<void>;
     /**
      * closes the server
      */

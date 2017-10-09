@@ -1,6 +1,8 @@
 import * as plugins from './smartsocket.plugins'
 import * as helpers from './smartsocket.helpers'
 
+import * as http from 'http'
+
 // classes
 import { Objectmap } from 'lik'
 import { SocketFunction, ISocketFunctionCall } from './smartsocket.classes.socketfunction'
@@ -14,6 +16,7 @@ export interface ISmartsocketConstructorOptions {
 
 export class Smartsocket {
   options: ISmartsocketConstructorOptions
+  httpServer: http.Server
   io: SocketIO.Server
   openSockets = new Objectmap<SocketConnection>()
   socketRoles = new Objectmap<SocketRole>()
@@ -25,17 +28,25 @@ export class Smartsocket {
    * starts listening to incoming sockets:
    */
   async startServer () {
-    this.io = plugins.socketIo(this.options.port)
+    let done = plugins.smartq.defer()
+    if (!this.httpServer) {
+      this.httpServer = new http.Server()
+    }
+    this.io = plugins.socketIo(this.httpServer)
     this.io.on('connection', (socketArg) => {
       this._handleSocketConnection(socketArg)
     })
+    this.httpServer.listen(this.options.port, () => {
+      done.resolve()
+    })
+    return await done.promise
   }
 
   /**
    * starts the server with another server
    */
-  async startWithSpecificServer() {
-    
+  async setServer(httpServerArg: http.Server) {
+    this.httpServer = httpServerArg
   }
 
   /**
