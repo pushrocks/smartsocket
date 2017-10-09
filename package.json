@@ -19,18 +19,19 @@
   "homepage": "https://gitlab.com/pushrocks/smartsocket#README",
   "dependencies": {
     "@types/shortid": "0.0.29",
-    "@types/socket.io": "^1.4.29",
-    "@types/socket.io-client": "^1.4.29",
+    "@types/socket.io": "^1.4.31",
+    "@types/socket.io-client": "^1.4.30",
     "beautylog": "^6.1.10",
-    "lik": "^1.0.38",
+    "lik": "^1.0.42",
     "nodehash": "^1.0.4",
     "shortid": "^2.2.8",
+    "smartdelay": "^1.0.3",
     "smartq": "^1.1.6",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
-    "typings-global": "^1.0.19"
+    "typings-global": "^1.0.20"
   },
   "devDependencies": {
-    "tapbundle": "^1.1.0"
+    "tapbundle": "^1.1.1"
   }
 }

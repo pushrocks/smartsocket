@@ -1,7 +1,7 @@
 import { expect, tap } from 'tapbundle'
 
 import socketIoClient = require('socket.io-client')
-import smartsocket = require('../dist/index')
+import smartsocket = require('../ts/index')
 import smartq = require('smartq')
 import nodehash = require('nodehash')
 
@@ -107,7 +107,7 @@ tap.test('should be able to make a functionCall from server to client', async ()
 
 // terminate
 tap.test('should close the server', async () => {
-  testSmartsocket.closeServer()
+  await testSmartsocket.closeServer()
 })
 
 tap.start()

@@ -32,9 +32,17 @@ export class Smartsocket {
   }
 
   /**
+   * starts the server with another server
+   */
+  async startWithSpecificServer() {
+    
+  }
+
+  /**
    * closes the server
    */
   async closeServer () {
+    await plugins.smartdelay.delayFor(1000)
     this.openSockets.forEach((socketObjectArg: SocketConnection) => {
       plugins.beautylog.log(`disconnect socket with >>alias ${socketObjectArg.alias}`)
       socketObjectArg.socket.disconnect()

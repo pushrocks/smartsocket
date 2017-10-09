@@ -8,5 +8,3 @@ export * from './smartsocket.classes.smartsocketclient'
 export * from './smartsocket.classes.socketfunction'
 export * from './smartsocket.classes.socketrole'
 export * from './smartsocket.classes.socketconnection'
-
-// need something more exposed? Create an issue on GitLab!
