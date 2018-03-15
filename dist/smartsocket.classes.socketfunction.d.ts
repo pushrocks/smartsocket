@@ -1,4 +1,4 @@
-import { Objectmap } from 'lik';
+import * as plugins from './smartsocket.plugins';
 import { SocketRole } from './smartsocket.classes.socketrole';
 /**
  * interface of the contructor options of class SocketFunction
@@ -21,7 +21,7 @@ export interface ISocketFunctionCall {
 export interface IFuncDef {
     (dataArg: any): PromiseLike<any>;
 }
-export declare let allSocketFunctions: Objectmap<SocketFunction>;
+export declare let allSocketFunctions: plugins.lik.Objectmap<SocketFunction>;
 /**
  * class that respresents a function that can be transparently called using a SocketConnection
  */

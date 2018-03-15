@@ -1,9 +1,10 @@
 /// <reference types="node" />
 /// <reference types="socket.io" />
+import * as plugins from './smartsocket.plugins';
 import * as http from 'http';
-import { Objectmap } from 'lik';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
 import { SocketRole } from './smartsocket.classes.socketrole';
+import * as SocketIO from 'socket.io';
 export interface ISmartsocketConstructorOptions {
     port: number;
 }
@@ -11,8 +12,8 @@ export declare class Smartsocket {
     options: ISmartsocketConstructorOptions;
     httpServer: http.Server;
     io: SocketIO.Server;
-    openSockets: Objectmap<SocketConnection>;
-    socketRoles: Objectmap<SocketRole>;
+    openSockets: plugins.lik.Objectmap<SocketConnection>;
+    socketRoles: plugins.lik.Objectmap<SocketRole>;
     constructor(optionsArg: ISmartsocketConstructorOptions);
     /**
      * starts listening to incoming sockets:

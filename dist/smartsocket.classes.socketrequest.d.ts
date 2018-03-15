@@ -1,6 +1,5 @@
 import * as plugins from './smartsocket.plugins';
 import { ISocketFunctionCall } from './smartsocket.classes.socketfunction';
-import { Objectmap } from 'lik';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
 export declare type TSocketRequestStatus = 'new' | 'pending' | 'finished';
 export declare type TSocketRequestSide = 'requesting' | 'responding';
@@ -21,7 +20,7 @@ export interface ISocketRequestDataObject {
     shortId: string;
     responseTimeout?: number;
 }
-export declare let allSocketRequests: Objectmap<SocketRequest>;
+export declare let allSocketRequests: plugins.lik.Objectmap<SocketRequest>;
 export declare class SocketRequest {
     status: TSocketRequestStatus;
     side: TSocketRequestSide;

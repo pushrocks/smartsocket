@@ -1,5 +1,5 @@
-import { Objectmap } from "lik";
-import { SocketFunction } from "./smartsocket.classes.socketfunction";
+import * as plugins from './smartsocket.plugins';
+import { SocketFunction } from './smartsocket.classes.socketfunction';
 /**
  * interface for class SocketRole
  */
@@ -13,7 +13,7 @@ export interface SocketRoleOptions {
 export declare class SocketRole {
     name: string;
     passwordHash: string;
-    allowedFunctions: Objectmap<SocketFunction>;
+    allowedFunctions: plugins.lik.Objectmap<SocketFunction>;
     constructor(optionsArg: SocketRoleOptions);
     addSocketFunction(socketFunctionArg: SocketFunction): void;
 }

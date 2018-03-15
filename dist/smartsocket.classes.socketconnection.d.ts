@@ -1,8 +1,9 @@
 /// <reference types="socket.io" />
 /// <reference types="socket.io-client" />
-import { Objectmap } from 'lik';
+import * as plugins from './smartsocket.plugins';
 import { Smartsocket } from './smartsocket.classes.smartsocket';
 import { SocketRole } from './smartsocket.classes.socketrole';
+import * as SocketIO from 'socket.io';
 /**
  * defines is a SocketConnection is server or client side. Important for mesh setups.
  */
@@ -26,7 +27,7 @@ export interface ISocketConnectionAuthenticationObject {
     password: 'somePassword';
     alias: 'coreflow1';
 }
-export declare let allSocketConnections: Objectmap<SocketConnection>;
+export declare let allSocketConnections: plugins.lik.Objectmap<SocketConnection>;
 /**
  * class SocketConnection represents a websocket connection
  */

@@ -1,4 +1,3 @@
-import 'typings-global';
 export import beautylog = require('beautylog');
 export import lik = require('lik');
 export import nodehash = require('nodehash');
