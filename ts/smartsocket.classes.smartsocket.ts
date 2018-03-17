@@ -47,6 +47,7 @@ export class Smartsocket {
 
   /**
    * starts the server with another server
+   * also works with an express style server
    */
   async setServer(httpServerArg: http.Server) {
     this.httpServer = httpServerArg;

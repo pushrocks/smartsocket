@@ -38,6 +38,11 @@ let mySmartsocket = new smartsocket.Smartsocket({
   port: 3000 // the port smartsocket will listen on
 });
 
+// optional:
+// run this with anothoer existing server like express
+declare var someExpressServer // read the express docs about how express actually works
+mySmartsocket.setServer(someExpressServer)
+
 // A "SocketRole" can be referenced by "SocketFunction"s.
 // All "SocketRequest"s carry authentication data for a specific "SocketRole".
 // "SocketFunction"s know which "SocketRole"s are allowed to execute them
