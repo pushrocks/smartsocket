@@ -40,8 +40,8 @@ let mySmartsocket = new smartsocket.Smartsocket({
 
 // optional:
 // run this with anothoer existing server like express
-declare var someExpressServer // read the express docs about how express actually works
-mySmartsocket.setServer(someExpressServer)
+declare var someExpressServer; // read the express docs about how express actually works
+mySmartsocket.setServer(someExpressServer);
 
 // A "SocketRole" can be referenced by "SocketFunction"s.
 // All "SocketRequest"s carry authentication data for a specific "SocketRole".
