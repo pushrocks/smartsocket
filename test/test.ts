@@ -75,9 +75,11 @@ tap.test('client should disconnect and reconnect', async () => {
     });
   await done.promise;
 });
+
 tap.test('2 clients should connect in parallel', async () => {
-  // nothing here
+  // TODO: implement parallel test
 });
+
 tap.test('should be able to make a functionCall from client to server', async () => {
   let done = smartq.defer();
   testSmartsocketClient

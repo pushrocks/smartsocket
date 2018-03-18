@@ -21,6 +21,7 @@ export declare class Smartsocket {
     startServer(): Promise<{}>;
     /**
      * starts the server with another server
+     * also works with an express style server
      */
     setServer(httpServerArg: http.Server): Promise<void>;
     /**
