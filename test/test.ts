@@ -1,16 +1,18 @@
+// tslint:disable-next-line:no-implicit-dependencies
 import { expect, tap } from 'tapbundle';
+
+import * as nodehash from 'nodehash';
+import * as smartq from 'smartq';
 
 import socketIoClient = require('socket.io-client');
 import smartsocket = require('../ts/index');
-import smartq = require('smartq');
-import nodehash = require('nodehash');
 
 let testSmartsocket: smartsocket.Smartsocket;
 let testSmartsocketClient: smartsocket.SmartsocketClient;
 let testSocketRole1: smartsocket.SocketRole;
 let testSocketFunction1: smartsocket.SocketFunction;
 
-let testConfig = {
+const testConfig = {
   port: 3000
 };
 
@@ -21,7 +23,7 @@ tap.test('should create a new smartsocket', async () => {
 });
 
 tap.test('should start listening when .started is called', async () => {
-  testSmartsocket.startServer();
+  await testSmartsocket.start();
 });
 
 // class socketrole
@@ -36,17 +38,17 @@ tap.test('should add a socketrole', async () => {
 // class SocketFunction
 tap.test('should register a new Function', async () => {
   testSocketFunction1 = new smartsocket.SocketFunction({
-    funcName: 'testFunction1',
+    allowedRoles: [testSocketRole1],
     funcDef: async dataArg => {
       return dataArg;
     },
-    allowedRoles: [testSocketRole1]
+    funcName: 'testFunction1',
   });
 });
 
 // class SmartsocketClient
 tap.test('should react to a new websocket connection from client', async () => {
-  let done = smartq.defer();
+  const done = smartq.defer();
   testSmartsocketClient = new smartsocket.SmartsocketClient({
     port: testConfig.port,
     url: 'http://localhost',
@@ -116,7 +118,7 @@ tap.test('should be able to make a functionCall from server to client', async ()
 
 // terminate
 tap.test('should close the server', async () => {
-  await testSmartsocket.closeServer();
+  await testSmartsocket.stop();
 });
 
 tap.start();

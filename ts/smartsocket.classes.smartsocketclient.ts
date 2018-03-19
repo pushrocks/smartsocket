@@ -1,13 +1,9 @@
 import * as plugins from './smartsocket.plugins';
 
-// import interfaces
-import { ISocketFunctionCall } from './smartsocket.classes.socketfunction';
-import { ISocketRequestDataObject } from './smartsocket.classes.socketrequest';
-
-// import classes
 import { SocketConnection } from './smartsocket.classes.socketconnection';
-import { SocketFunction } from './smartsocket.classes.socketfunction';
-import { SocketRequest } from './smartsocket.classes.socketrequest';
+import { ISocketFunctionCall, SocketFunction } from './smartsocket.classes.socketfunction';
+import { ISocketRequestDataObject, SocketRequest } from './smartsocket.classes.socketrequest';
+
 /**
  * interface for class SmartsocketClient
  */

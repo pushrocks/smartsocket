@@ -9,49 +9,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const plugins = require("./smartsocket.plugins");
-const http = require("http");
 // classes
 const lik_1 = require("lik");
 const smartsocket_classes_socketconnection_1 = require("./smartsocket.classes.socketconnection");
 const smartsocket_classes_socketrequest_1 = require("./smartsocket.classes.socketrequest");
+const smartsocket_classes_socketserver_1 = require("./smartsocket.classes.socketserver");
 class Smartsocket {
     constructor(optionsArg) {
         this.openSockets = new lik_1.Objectmap();
         this.socketRoles = new lik_1.Objectmap();
+        this.socketServer = new smartsocket_classes_socketserver_1.SocketServer(this);
+        // tslint:disable-next-line:member-ordering
+        this.setExternalServer = this.socketServer.setExternalServer;
         this.options = optionsArg;
     }
     /**
-     * starts listening to incoming sockets:
+     * starts smartsocket
      */
-    startServer() {
+    start() {
         return __awaiter(this, void 0, void 0, function* () {
-            let done = plugins.smartq.defer();
-            if (!this.httpServer) {
-                this.httpServer = new http.Server();
-            }
-            this.io = plugins.socketIo(this.httpServer);
+            this.io = plugins.socketIo(this.socketServer.getServerForSocketIo());
+            yield this.socketServer.start();
             this.io.on('connection', socketArg => {
                 this._handleSocketConnection(socketArg);
             });
-            this.httpServer.listen(this.options.port, () => {
-                done.resolve();
-            });
-            return yield done.promise;
         });
     }
     /**
-     * starts the server with another server
-     * also works with an express style server
+     * stops smartsocket
      */
-    setServer(httpServerArg) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.httpServer = httpServerArg;
-        });
-    }
-    /**
-     * closes the server
-     */
-    closeServer() {
+    stop() {
         return __awaiter(this, void 0, void 0, function* () {
             yield plugins.smartdelay.delayFor(1000);
             this.openSockets.forEach((socketObjectArg) => {
@@ -60,6 +47,8 @@ class Smartsocket {
             });
             this.openSockets.wipe();
             this.io.close();
+            // stop the corresponging server
+            this.socketServer.stop();
         });
     }
     // communication
@@ -67,26 +56,29 @@ class Smartsocket {
      * allows call to specific client.
      */
     clientCall(functionNameArg, dataArg, targetSocketConnectionArg) {
-        let done = plugins.smartq.defer();
-        let socketRequest = new smartsocket_classes_socketrequest_1.SocketRequest({
-            side: 'requesting',
-            originSocketConnection: targetSocketConnectionArg,
-            shortId: plugins.shortid.generate(),
-            funcCallData: {
-                funcName: functionNameArg,
-                funcDataArg: dataArg
-            }
+        return __awaiter(this, void 0, void 0, function* () {
+            const done = plugins.smartq.defer();
+            const socketRequest = new smartsocket_classes_socketrequest_1.SocketRequest({
+                funcCallData: {
+                    funcDataArg: dataArg,
+                    funcName: functionNameArg
+                },
+                originSocketConnection: targetSocketConnectionArg,
+                shortId: plugins.shortid.generate(),
+                side: 'requesting'
+            });
+            socketRequest.dispatch().then((dataArg) => {
+                done.resolve(dataArg.funcDataArg);
+            });
+            const result = yield done.promise;
+            return result;
         });
-        socketRequest.dispatch().then((dataArg) => {
-            done.resolve(dataArg.funcDataArg);
-        });
-        return done.promise;
     }
     /**
      * adds socketRoles
      */
     addSocketRoles(socketRolesArray) {
-        for (let socketRole of socketRolesArray) {
+        for (const socketRole of socketRolesArray) {
             this.socketRoles.add(socketRole);
         }
         return;
@@ -95,7 +87,7 @@ class Smartsocket {
      * the standard handler for new socket connections
      */
     _handleSocketConnection(socketArg) {
-        let socketConnection = new smartsocket_classes_socketconnection_1.SocketConnection({
+        const socketConnection = new smartsocket_classes_socketconnection_1.SocketConnection({
             alias: undefined,
             authenticated: false,
             role: undefined,
@@ -116,4 +108,4 @@ class Smartsocket {
     }
 }
 exports.Smartsocket = Smartsocket;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic21hcnRzb2NrZXQuY2xhc3Nlcy5zbWFydHNvY2tldC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3RzL3NtYXJ0c29ja2V0LmNsYXNzZXMuc21hcnRzb2NrZXQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7OztBQUFBLGlEQUFpRDtBQUdqRCw2QkFBNkI7QUFFN0IsVUFBVTtBQUNWLDZCQUFnQztBQUVoQyxpR0FBMEU7QUFDMUUsMkZBQW9FO0FBVXBFO0lBTUUsWUFBWSxVQUEwQztRQUZ0RCxnQkFBVyxHQUFHLElBQUksZUFBUyxFQUFvQixDQUFDO1FBQ2hELGdCQUFXLEdBQUcsSUFBSSxlQUFTLEVBQWMsQ0FBQztRQUV4QyxJQUFJLENBQUMsT0FBTyxHQUFHLFVBQVUsQ0FBQztJQUM1QixDQUFDO0lBRUQ7O09BRUc7SUFDRyxXQUFXOztZQUNmLElBQUksSUFBSSxHQUFHLE9BQU8sQ0FBQyxNQUFNLENBQUMsS0FBSyxFQUFFLENBQUM7WUFDbEMsRUFBRSxDQUFDLENBQUMsQ0FBQyxJQUFJLENBQUMsVUFBVSxDQUFDLENBQUMsQ0FBQztnQkFDckIsSUFBSSxDQUFDLFVBQVUsR0FBRyxJQUFJLElBQUksQ0FBQyxNQUFNLEVBQUUsQ0FBQztZQUN0QyxDQUFDO1lBQ0QsSUFBSSxDQUFDLEVBQUUsR0FBRyxPQUFPLENBQUMsUUFBUSxDQUFDLElBQUksQ0FBQyxVQUFVLENBQUMsQ0FBQztZQUM1QyxJQUFJLENBQUMsRUFBRSxDQUFDLEVBQUUsQ0FBQyxZQUFZLEVBQUUsU0FBUyxDQUFDLEVBQUU7Z0JBQ25DLElBQUksQ0FBQyx1QkFBdUIsQ0FBQyxTQUFTLENBQUMsQ0FBQztZQUMxQyxDQUFDLENBQUMsQ0FBQztZQUNILElBQUksQ0FBQyxVQUFVLENBQUMsTUFBTSxDQUFDLElBQUksQ0FBQyxPQUFPLENBQUMsSUFBSSxFQUFFLEdBQUcsRUFBRTtnQkFDN0MsSUFBSSxDQUFDLE9BQU8sRUFBRSxDQUFDO1lBQ2pCLENBQUMsQ0FBQyxD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
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic21hcnRzb2NrZXQuY2xhc3Nlcy5zbWFydHNvY2tldC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3RzL3NtYXJ0c29ja2V0LmNsYXNzZXMuc21hcnRzb2NrZXQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7OztBQUFBLGlEQUFpRDtBQUdqRCxVQUFVO0FBQ1YsNkJBQWdDO0FBQ2hDLGlHQUEwRTtBQUUxRSwyRkFBb0U7QUFFcEUseUZBQWtFO0FBU2xFO0lBUUUsWUFBWSxVQUEwQztRQUwvQyxnQkFBVyxHQUFHLElBQUksZUFBUyxFQUFvQixDQUFDO1FBQ2hELGdCQUFXLEdBQUcsSUFBSSxlQUFTLEVBQWMsQ0FBQztRQUV6QyxpQkFBWSxHQUFHLElBQUksK0NBQVksQ0FBQyxJQUFJLENBQUMsQ0FBQztRQU05QywyQ0FBMkM7UUFDcEMsc0JBQWlCLEdBQUcsSUFBSSxDQUFDLFlBQVksQ0FBQyxpQkFBaUIsQ0FBQztRQUo3RCxJQUFJLENBQUMsT0FBTyxHQUFHLFVBQVUsQ0FBQztJQUM1QixDQUFDO0lBS0Q7O09BRUc7SUFDVSxLQUFLOztZQUNoQixJQUFJLENBQUMsRUFBRSxHQUFHLE9BQU8sQ0FBQyxRQUFRLENBQUMsSUFBSSxDQUFDLFlBQVksQ0FBQyxvQkFBb0IsRUFBRSxDQUFDLENBQUM7WUFDckUsTUFBTSxJQUFJLENBQUMsWUFBWSxDQUFDLEtBQUssRUFBRSxDQUFDO1lBQ2hDLElBQUksQ0FBQyxFQUFFLENBQUMsRUFBRSxDQUFDLFlBQVksRUFBRSxTQUFTLENBQUMsRUFBRTtnQkFDbkMsSUFBSSxDQUFDLHVCQUF1QixDQUFDLFNBQVMsQ0FBQyxDQUFDO1lBQzFDLENBQUMsQ0FBQyxDQUFDO1FBQ0wsQ0FBQztLQUFBO0lBRUQ7O09BRUc7SUFDVSxJQUFJOztZQUNmLE1BQU0sT0FBTyxDQUFDLFVBQVUsQ0FBQyxRQUFRLENBQUMsSUFBSSxDQUFDLENBQUM7WUFDeEMsSUFBSSxDQUFDLFdBQVcsQ0FBQyxPQUFPLENBQUMs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

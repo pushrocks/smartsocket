@@ -1,14 +1,13 @@
 import * as plugins from './smartsocket.plugins';
 import * as helpers from './smartsocket.helpers';
 
-import * as http from 'http';
-
 // classes
 import { Objectmap } from 'lik';
-import { SocketFunction, ISocketFunctionCall } from './smartsocket.classes.socketfunction';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
+import { ISocketFunctionCall, SocketFunction } from './smartsocket.classes.socketfunction';
 import { SocketRequest } from './smartsocket.classes.socketrequest';
 import { SocketRole } from './smartsocket.classes.socketrole';
+import { SocketServer } from './smartsocket.classes.socketserver';
 
 // socket.io
 import * as SocketIO from 'socket.io';
@@ -18,45 +17,35 @@ export interface ISmartsocketConstructorOptions {
 }
 
 export class Smartsocket {
-  options: ISmartsocketConstructorOptions;
-  httpServer: http.Server;
-  io: SocketIO.Server;
-  openSockets = new Objectmap<SocketConnection>();
-  socketRoles = new Objectmap<SocketRole>();
+  public options: ISmartsocketConstructorOptions;
+  public io: SocketIO.Server;
+  public openSockets = new Objectmap<SocketConnection>();
+  public socketRoles = new Objectmap<SocketRole>();
+
+  private socketServer = new SocketServer(this);
+
   constructor(optionsArg: ISmartsocketConstructorOptions) {
     this.options = optionsArg;
   }
 
+  // tslint:disable-next-line:member-ordering
+  public setExternalServer = this.socketServer.setExternalServer;
+
   /**
-   * starts listening to incoming sockets:
+   * starts smartsocket
    */
-  async startServer() {
-    let done = plugins.smartq.defer();
-    if (!this.httpServer) {
-      this.httpServer = new http.Server();
-    }
-    this.io = plugins.socketIo(this.httpServer);
+  public async start() {
+    this.io = plugins.socketIo(this.socketServer.getServerForSocketIo());
+    await this.socketServer.start();
     this.io.on('connection', socketArg => {
       this._handleSocketConnection(socketArg);
     });
-    this.httpServer.listen(this.options.port, () => {
-      done.resolve();
-    });
-    return await done.promise;
   }
 
   /**
-   * starts the server with another server
-   * also works with an express style server
+   * stops smartsocket
    */
-  async setServer(httpServerArg: http.Server) {
-    this.httpServer = httpServerArg;
-  }
-
-  /**
-   * closes the server
-   */
-  async closeServer() {
+  public async stop() {
     await plugins.smartdelay.delayFor(1000);
     this.openSockets.forEach((socketObjectArg: SocketConnection) => {
       plugins.beautylog.log(`disconnect socket with >>alias ${socketObjectArg.alias}`);
@@ -64,6 +53,9 @@ export class Smartsocket {
     });
     this.openSockets.wipe();
     this.io.close();
+
+    // stop the corresponging server
+    this.socketServer.stop();
   }
 
   // communication
@@ -71,28 +63,33 @@ export class Smartsocket {
   /**
    * allows call to specific client.
    */
-  clientCall(functionNameArg: string, dataArg: any, targetSocketConnectionArg: SocketConnection) {
-    let done = plugins.smartq.defer();
-    let socketRequest = new SocketRequest({
-      side: 'requesting',
+  public async clientCall(
+    functionNameArg: string,
+    dataArg: any,
+    targetSocketConnectionArg: SocketConnection
+  ) {
+    const done = plugins.smartq.defer();
+    const socketRequest = new SocketRequest({
+      funcCallData: {
+        funcDataArg: dataArg,
+        funcName: functionNameArg
+      },
       originSocketConnection: targetSocketConnectionArg,
       shortId: plugins.shortid.generate(),
-      funcCallData: {
-        funcName: functionNameArg,
-        funcDataArg: dataArg
-      }
+      side: 'requesting'
     });
     socketRequest.dispatch().then((dataArg: ISocketFunctionCall) => {
       done.resolve(dataArg.funcDataArg);
     });
-    return done.promise;
+    const result = await done.promise;
+    return result;
   }
 
   /**
    * adds socketRoles
    */
-  addSocketRoles(socketRolesArray: SocketRole[]): void {
-    for (let socketRole of socketRolesArray) {
+  public addSocketRoles(socketRolesArray: SocketRole[]): void {
+    for (const socketRole of socketRolesArray) {
       this.socketRoles.add(socketRole);
     }
     return;
@@ -102,7 +99,7 @@ export class Smartsocket {
    * the standard handler for new socket connections
    */
   private _handleSocketConnection(socketArg) {
-    let socketConnection: SocketConnection = new SocketConnection({
+    const socketConnection: SocketConnection = new SocketConnection({
       alias: undefined,
       authenticated: false,
       role: undefined,
