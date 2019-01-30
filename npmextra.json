@@ -5,7 +5,7 @@
       "gitscope": "pushrocks",
       "gitrepo": "smartsocket",
       "shortDescription": "easy and secure websocket communication",
-      "npmPackagename": "@pushrocks/smartlog",
+      "npmPackagename": "@pushrocks/smartsocket",
       "license": "MIT",
       "projectDomain": "push.rocks"
     }

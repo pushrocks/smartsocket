@@ -2,7 +2,7 @@
 easy and secure websocket communication
 
 ## Availabililty and Links
-* [npmjs.org (npm package)](https://www.npmjs.com/package/@pushrocks/smartlog)
+* [npmjs.org (npm package)](https://www.npmjs.com/package/@pushrocks/smartsocket)
 * [gitlab.com (source)](https://gitlab.com/pushrocks/smartsocket)
 * [github.com (source mirror)](https://github.com/pushrocks/smartsocket)
 * [docs (typedoc)](https://pushrocks.gitlab.io/smartsocket/)
@@ -10,8 +10,8 @@ easy and secure websocket communication
 ## Status for master
 [![build status](https://gitlab.com/pushrocks/smartsocket/badges/master/build.svg)](https://gitlab.com/pushrocks/smartsocket/commits/master)
 [![coverage report](https://gitlab.com/pushrocks/smartsocket/badges/master/coverage.svg)](https://gitlab.com/pushrocks/smartsocket/commits/master)
-[![npm downloads per month](https://img.shields.io/npm/dm/@pushrocks/smartlog.svg)](https://www.npmjs.com/package/@pushrocks/smartlog)
-[![Known Vulnerabilities](https://snyk.io/test/npm/@pushrocks/smartlog/badge.svg)](https://snyk.io/test/npm/@pushrocks/smartlog)
+[![npm downloads per month](https://img.shields.io/npm/dm/@pushrocks/smartsocket.svg)](https://www.npmjs.com/package/@pushrocks/smartsocket)
+[![Known Vulnerabilities](https://snyk.io/test/npm/@pushrocks/smartsocket/badge.svg)](https://snyk.io/test/npm/@pushrocks/smartsocket)
 [![TypeScript](https://img.shields.io/badge/TypeScript->=%203.x-blue.svg)](https://nodejs.org/dist/latest-v10.x/docs/api/)
 [![node](https://img.shields.io/badge/node->=%2010.x.x-blue.svg)](https://nodejs.org/dist/latest-v10.x/docs/api/)
 [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
