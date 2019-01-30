@@ -52,7 +52,7 @@ export class SocketServer {
    * starts listening to incoming sockets:
    */
   public async start() {
-    const done = plugins.smartq.defer();
+    const done = plugins.smartpromise.defer();
 
     // handle http servers
     if (this.httpServer && this.standaloneServer) {

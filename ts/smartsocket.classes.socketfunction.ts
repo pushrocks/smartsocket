@@ -1,7 +1,7 @@
 import * as plugins from './smartsocket.plugins';
 
 // import classes
-import { Objectmap } from 'lik';
+import { Objectmap } from '@pushrocks/lik';
 import { SocketRole } from './smartsocket.classes.socketrole';
 
 // export interfaces
@@ -60,7 +60,7 @@ export class SocketFunction {
    * invokes the function of this SocketFunction
    */
   invoke(dataArg: ISocketFunctionCall): Promise<any> {
-    let done = plugins.smartq.defer();
+    let done = plugins.smartpromise.defer();
     if (dataArg.funcName === this.name) {
       this.funcDef(dataArg.funcDataArg).then((resultData: any) => {
         let funcResponseData: ISocketFunctionCall = {

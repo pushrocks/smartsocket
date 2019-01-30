@@ -34,8 +34,8 @@ export class SmartsocketClient {
    * connect the client to the server
    */
   connect() {
-    let done = plugins.smartq.defer();
-    plugins.beautylog.log('trying to connect...');
+    let done = plugins.smartpromise.defer();
+    plugins.smartlog.defaultLogger.log('info', 'trying to connect...');
     let socketUrl = `${this.serverUrl}:${this.serverPort}`;
     this.socketConnection = new SocketConnection({
       alias: this.alias,
@@ -63,16 +63,16 @@ export class SmartsocketClient {
   }
 
   disconnect() {
-    let done = plugins.smartq.defer();
+    let done = plugins.smartpromise.defer();
     this.socketConnection.socket.disconnect();
     this.socketConnection = undefined;
-    plugins.beautylog.ok('disconnected!');
+    plugins.smartlog.defaultLogger.log('ok', 'disconnected!');
     done.resolve();
     return done.promise;
   }
 
   serverCall(functionNameArg: string, dataArg: any) {
-    let done = plugins.smartq.defer();
+    let done = plugins.smartpromise.defer();
     let socketRequest = new SocketRequest({
       side: 'requesting',
       originSocketConnection: this.socketConnection,

@@ -20,7 +20,7 @@ export let checkPasswordForRole = (
   referenceSmartsocket: Smartsocket
 ): boolean => {
   let targetPasswordHash = getSocketRoleByName(dataArg.role, referenceSmartsocket).passwordHash;
-  let computedCompareHash = plugins.nodehash.sha256FromStringSync(dataArg.password);
+  let computedCompareHash = plugins.smarthash.sha256FromStringSync(dataArg.password);
   return targetPasswordHash === computedCompareHash;
 };
 

@@ -1,8 +1,8 @@
 // tslint:disable-next-line:no-implicit-dependencies
-import { expect, tap } from 'tapbundle';
+import { expect, tap } from '@pushrocks/tapbundle';
 
-import * as nodehash from 'nodehash';
-import * as smartq from 'smartq';
+import * as nodehash from '@pushrocks/smarthash';
+import * as smartq from '@pushrocks/smartpromise';
 
 import socketIoClient = require('socket.io-client');
 import smartsocket = require('../ts/index');
@@ -42,7 +42,7 @@ tap.test('should register a new Function', async () => {
     funcDef: async dataArg => {
       return dataArg;
     },
-    funcName: 'testFunction1',
+    funcName: 'testFunction1'
   });
 });
 

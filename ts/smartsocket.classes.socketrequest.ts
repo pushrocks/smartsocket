@@ -5,7 +5,7 @@ import * as helpers from './smartsocket.helpers';
 import { ISocketFunctionCall } from './smartsocket.classes.socketfunction';
 
 // import classes
-import { Objectmap } from 'lik';
+import { Objectmap } from '@pushrocks/lik';
 import { SocketFunction } from './smartsocket.classes.socketfunction';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
 
@@ -42,7 +42,7 @@ export class SocketRequest {
   shortid: string;
   originSocketConnection: SocketConnection;
   funcCallData: ISocketFunctionCall;
-  done = plugins.smartq.defer();
+  done = plugins.smartpromise.defer();
   constructor(optionsArg: SocketRequestConstructorOptions) {
     this.side = optionsArg.side;
     this.shortid = optionsArg.shortId;
@@ -69,7 +69,7 @@ export class SocketRequest {
    * handles the response that is received by the requesting side
    */
   handleResponse(responseDataArg: ISocketRequestDataObject) {
-    plugins.beautylog.log('handling response!');
+    plugins.smartlog.defaultLogger.log('info', 'handling response!');
     this.done.resolve(responseDataArg.funcCallData);
     allSocketRequests.remove(this);
   }
@@ -83,9 +83,9 @@ export class SocketRequest {
     let targetSocketFunction: SocketFunction = helpers.getSocketFunctionByName(
       this.funcCallData.funcName
     );
-    plugins.beautylog.info(`invoking ${targetSocketFunction.name}`);
+    plugins.smartlog.defaultLogger.log('info', `invoking ${targetSocketFunction.name}`);
     targetSocketFunction.invoke(this.funcCallData).then(resultData => {
-      plugins.beautylog.log('got resultData. Sending it to requesting party.');
+      plugins.smartlog.defaultLogger.log('info', 'got resultData. Sending it to requesting party.');
       let requestData: ISocketRequestDataObject = {
         funcCallData: resultData,
         shortId: this.shortid

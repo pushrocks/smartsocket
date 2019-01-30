@@ -2,7 +2,7 @@ import * as plugins from './smartsocket.plugins';
 import * as helpers from './smartsocket.helpers';
 
 // classes
-import { Objectmap } from 'lik';
+import { Objectmap } from '@pushrocks/lik';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
 import { ISocketFunctionCall, SocketFunction } from './smartsocket.classes.socketfunction';
 import { SocketRequest } from './smartsocket.classes.socketrequest';
@@ -48,7 +48,10 @@ export class Smartsocket {
   public async stop() {
     await plugins.smartdelay.delayFor(1000);
     this.openSockets.forEach((socketObjectArg: SocketConnection) => {
-      plugins.beautylog.log(`disconnect socket with >>alias ${socketObjectArg.alias}`);
+      plugins.smartlog.defaultLogger.log(
+        'info',
+        `disconnect socket with >>alias ${socketObjectArg.alias}`
+      );
       socketObjectArg.socket.disconnect();
     });
     this.openSockets.wipe();
@@ -68,7 +71,7 @@ export class Smartsocket {
     dataArg: any,
     targetSocketConnectionArg: SocketConnection
   ) {
-    const done = plugins.smartq.defer();
+    const done = plugins.smartpromise.defer();
     const socketRequest = new SocketRequest({
       funcCallData: {
         funcDataArg: dataArg,
@@ -107,7 +110,7 @@ export class Smartsocket {
       smartsocketHost: this,
       socket: socketArg
     });
-    plugins.beautylog.log('Socket connected. Trying to authenticate...');
+    plugins.smartlog.defaultLogger.log('info', 'Socket connected. Trying to authenticate...');
     this.openSockets.add(socketConnection);
     socketConnection
       .authenticate()

@@ -1,7 +1,7 @@
 import * as plugins from './smartsocket.plugins';
 
 // import classes
-import { Objectmap } from 'lik';
+import { Objectmap } from '@pushrocks/lik';
 import { SocketFunction } from './smartsocket.classes.socketfunction';
 
 /**

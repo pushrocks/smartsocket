@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "test": "(npmts)"
+    "test": "tstest test/",
+    "build": "echo \"Not needed for now\""
   },
   "repository": {
     "type": "git",
@@ -18,20 +19,24 @@
   },
   "homepage": "https://gitlab.com/pushrocks/smartsocket#README",
   "dependencies": {
+    "@pushrocks/lik": "^3.0.4",
+    "@pushrocks/smartdelay": "^2.0.2",
+    "@pushrocks/smarthash": "^2.0.4",
+    "@pushrocks/smartlog": "^2.0.16",
+    "@pushrocks/smartpromise": "^2.0.5",
     "@types/shortid": "0.0.29",
-    "@types/socket.io": "^1.4.32",
+    "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
-    "beautylog": "^6.1.10",
-    "lik": "^2.0.5",
-    "nodehash": "^1.0.4",
-    "shortid": "^2.2.8",
-    "smartdelay": "^1.0.4",
-    "smartq": "^1.1.8",
-    "socket.io": "^2.0.4",
-    "socket.io-client": "^2.0.4"
+    "shortid": "^2.2.14",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
-    "@types/node": "^9.4.7",
-    "tapbundle": "^2.0.0"
-  }
+    "@gitzone/tsbuild": "^2.1.8",
+    "@gitzone/tsrun": "^1.1.17",
+    "@gitzone/tstest": "^1.0.18",
+    "@pushrocks/tapbundle": "^3.0.7",
+    "@types/node": "^10.12.19"
+  },
+  "private": true
 }
