@@ -1,5 +1,15 @@
 {
-  "gitzone": {},
+  "gitzone": {
+    "module": {
+      "githost": "gitlab.com",
+      "gitscope": "pushrocks",
+      "gitrepo": "smartsocket",
+      "shortDescription": "easy and secure websocket communication",
+      "npmPackagename": "@pushrocks/smartlog",
+      "license": "MIT",
+      "projectDomain": "push.rocks"
+    }
+  },
   "npmci": {
     "npmGlobalTools": [],
     "npmAccessLevel": "public"
