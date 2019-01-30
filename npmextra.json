@@ -1,6 +1,7 @@
 {
   "gitzone": {},
   "npmci": {
-    "npmGlobalTools": []
+    "npmGlobalTools": [],
+    "npmAccessLevel": "public"
   }
 }
