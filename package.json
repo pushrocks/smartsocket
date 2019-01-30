@@ -38,5 +38,5 @@
     "@pushrocks/tapbundle": "^3.0.7",
     "@types/node": "^10.12.19"
   },
-  "private": true
+  "private": false
 }
