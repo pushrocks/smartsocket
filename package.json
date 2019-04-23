@@ -19,11 +19,11 @@
   },
   "homepage": "https://gitlab.com/pushrocks/smartsocket#README",
   "dependencies": {
-    "@pushrocks/lik": "^3.0.4",
-    "@pushrocks/smartdelay": "^2.0.2",
+    "@pushrocks/lik": "^3.0.5",
+    "@pushrocks/smartdelay": "^2.0.3",
     "@pushrocks/smarthash": "^2.0.4",
-    "@pushrocks/smartlog": "^2.0.16",
-    "@pushrocks/smartpromise": "^2.0.5",
+    "@pushrocks/smartlog": "^2.0.19",
+    "@pushrocks/smartpromise": "^3.0.2",
     "@types/shortid": "0.0.29",
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
@@ -33,10 +33,10 @@
   },
   "devDependencies": {
     "@gitzone/tsbuild": "^2.1.8",
-    "@gitzone/tsrun": "^1.1.17",
-    "@gitzone/tstest": "^1.0.18",
-    "@pushrocks/tapbundle": "^3.0.7",
-    "@types/node": "^10.12.19"
+    "@gitzone/tsrun": "^1.2.5",
+    "@gitzone/tstest": "^1.0.20",
+    "@pushrocks/tapbundle": "^3.0.9",
+    "@types/node": "^11.13.7"
   },
   "private": false
 }
