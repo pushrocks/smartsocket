@@ -1,8 +1,8 @@
 // tslint:disable-next-line:no-implicit-dependencies
 import { expect, tap } from '@pushrocks/tapbundle';
 
-import * as nodehash from '@pushrocks/smarthash';
-import * as smartq from '@pushrocks/smartpromise';
+import * as smarthash from '@pushrocks/smarthash';
+import * as smartpromise from '@pushrocks/smartpromise';
 
 import socketIoClient = require('socket.io-client');
 import smartsocket = require('../ts/index');
@@ -30,7 +30,7 @@ tap.test('should start listening when .started is called', async () => {
 tap.test('should add a socketrole', async () => {
   testSocketRole1 = new smartsocket.SocketRole({
     name: 'testRole1',
-    passwordHash: nodehash.sha256FromStringSync('testPassword')
+    passwordHash: smarthash.sha256FromStringSync('testPassword')
   });
   testSmartsocket.addSocketRoles([testSocketRole1]);
 });
@@ -48,7 +48,7 @@ tap.test('should register a new Function', async () => {
 
 // class SmartsocketClient
 tap.test('should react to a new websocket connection from client', async () => {
-  const done = smartq.defer();
+  const done = smartpromise.defer();
   testSmartsocketClient = new smartsocket.SmartsocketClient({
     port: testConfig.port,
     url: 'http://localhost',
@@ -62,11 +62,11 @@ tap.test('should react to a new websocket connection from client', async () => {
   await done.promise;
 });
 tap.test('client should disconnect and reconnect', async () => {
-  let done = smartq.defer();
+  let done = smartpromise.defer();
   testSmartsocketClient
     .disconnect()
     .then(() => {
-      let done = smartq.defer();
+      let done = smartpromise.defer();
       setTimeout(() => {
         testSmartsocketClient.connect().then(done.resolve);
       }, 0);
@@ -83,7 +83,7 @@ tap.test('2 clients should connect in parallel', async () => {
 });
 
 tap.test('should be able to make a functionCall from client to server', async () => {
-  let done = smartq.defer();
+  let done = smartpromise.defer();
   testSmartsocketClient
     .serverCall('testFunction1', {
       value1: 'hello'
@@ -96,7 +96,7 @@ tap.test('should be able to make a functionCall from client to server', async ()
 });
 
 tap.test('should be able to make a functionCall from server to client', async () => {
-  let done = smartq.defer();
+  let done = smartpromise.defer();
   let targetSocket = (() => {
     return smartsocket.allSocketConnections.find(socketConnectionArg => {
       return socketConnectionArg.alias === 'testClient1';

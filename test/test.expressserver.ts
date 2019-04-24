@@ -1,7 +1,7 @@
 // tslint:disable-next-line:no-implicit-dependencies
 import { expect, tap } from '@pushrocks/tapbundle';
 
-import * as nodehash from '@pushrocks/smarthash';
+import * as smarthash from '@pushrocks/smarthash';
 import * as smartpromise from '@pushrocks/smartpromise';
 import * as smartexpress from '@pushrocks/smartexpress';
 
@@ -44,7 +44,7 @@ tap.test('should start listening when .started is called', async () => {
 tap.test('should add a socketrole', async () => {
   testSocketRole1 = new smartsocket.SocketRole({
     name: 'testRole1',
-    passwordHash: nodehash.sha256FromStringSync('testPassword')
+    passwordHash: smarthash.sha256FromStringSync('testPassword')
   });
   testSmartsocket.addSocketRoles([testSocketRole1]);
 });
