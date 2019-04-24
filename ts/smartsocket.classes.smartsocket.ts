@@ -13,7 +13,7 @@ import { SocketServer } from './smartsocket.classes.socketserver';
 import * as SocketIO from 'socket.io';
 
 export interface ISmartsocketConstructorOptions {
-  port: number;
+  port?: number;
 }
 
 export class Smartsocket {

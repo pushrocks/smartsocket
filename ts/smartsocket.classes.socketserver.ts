@@ -55,7 +55,12 @@ export class SocketServer {
     const done = plugins.smartpromise.defer();
 
     // handle http servers
+    // in case an external server has been set "this.standaloneServer" should be false
     if (this.httpServer && this.standaloneServer) {
+      if (!this.smartsocket.options.port) {
+        console.log('there should be a port specifed for smartsocket!')
+        throw new Error('there should be a port specified for smartsocket')
+      }
       this.httpServer.listen(this.smartsocket.options.port, () => {
         console.log(`Server started in standalone mode on ${this.smartsocket.options.port}`);
         done.resolve();
