@@ -29,7 +29,7 @@ export class Smartsocket {
   }
 
   // tslint:disable-next-line:member-ordering
-  public async setExternalServer (serverType: 'express' | 'http', serverArg: any) {
+  public async setExternalServer (serverType: 'smartexpress', serverArg: any) {
     await this.socketServer.setExternalServer(serverType, serverArg);
   }
 

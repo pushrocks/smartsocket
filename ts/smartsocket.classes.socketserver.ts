@@ -23,12 +23,9 @@ export class SocketServer {
    * starts the server with another server
    * also works with an express style server
    */
-  public async setExternalServer(serverType: 'express' | 'http', serverArg: any) {
-    if (serverType === 'http') {
-      this.httpServer = serverArg;
-    } else if (serverType === 'express') {
-      this.expressServer = serverArg;
-    }
+  public async setExternalServer(serverType: 'smartexpress', serverArg: plugins.smartexpress.Server) {
+    await serverArg.startedPromise;
+    this.httpServer = serverArg.httpServer;
   }
 
   /**
@@ -37,14 +34,10 @@ export class SocketServer {
   public getServerForSocketIo() {
     if (this.httpServer) {
       return this.httpServer;
-    } else if (this.expressServer) {
-      return this.expressServer;
-    } else if (!this.httpServer && !this.expressServer) {
+    } else {
       this.httpServer = new http.Server();
       this.standaloneServer = true;
       return this.httpServer;
-    } else {
-      throw new Error('no server specified!');
     }
   }
 
