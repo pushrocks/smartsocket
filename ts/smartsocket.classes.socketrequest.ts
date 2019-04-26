@@ -8,6 +8,7 @@ import { ISocketFunctionCall } from './smartsocket.classes.socketfunction';
 import { Objectmap } from '@pushrocks/lik';
 import { SocketFunction } from './smartsocket.classes.socketfunction';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
+import { defaultLogger } from '@pushrocks/smartlog';
 
 // export interfaces
 export type TSocketRequestStatus = 'new' | 'pending' | 'finished';
@@ -79,10 +80,15 @@ export class SocketRequest {
   /**
    * creates the response on the responding side
    */
-  createResponse() {
-    let targetSocketFunction: SocketFunction = helpers.getSocketFunctionByName(
+  public async createResponse(): Promise<void> {
+    const targetSocketFunction: SocketFunction = helpers.getSocketFunctionByName(
       this.funcCallData.funcName
     );
+    if (!targetSocketFunction) {
+      defaultLogger.log('warn', `There is no SocketFunction defined for ${this.funcCallData.funcName}`);
+      defaultLogger.log('warn', `So now response is being sent.`);
+      return;
+    }
     plugins.smartlog.defaultLogger.log('info', `invoking ${targetSocketFunction.name}`);
     targetSocketFunction.invoke(this.funcCallData).then(resultData => {
       plugins.smartlog.defaultLogger.log('info', 'got resultData. Sending it to requesting party.');

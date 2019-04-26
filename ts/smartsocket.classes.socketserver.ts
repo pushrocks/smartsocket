@@ -23,7 +23,10 @@ export class SocketServer {
    * starts the server with another server
    * also works with an express style server
    */
-  public async setExternalServer(serverType: 'smartexpress', serverArg: plugins.smartexpress.Server) {
+  public async setExternalServer(
+    serverType: 'smartexpress',
+    serverArg: plugins.smartexpress.Server
+  ) {
     await serverArg.startedPromise;
     this.httpServer = serverArg.httpServer;
   }
@@ -51,8 +54,8 @@ export class SocketServer {
     // in case an external server has been set "this.standaloneServer" should be false
     if (this.httpServer && this.standaloneServer) {
       if (!this.smartsocket.options.port) {
-        console.log('there should be a port specifed for smartsocket!')
-        throw new Error('there should be a port specified for smartsocket')
+        console.log('there should be a port specifed for smartsocket!');
+        throw new Error('there should be a port specified for smartsocket');
       }
       this.httpServer.listen(this.smartsocket.options.port, () => {
         console.log(`Server started in standalone mode on ${this.smartsocket.options.port}`);

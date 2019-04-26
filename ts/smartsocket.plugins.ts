@@ -8,4 +8,14 @@ import * as shortid from 'shortid';
 import * as socketIo from 'socket.io';
 import * as socketIoClient from 'socket.io-client';
 
-export { lik, smartlog, smarthash, smartdelay, smartexpress, smartpromise, shortid, socketIo, socketIoClient };
+export {
+  lik,
+  smartlog,
+  smarthash,
+  smartdelay,
+  smartexpress,
+  smartpromise,
+  shortid,
+  socketIo,
+  socketIoClient
+};
