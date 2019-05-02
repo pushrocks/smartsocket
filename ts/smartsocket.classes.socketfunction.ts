@@ -3,6 +3,7 @@ import * as plugins from './smartsocket.plugins';
 // import classes
 import { Objectmap } from '@pushrocks/lik';
 import { SocketRole } from './smartsocket.classes.socketrole';
+import { SocketConnection } from './smartsocket.classes.socketconnection';
 
 // export interfaces
 
@@ -11,7 +12,7 @@ import { SocketRole } from './smartsocket.classes.socketrole';
  */
 export interface ISocketFunctionConstructorOptions {
   funcName: string;
-  funcDef: any;
+  funcDef: TFuncDef;
   allowedRoles: SocketRole[]; // all roles that are allowed to execute a SocketFunction
 }
 
@@ -26,9 +27,7 @@ export interface ISocketFunctionCall {
 /**
  * interface for function definition of SocketFunction
  */
-export interface IFuncDef {
-  (dataArg: any): PromiseLike<any>;
-}
+export type TFuncDef = (dataArg: any, connectionArg: SocketConnection) => PromiseLike<any>;
 
 // export objects
 export let allSocketFunctions = new Objectmap<SocketFunction>();
@@ -40,7 +39,7 @@ export let allSocketFunctions = new Objectmap<SocketFunction>();
  */
 export class SocketFunction {
   name: string;
-  funcDef: IFuncDef;
+  funcDef: TFuncDef;
   roles: SocketRole[];
 
   /**
@@ -59,10 +58,10 @@ export class SocketFunction {
   /**
    * invokes the function of this SocketFunction
    */
-  invoke(dataArg: ISocketFunctionCall): Promise<any> {
+  invoke(dataArg: ISocketFunctionCall, socketConnectionArg: SocketConnection): Promise<any> {
     let done = plugins.smartpromise.defer();
     if (dataArg.funcName === this.name) {
-      this.funcDef(dataArg.funcDataArg).then((resultData: any) => {
+      this.funcDef(dataArg.funcDataArg, socketConnectionArg).then((resultData: any) => {
         let funcResponseData: ISocketFunctionCall = {
           funcName: this.name,
           funcDataArg: resultData

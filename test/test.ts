@@ -39,7 +39,7 @@ tap.test('should add a socketrole', async () => {
 tap.test('should register a new Function', async () => {
   testSocketFunction1 = new smartsocket.SocketFunction({
     allowedRoles: [testSocketRole1],
-    funcDef: async dataArg => {
+    funcDef: async (dataArg, socketConnectionArg) => {
       return dataArg;
     },
     funcName: 'testFunction1'

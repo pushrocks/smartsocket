@@ -38,12 +38,12 @@ export let allSocketRequests = new Objectmap<SocketRequest>();
 
 // export classes
 export class SocketRequest {
-  status: TSocketRequestStatus = 'new';
-  side: TSocketRequestSide;
-  shortid: string;
-  originSocketConnection: SocketConnection;
-  funcCallData: ISocketFunctionCall;
-  done = plugins.smartpromise.defer();
+  public status: TSocketRequestStatus = 'new';
+  public side: TSocketRequestSide;
+  public shortid: string;
+  public originSocketConnection: SocketConnection;
+  public funcCallData: ISocketFunctionCall;
+  public done = plugins.smartpromise.defer();
   constructor(optionsArg: SocketRequestConstructorOptions) {
     this.side = optionsArg.side;
     this.shortid = optionsArg.shortId;
@@ -57,7 +57,7 @@ export class SocketRequest {
   /**
    * dispatches a socketrequest from the requesting to the receiving side
    */
-  dispatch() {
+  public dispatch() {
     let requestData: ISocketRequestDataObject = {
       funcCallData: this.funcCallData,
       shortId: this.shortid
@@ -69,7 +69,7 @@ export class SocketRequest {
   /**
    * handles the response that is received by the requesting side
    */
-  handleResponse(responseDataArg: ISocketRequestDataObject) {
+  public handleResponse(responseDataArg: ISocketRequestDataObject) {
     plugins.smartlog.defaultLogger.log('info', 'handling response!');
     this.done.resolve(responseDataArg.funcCallData);
     allSocketRequests.remove(this);
@@ -85,12 +85,15 @@ export class SocketRequest {
       this.funcCallData.funcName
     );
     if (!targetSocketFunction) {
-      defaultLogger.log('warn', `There is no SocketFunction defined for ${this.funcCallData.funcName}`);
+      defaultLogger.log(
+        'warn',
+        `There is no SocketFunction defined for ${this.funcCallData.funcName}`
+      );
       defaultLogger.log('warn', `So now response is being sent.`);
       return;
     }
     plugins.smartlog.defaultLogger.log('info', `invoking ${targetSocketFunction.name}`);
-    targetSocketFunction.invoke(this.funcCallData).then(resultData => {
+    targetSocketFunction.invoke(this.funcCallData, this.originSocketConnection).then(resultData => {
       plugins.smartlog.defaultLogger.log('info', 'got resultData. Sending it to requesting party.');
       let requestData: ISocketRequestDataObject = {
         funcCallData: resultData,

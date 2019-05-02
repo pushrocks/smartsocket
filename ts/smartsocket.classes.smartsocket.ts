@@ -83,8 +83,8 @@ export class Smartsocket {
       shortId: plugins.shortid.generate(),
       side: 'requesting'
     });
-    socketRequest.dispatch().then((dataArg: ISocketFunctionCall) => {
-      done.resolve(dataArg.funcDataArg);
+    socketRequest.dispatch().then((dataArg2: ISocketFunctionCall) => {
+      done.resolve(dataArg2.funcDataArg);
     });
     const result = await done.promise;
     return result;
