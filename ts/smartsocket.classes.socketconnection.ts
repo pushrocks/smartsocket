@@ -51,12 +51,12 @@ export let allSocketConnections = new Objectmap<SocketConnection>();
  * class SocketConnection represents a websocket connection
  */
 export class SocketConnection {
-  alias: string;
-  side: TSocketConnectionSide;
-  authenticated: boolean = false;
-  role: SocketRole;
-  smartsocketHost: Smartsocket;
-  socket: any; // SocketIO.Socket | SocketIOClient.Socket
+  public alias: string;
+  public side: TSocketConnectionSide;
+  public authenticated: boolean = false;
+  public role: SocketRole;
+  public smartsocketHost: Smartsocket;
+  public socket: SocketIO.Socket | SocketIOClient.Socket;
   constructor(optionsArg: ISocketConnectionConstructorOptions) {
     this.alias = optionsArg.alias;
     this.authenticated = optionsArg.authenticated;
