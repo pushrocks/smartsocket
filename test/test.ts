@@ -80,7 +80,10 @@ tap.test('should be able to make a functionCall from client to server', async ()
 });
 
 tap.test('should be able to make a functionCall from server to client', async () => {
-  
+  const response = await testSmartsocketClient.serverCall('testFunction1', {
+    hi: 'hi there from client'
+  });
+  console.log(response);
 });
 
 // terminate
