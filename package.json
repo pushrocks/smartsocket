@@ -19,10 +19,10 @@
   },
   "homepage": "https://gitlab.com/pushrocks/smartsocket#README",
   "dependencies": {
-    "@pushrocks/lik": "^3.0.5",
+    "@pushrocks/lik": "^3.0.10",
     "@pushrocks/smartdelay": "^2.0.3",
-    "@pushrocks/smartexpress": "^3.0.21",
-    "@pushrocks/smarthash": "^2.0.4",
+    "@pushrocks/smartexpress": "^3.0.38",
+    "@pushrocks/smarthash": "^2.0.6",
     "@pushrocks/smartlog": "^2.0.19",
     "@pushrocks/smartpromise": "^3.0.2",
     "@types/shortid": "0.0.29",
@@ -34,12 +34,23 @@
   },
   "devDependencies": {
     "@gitzone/tsbuild": "^2.1.11",
-    "@gitzone/tsrun": "^1.2.6",
+    "@gitzone/tsrun": "^1.2.8",
     "@gitzone/tstest": "^1.0.24",
-    "@pushrocks/tapbundle": "^3.0.9",
-    "@types/node": "^12.0.6",
-    "tslint": "^5.17.0",
+    "@pushrocks/tapbundle": "^3.0.11",
+    "@types/node": "^12.7.1",
+    "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0"
   },
-  "private": false
+  "private": false,
+  "files": [
+    "ts/*",
+    "ts_web/*",
+    "dist/*",
+    "dist_web/*",
+    "dist_ts_web/*",
+    "assets/*",
+    "cli.js",
+    "npmextra.json",
+    "readme.md"
+  ]
 }
