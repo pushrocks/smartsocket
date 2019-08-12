@@ -1,5 +1,4 @@
 import * as plugins from './smartsocket.plugins';
-import * as helpers from './smartsocket.helpers';
 
 import { Objectmap } from '@pushrocks/lik';
 
@@ -9,12 +8,12 @@ import { SocketFunction } from './smartsocket.classes.socketfunction';
 import {
   SocketRequest,
   ISocketRequestDataObject,
-  allSocketRequests
 } from './smartsocket.classes.socketrequest';
 import { SocketRole } from './smartsocket.classes.socketrole';
 
 // socket.io
 import * as SocketIO from 'socket.io';
+import { SmartsocketClient } from './smartsocket.classes.smartsocketclient';
 
 // export interfaces
 
@@ -31,7 +30,7 @@ export interface ISocketConnectionConstructorOptions {
   authenticated: boolean;
   role: SocketRole;
   side: TSocketConnectionSide;
-  smartsocketHost: Smartsocket;
+  smartsocketHost: Smartsocket | SmartsocketClient;
   socket: SocketIO.Socket | SocketIOClient.Socket;
 }
 
@@ -55,14 +54,14 @@ export class SocketConnection {
   public side: TSocketConnectionSide;
   public authenticated: boolean = false;
   public role: SocketRole;
-  public smartsocketHost: Smartsocket;
+  public smartsocketRef: Smartsocket | SmartsocketClient;
   public socket: SocketIO.Socket | SocketIOClient.Socket;
   constructor(optionsArg: ISocketConnectionConstructorOptions) {
     this.alias = optionsArg.alias;
     this.authenticated = optionsArg.authenticated;
     this.role = optionsArg.role;
     this.side = optionsArg.side;
-    this.smartsocketHost = optionsArg.smartsocketHost;
+    this.smartsocketRef = optionsArg.smartsocketHost;
     this.socket = optionsArg.socket;
 
     // standard behaviour that is always true
@@ -82,19 +81,19 @@ export class SocketConnection {
   /**
    * authenticate the socket
    */
-  authenticate() {
-    let done = plugins.smartpromise.defer();
+  public authenticate() {
+    const done = plugins.smartpromise.defer();
     this.socket.on('dataAuth', (dataArg: ISocketConnectionAuthenticationObject) => {
       plugins.smartlog.defaultLogger.log(
         'info',
         'received authentication data. now hashing and comparing...'
       );
       this.socket.removeListener('dataAuth', () => {});
-      if (helpers.checkPasswordForRole(dataArg, this.smartsocketHost)) {
+      if (SocketRole.checkPasswordForRole(dataArg, this.smartsocketRef)) {
         // TODO: authenticate password
         this.alias = dataArg.alias;
         this.authenticated = true;
-        this.role = helpers.getSocketRoleByName(dataArg.role, this.smartsocketHost);
+        this.role = SocketRole.getSocketRoleByName(this.smartsocketRef, dataArg.role);
         this.socket.emit('authenticated');
         plugins.smartlog.defaultLogger.log(
           'ok',
@@ -116,20 +115,20 @@ export class SocketConnection {
   /**
    * listen to function requests
    */
-  listenToFunctionRequests() {
-    let done = plugins.smartpromise.defer();
+  public listenToFunctionRequests() {
+    const done = plugins.smartpromise.defer();
     if (this.authenticated) {
       this.socket.on('function', (dataArg: ISocketRequestDataObject) => {
         // check if requested function is available to the socket's scope
         plugins.smartlog.defaultLogger.log('info', 'function request received');
-        let referencedFunction: SocketFunction = this.role.allowedFunctions.find(
+        const referencedFunction: SocketFunction = this.role.allowedFunctions.find(
           socketFunctionArg => {
             return socketFunctionArg.name === dataArg.funcCallData.funcName;
           }
         );
         if (referencedFunction !== undefined) {
           plugins.smartlog.defaultLogger.log('ok', 'function in access scope');
-          let localSocketRequest = new SocketRequest({
+          const localSocketRequest = new SocketRequest(this.smartsocketRef, {
             side: 'responding',
             originSocketConnection: this,
             shortId: dataArg.shortId,
@@ -148,7 +147,7 @@ export class SocketConnection {
           'info',
           `received response for request with id ${dataArg.shortId}`
         );
-        let targetSocketRequest = helpers.getSocketRequestById(dataArg.shortId);
+        const targetSocketRequest = SocketRequest.getSocketRequestById(this.smartsocketRef, dataArg.shortId);
         targetSocketRequest.handleResponse(dataArg);
       });
       plugins.smartlog.defaultLogger.log(
@@ -157,7 +156,7 @@ export class SocketConnection {
       );
       done.resolve(this);
     } else {
-      let errMessage: 'socket needs to be authenticated first';
+      const errMessage = 'socket needs to be authenticated first';
       plugins.smartlog.defaultLogger.log('error', errMessage);
       done.reject(errMessage);
     }

@@ -1,14 +1,14 @@
 import * as plugins from './smartsocket.plugins';
-import * as helpers from './smartsocket.helpers';
 
 // import interfaces
-import { ISocketFunctionCall } from './smartsocket.classes.socketfunction';
+import { SocketFunction, ISocketFunctionCall } from './smartsocket.classes.socketfunction';
 
 // import classes
 import { Objectmap } from '@pushrocks/lik';
-import { SocketFunction } from './smartsocket.classes.socketfunction';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
 import { defaultLogger } from '@pushrocks/smartlog';
+import { Smartsocket } from './smartsocket.classes.smartsocket';
+import { SmartsocketClient } from './smartsocket.classes.smartsocketclient';
 
 // export interfaces
 export type TSocketRequestStatus = 'new' | 'pending' | 'finished';
@@ -33,23 +33,36 @@ export interface ISocketRequestDataObject {
   responseTimeout?: number;
 }
 
-// export objects
-export let allSocketRequests = new Objectmap<SocketRequest>();
-
 // export classes
 export class SocketRequest {
+  // STATIC
+  public static getSocketRequestById(
+    smartsocketRef: Smartsocket | SmartsocketClient,
+    shortIdArg: string
+  ): SocketRequest {
+    return smartsocketRef.socketRequests.find(socketRequestArg => {
+      return socketRequestArg.shortid === shortIdArg;
+    });
+  }
+
+  // INSTANCE
   public status: TSocketRequestStatus = 'new';
   public side: TSocketRequestSide;
   public shortid: string;
   public originSocketConnection: SocketConnection;
   public funcCallData: ISocketFunctionCall;
   public done = plugins.smartpromise.defer();
-  constructor(optionsArg: SocketRequestConstructorOptions) {
+
+  public smartsocketRef: Smartsocket | SmartsocketClient;
+
+
+  constructor(smartsocketRefArg: Smartsocket | SmartsocketClient, optionsArg: SocketRequestConstructorOptions) {
+    this.smartsocketRef = smartsocketRefArg;
     this.side = optionsArg.side;
     this.shortid = optionsArg.shortId;
     this.funcCallData = optionsArg.funcCallData;
     this.originSocketConnection = optionsArg.originSocketConnection;
-    allSocketRequests.add(this);
+    this.smartsocketRef.socketRequests.add(this);
   }
 
   // requesting --------------------------
@@ -58,7 +71,7 @@ export class SocketRequest {
    * dispatches a socketrequest from the requesting to the receiving side
    */
   public dispatch() {
-    let requestData: ISocketRequestDataObject = {
+    const requestData: ISocketRequestDataObject = {
       funcCallData: this.funcCallData,
       shortId: this.shortid
     };
@@ -72,7 +85,7 @@ export class SocketRequest {
   public handleResponse(responseDataArg: ISocketRequestDataObject) {
     plugins.smartlog.defaultLogger.log('info', 'handling response!');
     this.done.resolve(responseDataArg.funcCallData);
-    allSocketRequests.remove(this);
+    this.smartsocketRef.socketRequests.remove(this);
   }
 
   // responding --------------------------
@@ -81,9 +94,11 @@ export class SocketRequest {
    * creates the response on the responding side
    */
   public async createResponse(): Promise<void> {
-    const targetSocketFunction: SocketFunction = helpers.getSocketFunctionByName(
+    const targetSocketFunction: SocketFunction = SocketFunction.getSocketFunctionByName(
+      this.smartsocketRef,
       this.funcCallData.funcName
     );
+
     if (!targetSocketFunction) {
       defaultLogger.log(
         'warn',
@@ -95,12 +110,12 @@ export class SocketRequest {
     plugins.smartlog.defaultLogger.log('info', `invoking ${targetSocketFunction.name}`);
     targetSocketFunction.invoke(this.funcCallData, this.originSocketConnection).then(resultData => {
       plugins.smartlog.defaultLogger.log('info', 'got resultData. Sending it to requesting party.');
-      let requestData: ISocketRequestDataObject = {
+      const requestData: ISocketRequestDataObject = {
         funcCallData: resultData,
         shortId: this.shortid
       };
       this.originSocketConnection.socket.emit('functionResponse', requestData);
-      allSocketRequests.remove(this);
+      this.smartsocketRef.socketRequests.remove(this);
     });
   }
 }

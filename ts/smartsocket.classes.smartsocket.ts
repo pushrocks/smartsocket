@@ -1,5 +1,4 @@
 import * as plugins from './smartsocket.plugins';
-import * as helpers from './smartsocket.helpers';
 
 // classes
 import { Objectmap } from '@pushrocks/lik';
@@ -21,6 +20,8 @@ export class Smartsocket {
   public io: SocketIO.Server;
   public openSockets = new Objectmap<SocketConnection>();
   public socketRoles = new Objectmap<SocketRole>();
+  public socketFunctions = new Objectmap<SocketFunction>();
+  public socketRequests = new Objectmap<SocketRequest>();
 
   private socketServer = new SocketServer(this);
 
@@ -74,7 +75,7 @@ export class Smartsocket {
     targetSocketConnectionArg: SocketConnection
   ) {
     const done = plugins.smartpromise.defer();
-    const socketRequest = new SocketRequest({
+    const socketRequest = new SocketRequest(this, {
       funcCallData: {
         funcDataArg: dataArg,
         funcName: functionNameArg
@@ -98,6 +99,10 @@ export class Smartsocket {
       this.socketRoles.add(socketRole);
     }
     return;
+  }
+
+  public addSocketFunction(socketFunction: SocketFunction) {
+    this.socketFunctions.add(socketFunction);
   }
 
   /**

@@ -4,6 +4,8 @@ import * as plugins from './smartsocket.plugins';
 import { Objectmap } from '@pushrocks/lik';
 import { SocketRole } from './smartsocket.classes.socketrole';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
+import { Smartsocket } from './smartsocket.classes.smartsocket';
+import { SmartsocketClient } from './smartsocket.classes.smartsocketclient';
 
 // export interfaces
 
@@ -29,18 +31,24 @@ export interface ISocketFunctionCall {
  */
 export type TFuncDef = (dataArg: any, connectionArg: SocketConnection) => PromiseLike<any>;
 
-// export objects
-export let allSocketFunctions = new Objectmap<SocketFunction>();
-
 // export classes
 
 /**
  * class that respresents a function that can be transparently called using a SocketConnection
  */
 export class SocketFunction {
-  name: string;
-  funcDef: TFuncDef;
-  roles: SocketRole[];
+  // STATIC
+  public static getSocketFunctionByName (smartsocketRefArg: Smartsocket | SmartsocketClient, functionNameArg: string): SocketFunction {
+    console.log(smartsocketRefArg.socketFunctions);
+    return smartsocketRefArg.socketFunctions.find(socketFunctionArg => {
+      return socketFunctionArg.name === functionNameArg;
+    });
+  }
+
+  // INSTANCE
+  public name: string;
+  public funcDef: TFuncDef;
+  public roles: SocketRole[];
 
   /**
    * the constructor for SocketFunction
@@ -49,20 +57,19 @@ export class SocketFunction {
     this.name = optionsArg.funcName;
     this.funcDef = optionsArg.funcDef;
     this.roles = optionsArg.allowedRoles;
-    for (let socketRoleArg of this.roles) {
+    for (const socketRoleArg of this.roles) {
       this._notifyRole(socketRoleArg);
     }
-    allSocketFunctions.add(this); // map instance with Objectmap
   }
 
   /**
    * invokes the function of this SocketFunction
    */
-  invoke(dataArg: ISocketFunctionCall, socketConnectionArg: SocketConnection): Promise<any> {
-    let done = plugins.smartpromise.defer();
+  public invoke(dataArg: ISocketFunctionCall, socketConnectionArg: SocketConnection): Promise<any> {
+    const done = plugins.smartpromise.defer();
     if (dataArg.funcName === this.name) {
       this.funcDef(dataArg.funcDataArg, socketConnectionArg).then((resultData: any) => {
-        let funcResponseData: ISocketFunctionCall = {
+        const funcResponseData: ISocketFunctionCall = {
           funcName: this.name,
           funcDataArg: resultData
         };

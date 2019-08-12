@@ -22,10 +22,6 @@ tap.test('should create a new smartsocket', async () => {
   expect(testSmartsocket).be.instanceOf(smartsocket.Smartsocket);
 });
 
-tap.test('should start listening when .started is called', async () => {
-  await testSmartsocket.start();
-});
-
 // class socketrole
 tap.test('should add a socketrole', async () => {
   testSocketRole1 = new smartsocket.SocketRole({
@@ -44,11 +40,16 @@ tap.test('should register a new Function', async () => {
     },
     funcName: 'testFunction1'
   });
+  testSmartsocket.addSocketFunction(testSocketFunction1);
+  console.log(testSmartsocket.socketFunctions);
+});
+
+tap.test('should start listening when .started is called', async () => {
+  await testSmartsocket.start();
 });
 
 // class SmartsocketClient
 tap.test('should react to a new websocket connection from client', async () => {
-  const done = smartpromise.defer();
   testSmartsocketClient = new smartsocket.SmartsocketClient({
     port: testConfig.port,
     url: 'http://localhost',
@@ -56,26 +57,15 @@ tap.test('should react to a new websocket connection from client', async () => {
     alias: 'testClient1',
     role: 'testRole1'
   });
-  testSmartsocketClient.connect().then(() => {
-    done.resolve();
-  });
-  await done.promise;
+  testSmartsocketClient.addSocketFunction(testSocketFunction1);
+  console.log(testSmartsocketClient.socketFunctions);
+  await testSmartsocketClient.connect();
 });
-tap.test('client should disconnect and reconnect', async () => {
-  let done = smartpromise.defer();
-  testSmartsocketClient
-    .disconnect()
-    .then(() => {
-      let done = smartpromise.defer();
-      setTimeout(() => {
-        testSmartsocketClient.connect().then(done.resolve);
-      }, 0);
-      return done.promise;
-    })
-    .then(() => {
-      done.resolve();
-    });
-  await done.promise;
+
+tap.test('client should disconnect and reconnect', async tools => {
+  await testSmartsocketClient.disconnect();
+  await tools.delayFor(100);
+  await testSmartsocketClient.connect();
 });
 
 tap.test('2 clients should connect in parallel', async () => {
@@ -83,37 +73,14 @@ tap.test('2 clients should connect in parallel', async () => {
 });
 
 tap.test('should be able to make a functionCall from client to server', async () => {
-  let done = smartpromise.defer();
-  testSmartsocketClient
-    .serverCall('testFunction1', {
-      value1: 'hello'
-    })
-    .then(dataArg => {
-      console.log(dataArg);
-      done.resolve();
-    });
-  await done.promise;
+  const response = await testSmartsocketClient.serverCall('testFunction1', {
+    value1: 'hello'
+  });
+  console.log(response);
 });
 
 tap.test('should be able to make a functionCall from server to client', async () => {
-  let done = smartpromise.defer();
-  let targetSocket = (() => {
-    return smartsocket.allSocketConnections.find(socketConnectionArg => {
-      return socketConnectionArg.alias === 'testClient1';
-    });
-  })();
-  testSmartsocket
-    .clientCall(
-      'testFunction1',
-      {
-        value1: 'helloFromServer'
-      },
-      targetSocket
-    )
-    .then(dataArg => {
-      console.log(dataArg);
-      done.resolve();
-    });
+  
 });
 
 // terminate

@@ -3,6 +3,7 @@ import * as plugins from './smartsocket.plugins';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
 import { ISocketFunctionCall, SocketFunction } from './smartsocket.classes.socketfunction';
 import { ISocketRequestDataObject, SocketRequest } from './smartsocket.classes.socketrequest';
+import { SocketRole } from './smartsocket.classes.socketrole';
 
 /**
  * interface for class SmartsocketClient
@@ -16,12 +17,17 @@ export interface ISmartsocketClientOptions {
 }
 
 export class SmartsocketClient {
-  alias: string;
-  role: string;
-  socketConnection: SocketConnection;
-  serverUrl: string;
-  serverPort: number;
-  serverPassword: string;
+  public alias: string;
+  public role: string;
+  public socketConnection: SocketConnection;
+  public serverUrl: string;
+  public serverPort: number;
+  public serverPassword: string;
+
+  public socketFunctions = new plugins.lik.Objectmap<SocketFunction>();
+  public socketRequests = new plugins.lik.Objectmap<SocketRequest>();
+  public socketRoles = new plugins.lik.Objectmap<SocketRole>();
+
   constructor(optionsArg: ISmartsocketClientOptions) {
     this.alias = optionsArg.alias;
     this.role = optionsArg.role;
@@ -30,19 +36,23 @@ export class SmartsocketClient {
     this.serverPassword = optionsArg.password;
   }
 
+  public addSocketFunction(socketFunction: SocketFunction) {
+    this.socketFunctions.add(socketFunction);
+  }
+
   /**
    * connect the client to the server
    */
-  connect() {
-    let done = plugins.smartpromise.defer();
+  public connect() {
+    const done = plugins.smartpromise.defer();
     plugins.smartlog.defaultLogger.log('info', 'trying to connect...');
-    let socketUrl = `${this.serverUrl}:${this.serverPort}`;
+    const socketUrl = `${this.serverUrl}:${this.serverPort}`;
     this.socketConnection = new SocketConnection({
       alias: this.alias,
       authenticated: false,
       role: undefined,
       side: 'client',
-      smartsocketHost: null,
+      smartsocketHost: this,
       socket: plugins.socketIoClient(socketUrl, { multiplex: false })
     });
     this.socketConnection.socket.on('requestAuth', () => {
@@ -62,8 +72,8 @@ export class SmartsocketClient {
     return done.promise;
   }
 
-  disconnect() {
-    let done = plugins.smartpromise.defer();
+  public disconnect() {
+    const done = plugins.smartpromise.defer();
     this.socketConnection.socket.disconnect();
     this.socketConnection = undefined;
     plugins.smartlog.defaultLogger.log('ok', 'disconnected!');
@@ -71,9 +81,9 @@ export class SmartsocketClient {
     return done.promise;
   }
 
-  serverCall(functionNameArg: string, dataArg: any) {
-    let done = plugins.smartpromise.defer();
-    let socketRequest = new SocketRequest({
+  public serverCall(functionNameArg: string, dataArg: any) {
+    const done = plugins.smartpromise.defer();
+    const socketRequest = new SocketRequest(this, {
       side: 'requesting',
       originSocketConnection: this.socketConnection,
       shortId: plugins.shortid.generate(),
@@ -82,8 +92,8 @@ export class SmartsocketClient {
         funcDataArg: dataArg
       }
     });
-    socketRequest.dispatch().then((dataArg: ISocketFunctionCall) => {
-      done.resolve(dataArg.funcDataArg);
+    socketRequest.dispatch().then((dataArg2: ISocketFunctionCall) => {
+      done.resolve(dataArg2.funcDataArg);
     });
     return done.promise;
   }
