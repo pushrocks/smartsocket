@@ -55,8 +55,10 @@ export class SocketRequest {
 
   public smartsocketRef: Smartsocket | SmartsocketClient;
 
-
-  constructor(smartsocketRefArg: Smartsocket | SmartsocketClient, optionsArg: SocketRequestConstructorOptions) {
+  constructor(
+    smartsocketRefArg: Smartsocket | SmartsocketClient,
+    optionsArg: SocketRequestConstructorOptions
+  ) {
     this.smartsocketRef = smartsocketRefArg;
     this.side = optionsArg.side;
     this.shortid = optionsArg.shortId;

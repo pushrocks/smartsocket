@@ -38,7 +38,10 @@ export type TFuncDef = (dataArg: any, connectionArg: SocketConnection) => Promis
  */
 export class SocketFunction {
   // STATIC
-  public static getSocketFunctionByName (smartsocketRefArg: Smartsocket | SmartsocketClient, functionNameArg: string): SocketFunction {
+  public static getSocketFunctionByName(
+    smartsocketRefArg: Smartsocket | SmartsocketClient,
+    functionNameArg: string
+  ): SocketFunction {
     console.log(smartsocketRefArg.socketFunctions);
     return smartsocketRefArg.socketFunctions.find(socketFunctionArg => {
       return socketFunctionArg.name === functionNameArg;

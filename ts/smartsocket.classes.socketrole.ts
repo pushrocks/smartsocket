@@ -1,6 +1,5 @@
 import * as plugins from './smartsocket.plugins';
 
-
 // import classes
 import { Objectmap } from '@pushrocks/lik';
 import { SocketFunction } from './smartsocket.classes.socketfunction';
@@ -23,18 +22,19 @@ export class SocketRole {
   // STATIC
   public static getSocketRoleByName(
     referenceSmartsocket: Smartsocket | SmartsocketClient,
-    socketRoleNameArg: string,
-  ): SocketRole{
+    socketRoleNameArg: string
+  ): SocketRole {
     return referenceSmartsocket.socketRoles.find(socketRoleArg => {
       return socketRoleArg.name === socketRoleNameArg;
     });
   }
 
-  public static checkPasswordForRole (
+  public static checkPasswordForRole(
     dataArg: ISocketConnectionAuthenticationObject,
     referenceSmartsocket: Smartsocket | SmartsocketClient
   ): boolean {
-    const targetPasswordHash = SocketRole.getSocketRoleByName(referenceSmartsocket, dataArg.role).passwordHash;
+    const targetPasswordHash = SocketRole.getSocketRoleByName(referenceSmartsocket, dataArg.role)
+      .passwordHash;
     const computedCompareHash = plugins.smarthash.sha256FromStringSync(dataArg.password);
     return targetPasswordHash === computedCompareHash;
   }

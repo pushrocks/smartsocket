@@ -5,10 +5,7 @@ import { Objectmap } from '@pushrocks/lik';
 // import classes
 import { Smartsocket } from './smartsocket.classes.smartsocket';
 import { SocketFunction } from './smartsocket.classes.socketfunction';
-import {
-  SocketRequest,
-  ISocketRequestDataObject,
-} from './smartsocket.classes.socketrequest';
+import { SocketRequest, ISocketRequestDataObject } from './smartsocket.classes.socketrequest';
 import { SocketRole } from './smartsocket.classes.socketrole';
 
 // socket.io
@@ -147,7 +144,10 @@ export class SocketConnection {
           'info',
           `received response for request with id ${dataArg.shortId}`
         );
-        const targetSocketRequest = SocketRequest.getSocketRequestById(this.smartsocketRef, dataArg.shortId);
+        const targetSocketRequest = SocketRequest.getSocketRequestById(
+          this.smartsocketRef,
+          dataArg.shortId
+        );
         targetSocketRequest.handleResponse(dataArg);
       });
       plugins.smartlog.defaultLogger.log(

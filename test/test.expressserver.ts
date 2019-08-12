@@ -93,9 +93,7 @@ tap.test('should be able to make a functionCall from client to server', async ()
   console.log(response);
 });
 
-tap.test('should be able to make a functionCall from server to client', async () => {
-  
-});
+tap.test('should be able to make a functionCall from server to client', async () => {});
 
 // terminate
 tap.test('should close the server', async () => {
