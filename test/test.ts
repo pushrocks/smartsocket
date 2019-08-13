@@ -10,7 +10,8 @@ import smartsocket = require('../ts/index');
 let testSmartsocket: smartsocket.Smartsocket;
 let testSmartsocketClient: smartsocket.SmartsocketClient;
 let testSocketRole1: smartsocket.SocketRole;
-let testSocketFunction1: smartsocket.SocketFunction;
+let testSocketFunctionServer: smartsocket.SocketFunction;
+let testSocketFunctionClient: smartsocket.SocketFunction;
 
 const testConfig = {
   port: 3000
@@ -33,14 +34,23 @@ tap.test('should add a socketrole', async () => {
 
 // class SocketFunction
 tap.test('should register a new Function', async () => {
-  testSocketFunction1 = new smartsocket.SocketFunction({
+  testSocketFunctionServer = new smartsocket.SocketFunction({
     allowedRoles: [testSocketRole1],
     funcDef: async (dataArg, socketConnectionArg) => {
       return dataArg;
     },
     funcName: 'testFunction1'
   });
-  testSmartsocket.addSocketFunction(testSocketFunction1);
+  testSmartsocket.addSocketFunction(testSocketFunctionServer);
+
+  testSocketFunctionClient = new smartsocket.SocketFunction({
+    allowedRoles: [],
+    funcDef: async (dataArg, socketConnectionArg) => {
+      return dataArg;
+    },
+    funcName: 'testFunction1'
+  });
+  testSmartsocket.addSocketFunction(testSocketFunctionServer);
   console.log(testSmartsocket.socketFunctions);
 });
 
@@ -57,7 +67,7 @@ tap.test('should react to a new websocket connection from client', async () => {
     alias: 'testClient1',
     role: 'testRole1'
   });
-  testSmartsocketClient.addSocketFunction(testSocketFunction1);
+  testSmartsocketClient.addSocketFunction(testSocketFunctionClient);
   console.log(testSmartsocketClient.socketFunctions);
   await testSmartsocketClient.connect();
 });
