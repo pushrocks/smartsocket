@@ -123,7 +123,7 @@ export class SocketConnection {
             return socketFunctionArg.name === dataArg.funcCallData.funcName;
           }
         );
-        if (referencedFunction !== undefined) {
+        if (referencedFunction) {
           plugins.smartlog.defaultLogger.log('ok', 'function in access scope');
           const localSocketRequest = new SocketRequest(this.smartsocketRef, {
             side: 'responding',

@@ -1,5 +1,3 @@
-import * as plugins from './smartsocket.plugins';
-
 // export main classes
 export * from './smartsocket.classes.smartsocket';
 export * from './smartsocket.classes.smartsocketclient';

@@ -18,7 +18,7 @@ export interface ISmartsocketConstructorOptions {
 export class Smartsocket {
   public options: ISmartsocketConstructorOptions;
   public io: SocketIO.Server;
-  public openSockets = new Objectmap<SocketConnection>();
+  public socketConnections = new Objectmap<SocketConnection>();
   public socketRoles = new Objectmap<SocketRole>();
   public socketFunctions = new Objectmap<SocketFunction>();
   public socketRequests = new Objectmap<SocketRequest>();
@@ -50,14 +50,14 @@ export class Smartsocket {
    */
   public async stop() {
     await plugins.smartdelay.delayFor(1000);
-    this.openSockets.forEach((socketObjectArg: SocketConnection) => {
+    this.socketConnections.forEach((socketObjectArg: SocketConnection) => {
       plugins.smartlog.defaultLogger.log(
         'info',
         `disconnect socket with >>alias ${socketObjectArg.alias}`
       );
       socketObjectArg.socket.disconnect();
     });
-    this.openSockets.wipe();
+    this.socketConnections.wipe();
     this.io.close();
 
     // stop the corresponging server
@@ -74,7 +74,6 @@ export class Smartsocket {
     dataArg: any,
     targetSocketConnectionArg: SocketConnection
   ) {
-    const done = plugins.smartpromise.defer();
     const socketRequest = new SocketRequest(this, {
       funcCallData: {
         funcDataArg: dataArg,
@@ -84,10 +83,8 @@ export class Smartsocket {
       shortId: plugins.shortid.generate(),
       side: 'requesting'
     });
-    socketRequest.dispatch().then((dataArg2: ISocketFunctionCall) => {
-      done.resolve(dataArg2.funcDataArg);
-    });
-    const result = await done.promise;
+    const response: ISocketFunctionCall = await socketRequest.dispatch();
+    const result = response.funcDataArg;
     return result;
   }
 
@@ -108,7 +105,7 @@ export class Smartsocket {
   /**
    * the standard handler for new socket connections
    */
-  private _handleSocketConnection(socketArg) {
+  private async _handleSocketConnection(socketArg: plugins.socketIo.Socket) {
     const socketConnection: SocketConnection = new SocketConnection({
       alias: undefined,
       authenticated: false,
@@ -118,14 +115,8 @@ export class Smartsocket {
       socket: socketArg
     });
     plugins.smartlog.defaultLogger.log('info', 'Socket connected. Trying to authenticate...');
-    this.openSockets.add(socketConnection);
-    socketConnection
-      .authenticate()
-      .then(() => {
-        return socketConnection.listenToFunctionRequests();
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.socketConnections.add(socketConnection);
+    await socketConnection.authenticate();
+    await socketConnection.listenToFunctionRequests();
   }
 }

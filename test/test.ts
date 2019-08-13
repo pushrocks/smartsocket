@@ -9,8 +9,9 @@ import smartsocket = require('../ts/index');
 
 let testSmartsocket: smartsocket.Smartsocket;
 let testSmartsocketClient: smartsocket.SmartsocketClient;
+let testSocketConnection: smartsocket.SocketConnection;
 let testSocketRole1: smartsocket.SocketRole;
-let testSocketFunctionServer: smartsocket.SocketFunction;
+let testSocketFunctionForServer: smartsocket.SocketFunction;
 let testSocketFunctionClient: smartsocket.SocketFunction;
 
 const testConfig = {
@@ -34,14 +35,14 @@ tap.test('should add a socketrole', async () => {
 
 // class SocketFunction
 tap.test('should register a new Function', async () => {
-  testSocketFunctionServer = new smartsocket.SocketFunction({
+  testSocketFunctionForServer = new smartsocket.SocketFunction({
     allowedRoles: [testSocketRole1],
     funcDef: async (dataArg, socketConnectionArg) => {
       return dataArg;
     },
     funcName: 'testFunction1'
   });
-  testSmartsocket.addSocketFunction(testSocketFunctionServer);
+  testSmartsocket.addSocketFunction(testSocketFunctionForServer);
 
   testSocketFunctionClient = new smartsocket.SocketFunction({
     allowedRoles: [],
@@ -50,7 +51,7 @@ tap.test('should register a new Function', async () => {
     },
     funcName: 'testFunction1'
   });
-  testSmartsocket.addSocketFunction(testSocketFunctionServer);
+  testSmartsocket.addSocketFunction(testSocketFunctionForServer);
   console.log(testSmartsocket.socketFunctions);
 });
 
@@ -72,12 +73,6 @@ tap.test('should react to a new websocket connection from client', async () => {
   await testSmartsocketClient.connect();
 });
 
-tap.test('client should disconnect and reconnect', async tools => {
-  await testSmartsocketClient.disconnect();
-  await tools.delayFor(100);
-  await testSmartsocketClient.connect();
-});
-
 tap.test('2 clients should connect in parallel', async () => {
   // TODO: implement parallel test
 });
@@ -90,10 +85,22 @@ tap.test('should be able to make a functionCall from client to server', async ()
 });
 
 tap.test('should be able to make a functionCall from server to client', async () => {
-  const response = await testSmartsocketClient.serverCall('testFunction1', {
-    hi: 'hi there from client'
-  });
+  const response = await testSmartsocket.clientCall(
+    'testFunction1',
+    {
+      hi: 'hi there from server'
+    },
+    testSmartsocket.socketConnections.find(socketConnection => {
+      return true;
+    })
+  );
   console.log(response);
+});
+
+tap.test('client should disconnect and reconnect', async tools => {
+  await testSmartsocketClient.disconnect();
+  await tools.delayFor(100);
+  await testSmartsocketClient.connect();
 });
 
 // terminate

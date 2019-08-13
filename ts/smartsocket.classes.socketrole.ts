@@ -10,7 +10,7 @@ import { ISocketConnectionAuthenticationObject } from './smartsocket.classes.soc
 /**
  * interface for class SocketRole
  */
-export interface SocketRoleOptions {
+export interface ISocketRoleOptions {
   name: string;
   passwordHash: string;
 }
@@ -43,10 +43,15 @@ export class SocketRole {
   public name: string;
   public passwordHash: string;
   public allowedFunctions = new Objectmap<SocketFunction>();
-  constructor(optionsArg: SocketRoleOptions) {
+  constructor(optionsArg: ISocketRoleOptions) {
     this.name = optionsArg.name;
     this.passwordHash = optionsArg.passwordHash;
   }
+
+  /**
+   * adds the socketfunction to the socketrole
+   * @param socketFunctionArg
+   */
   public addSocketFunction(socketFunctionArg: SocketFunction) {
     this.allowedFunctions.add(socketFunctionArg);
   }

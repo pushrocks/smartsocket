@@ -17,7 +17,7 @@ export type TSocketRequestSide = 'requesting' | 'responding';
 /**
  * interface of constructor of class SocketRequest
  */
-export interface SocketRequestConstructorOptions {
+export interface ISocketRequestConstructorOptions {
   side: TSocketRequestSide;
   originSocketConnection: SocketConnection;
   shortId: string;
@@ -51,13 +51,13 @@ export class SocketRequest {
   public shortid: string;
   public originSocketConnection: SocketConnection;
   public funcCallData: ISocketFunctionCall;
-  public done = plugins.smartpromise.defer();
+  public done = plugins.smartpromise.defer<ISocketFunctionCall>();
 
   public smartsocketRef: Smartsocket | SmartsocketClient;
 
   constructor(
     smartsocketRefArg: Smartsocket | SmartsocketClient,
-    optionsArg: SocketRequestConstructorOptions
+    optionsArg: ISocketRequestConstructorOptions
   ) {
     this.smartsocketRef = smartsocketRefArg;
     this.side = optionsArg.side;
@@ -72,7 +72,7 @@ export class SocketRequest {
   /**
    * dispatches a socketrequest from the requesting to the receiving side
    */
-  public dispatch() {
+  public dispatch(): Promise<ISocketFunctionCall> {
     const requestData: ISocketRequestDataObject = {
       funcCallData: this.funcCallData,
       shortId: this.shortid
