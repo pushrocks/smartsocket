@@ -58,14 +58,14 @@ export class SmartsocketClient {
       socket: plugins.socketIoClient(socketUrl, { multiplex: false })
     });
     this.socketConnection.socket.on('requestAuth', () => {
-      console.log('server requested authentication');
+      plugins.smartlog.defaultLogger.log('info', 'server requested authentication');
       this.socketConnection.socket.emit('dataAuth', {
         role: this.socketRole.name,
         password: this.socketRole.passwordHash,
         alias: this.alias
       });
       this.socketConnection.socket.on('authenticated', () => {
-        console.log('client is authenticated');
+        plugins.smartlog.defaultLogger.log('info', 'client is authenticated');
         this.socketConnection.authenticated = true;
         this.socketConnection.listenToFunctionRequests();
         done.resolve();

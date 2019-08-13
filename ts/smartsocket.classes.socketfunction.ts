@@ -42,7 +42,6 @@ export class SocketFunction {
     smartsocketRefArg: Smartsocket | SmartsocketClient,
     functionNameArg: string
   ): SocketFunction {
-    console.log(smartsocketRefArg.socketFunctions);
     return smartsocketRefArg.socketFunctions.find(socketFunctionArg => {
       return socketFunctionArg.name === functionNameArg;
     });
