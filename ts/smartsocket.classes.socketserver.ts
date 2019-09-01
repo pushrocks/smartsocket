@@ -2,6 +2,7 @@ import * as plugins from './smartsocket.plugins';
 
 // used in case no other server is supplied
 import * as http from 'http';
+import * as https from 'https';
 import { Smartsocket } from './smartsocket.classes.smartsocket';
 
 /**
@@ -10,7 +11,7 @@ import { Smartsocket } from './smartsocket.classes.smartsocket';
  */
 export class SocketServer {
   private smartsocket: Smartsocket;
-  private httpServer: http.Server;
+  private httpServer: http.Server | https.Server;
   // wether httpServer is standalone
   private standaloneServer = false;
   private expressServer: any;
