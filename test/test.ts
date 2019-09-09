@@ -49,7 +49,7 @@ tap.test('should register a new Function', async () => {
     funcDef: async (dataArg, socketConnectionArg) => {
       return dataArg;
     },
-    funcName: 'testFunction1'
+    funcName: 'testFunction2'
   });
   testSmartsocket.addSocketFunction(testSocketFunctionForServer);
   console.log(testSmartsocket.socketFunctions);
@@ -82,11 +82,12 @@ tap.test('should be able to make a functionCall from client to server', async ()
     value1: 'hello'
   });
   console.log(response);
+  expect(response.value1).to.equal('hello');
 });
 
 tap.test('should be able to make a functionCall from server to client', async () => {
   const response = await testSmartsocket.clientCall(
-    'testFunction1',
+    'testFunction2',
     {
       hi: 'hi there from server'
     },
@@ -95,6 +96,7 @@ tap.test('should be able to make a functionCall from server to client', async ()
     })
   );
   console.log(response);
+  expect(response.hi).to.equal('hi there from server');
 });
 
 tap.test('client should disconnect and reconnect', async tools => {
