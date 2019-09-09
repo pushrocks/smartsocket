@@ -13,7 +13,7 @@ import { SmartsocketClient } from './smartsocket.classes.smartsocketclient';
  * interface of the contructor options of class SocketFunction
  */
 export interface ISocketFunctionConstructorOptions<T extends plugins.typedrequestInterfaces.ITypedRequest> {
-  funcName: string;
+  funcName: T['method'];
   funcDef: TFuncDef<T>;
   allowedRoles: SocketRole[]; // all roles that are allowed to execute a SocketFunction
 }
