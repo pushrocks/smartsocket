@@ -11,8 +11,28 @@ let testSmartsocket: smartsocket.Smartsocket;
 let testSmartsocketClient: smartsocket.SmartsocketClient;
 let testSocketConnection: smartsocket.SocketConnection;
 let testSocketRole1: smartsocket.SocketRole;
-let testSocketFunctionForServer: smartsocket.SocketFunction;
-let testSocketFunctionClient: smartsocket.SocketFunction;
+let testSocketFunctionForServer: smartsocket.SocketFunction<any>;
+let testSocketFunctionClient: smartsocket.SocketFunction<any>;
+
+export interface IReqResClient {
+  method: 'testFunction1';
+  request: {
+    value1: string;
+  };
+  response: {
+    value1: string;
+  }
+}
+
+export interface IReqResServer {
+  method: 'testFunction2';
+  request: {
+    hi: string;
+  };
+  response: {
+    hi: string
+  }
+}
 
 const testConfig = {
   port: 3000
@@ -78,7 +98,7 @@ tap.test('2 clients should connect in parallel', async () => {
 });
 
 tap.test('should be able to make a functionCall from client to server', async () => {
-  const response = await testSmartsocketClient.serverCall('testFunction1', {
+  const response = await testSmartsocketClient.serverCall<IReqResClient>('testFunction1', {
     value1: 'hello'
   });
   console.log(response);
@@ -86,7 +106,7 @@ tap.test('should be able to make a functionCall from client to server', async ()
 });
 
 tap.test('should be able to make a functionCall from server to client', async () => {
-  const response = await testSmartsocket.clientCall(
+  const response = await testSmartsocket.clientCall<IReqResServer>(
     'testFunction2',
     {
       hi: 'hi there from server'

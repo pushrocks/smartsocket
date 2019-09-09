@@ -3,7 +3,7 @@ import * as plugins from './smartsocket.plugins';
 // classes
 import { Objectmap } from '@pushrocks/lik';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
-import { ISocketFunctionCall, SocketFunction } from './smartsocket.classes.socketfunction';
+import { ISocketFunctionCallDataRequest, SocketFunction, ISocketFunctionCallDataResponse } from './smartsocket.classes.socketfunction';
 import { SocketRequest } from './smartsocket.classes.socketrequest';
 import { SocketRole } from './smartsocket.classes.socketrole';
 import { SocketServer } from './smartsocket.classes.socketserver';
@@ -20,8 +20,8 @@ export class Smartsocket {
   public io: SocketIO.Server;
   public socketConnections = new Objectmap<SocketConnection>();
   public socketRoles = new Objectmap<SocketRole>();
-  public socketFunctions = new Objectmap<SocketFunction>();
-  public socketRequests = new Objectmap<SocketRequest>();
+  public socketFunctions = new Objectmap<SocketFunction<any>>();
+  public socketRequests = new Objectmap<SocketRequest<any>>();
 
   private socketServer = new SocketServer(this);
 
@@ -69,12 +69,12 @@ export class Smartsocket {
   /**
    * allows call to specific client.
    */
-  public async clientCall(
-    functionNameArg: string,
-    dataArg: any,
+  public async clientCall<T extends plugins.typedrequestInterfaces.ITypedRequest>(
+    functionNameArg: T['method'],
+    dataArg: T['request'],
     targetSocketConnectionArg: SocketConnection
-  ) {
-    const socketRequest = new SocketRequest(this, {
+  ): Promise<T['response']> {
+    const socketRequest = new SocketRequest<T>(this, {
       funcCallData: {
         funcDataArg: dataArg,
         funcName: functionNameArg
@@ -83,7 +83,7 @@ export class Smartsocket {
       shortId: plugins.shortid.generate(),
       side: 'requesting'
     });
-    const response: ISocketFunctionCall = await socketRequest.dispatch();
+    const response: ISocketFunctionCallDataResponse<T> = await socketRequest.dispatch();
     const result = response.funcDataArg;
     return result;
   }
@@ -98,7 +98,7 @@ export class Smartsocket {
     return;
   }
 
-  public addSocketFunction(socketFunction: SocketFunction) {
+  public addSocketFunction(socketFunction: SocketFunction<any>) {
     this.socketFunctions.add(socketFunction);
   }
 

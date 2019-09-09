@@ -1,7 +1,7 @@
 import * as plugins from './smartsocket.plugins';
 
 // import interfaces
-import { SocketFunction, ISocketFunctionCall } from './smartsocket.classes.socketfunction';
+import { SocketFunction, ISocketFunctionCallDataRequest, ISocketFunctionCallDataResponse } from './smartsocket.classes.socketfunction';
 
 // import classes
 import { Objectmap } from '@pushrocks/lik';
@@ -17,29 +17,29 @@ export type TSocketRequestSide = 'requesting' | 'responding';
 /**
  * interface of constructor of class SocketRequest
  */
-export interface ISocketRequestConstructorOptions {
+export interface ISocketRequestConstructorOptions<T extends plugins.typedrequestInterfaces.ITypedRequest> {
   side: TSocketRequestSide;
   originSocketConnection: SocketConnection;
   shortId: string;
-  funcCallData?: ISocketFunctionCall;
+  funcCallData?: ISocketFunctionCallDataRequest<T>;
 }
 
 /**
  * request object that is sent initially and may or may not receive a response
  */
-export interface ISocketRequestDataObject {
-  funcCallData: ISocketFunctionCall;
+export interface ISocketRequestDataObject<T extends plugins.typedrequestInterfaces.ITypedRequest> {
+  funcCallData: ISocketFunctionCallDataRequest<T> | ISocketFunctionCallDataResponse<T>;
   shortId: string;
   responseTimeout?: number;
 }
 
 // export classes
-export class SocketRequest {
+export class SocketRequest<T extends plugins.typedrequestInterfaces.ITypedRequest> {
   // STATIC
   public static getSocketRequestById(
     smartsocketRef: Smartsocket | SmartsocketClient,
     shortIdArg: string
-  ): SocketRequest {
+  ): SocketRequest<any> {
     return smartsocketRef.socketRequests.find(socketRequestArg => {
       return socketRequestArg.shortid === shortIdArg;
     });
@@ -50,14 +50,14 @@ export class SocketRequest {
   public side: TSocketRequestSide;
   public shortid: string;
   public originSocketConnection: SocketConnection;
-  public funcCallData: ISocketFunctionCall;
-  public done = plugins.smartpromise.defer<ISocketFunctionCall>();
+  public funcCallData: ISocketFunctionCallDataRequest<T>;
+  public done = plugins.smartpromise.defer<ISocketFunctionCallDataResponse<T>>();
 
   public smartsocketRef: Smartsocket | SmartsocketClient;
 
   constructor(
     smartsocketRefArg: Smartsocket | SmartsocketClient,
-    optionsArg: ISocketRequestConstructorOptions
+    optionsArg: ISocketRequestConstructorOptions<T>
   ) {
     this.smartsocketRef = smartsocketRefArg;
     this.side = optionsArg.side;
@@ -72,8 +72,8 @@ export class SocketRequest {
   /**
    * dispatches a socketrequest from the requesting to the receiving side
    */
-  public dispatch(): Promise<ISocketFunctionCall> {
-    const requestData: ISocketRequestDataObject = {
+  public dispatch(): Promise<ISocketFunctionCallDataResponse<T>> {
+    const requestData: ISocketRequestDataObject<T> = {
       funcCallData: this.funcCallData,
       shortId: this.shortid
     };
@@ -84,7 +84,7 @@ export class SocketRequest {
   /**
    * handles the response that is received by the requesting side
    */
-  public handleResponse(responseDataArg: ISocketRequestDataObject) {
+  public async handleResponse(responseDataArg: ISocketRequestDataObject<T>) {
     plugins.smartlog.defaultLogger.log('info', 'handling response!');
     this.done.resolve(responseDataArg.funcCallData);
     this.smartsocketRef.socketRequests.remove(this);
@@ -96,7 +96,7 @@ export class SocketRequest {
    * creates the response on the responding side
    */
   public async createResponse(): Promise<void> {
-    const targetSocketFunction: SocketFunction = SocketFunction.getSocketFunctionByName(
+    const targetSocketFunction: SocketFunction<T> = SocketFunction.getSocketFunctionByName(
       this.smartsocketRef,
       this.funcCallData.funcName
     );
@@ -112,11 +112,11 @@ export class SocketRequest {
     plugins.smartlog.defaultLogger.log('info', `invoking ${targetSocketFunction.name}`);
     targetSocketFunction.invoke(this.funcCallData, this.originSocketConnection).then(resultData => {
       plugins.smartlog.defaultLogger.log('info', 'got resultData. Sending it to requesting party.');
-      const requestData: ISocketRequestDataObject = {
+      const responseData: ISocketRequestDataObject<T> = {
         funcCallData: resultData,
         shortId: this.shortid
       };
-      this.originSocketConnection.socket.emit('functionResponse', requestData);
+      this.originSocketConnection.socket.emit('functionResponse', responseData);
       this.smartsocketRef.socketRequests.remove(this);
     });
   }

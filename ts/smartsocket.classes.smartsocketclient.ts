@@ -1,7 +1,7 @@
 import * as plugins from './smartsocket.plugins';
 
 import { SocketConnection } from './smartsocket.classes.socketconnection';
-import { ISocketFunctionCall, SocketFunction } from './smartsocket.classes.socketfunction';
+import { ISocketFunctionCallDataRequest, SocketFunction } from './smartsocket.classes.socketfunction';
 import { ISocketRequestDataObject, SocketRequest } from './smartsocket.classes.socketrequest';
 import { SocketRole } from './smartsocket.classes.socketrole';
 
@@ -23,8 +23,8 @@ export class SmartsocketClient {
   public serverUrl: string;
   public serverPort: number;
 
-  public socketFunctions = new plugins.lik.Objectmap<SocketFunction>();
-  public socketRequests = new plugins.lik.Objectmap<SocketRequest>();
+  public socketFunctions = new plugins.lik.Objectmap<SocketFunction<any>>();
+  public socketRequests = new plugins.lik.Objectmap<SocketRequest<any>>();
   public socketRoles = new plugins.lik.Objectmap<SocketRole>();
 
   constructor(optionsArg: ISmartsocketClientOptions) {
@@ -37,7 +37,7 @@ export class SmartsocketClient {
     });
   }
 
-  public addSocketFunction(socketFunction: SocketFunction) {
+  public addSocketFunction(socketFunction: SocketFunction<any>) {
     this.socketFunctions.add(socketFunction);
     this.socketRole.allowedFunctions.add(socketFunction);
   }
@@ -88,9 +88,9 @@ export class SmartsocketClient {
    * @param functionNameArg 
    * @param dataArg 
    */
-  public async serverCall(functionNameArg: string, dataArg: any): Promise<any> {
+  public async serverCall<T extends plugins.typedrequestInterfaces.ITypedRequest>(functionNameArg: T['method'], dataArg: T['request']): Promise<T['response']> {
     const done = plugins.smartpromise.defer();
-    const socketRequest = new SocketRequest(this, {
+    const socketRequest = new SocketRequest<T>(this, {
       side: 'requesting',
       originSocketConnection: this.socketConnection,
       shortId: plugins.shortid.generate(),

@@ -42,7 +42,7 @@ export class SocketRole {
   // INSTANCE
   public name: string;
   public passwordHash: string;
-  public allowedFunctions = new Objectmap<SocketFunction>();
+  public allowedFunctions = new Objectmap<SocketFunction<any>>();
   constructor(optionsArg: ISocketRoleOptions) {
     this.name = optionsArg.name;
     this.passwordHash = optionsArg.passwordHash;
@@ -52,7 +52,7 @@ export class SocketRole {
    * adds the socketfunction to the socketrole
    * @param socketFunctionArg
    */
-  public addSocketFunction(socketFunctionArg: SocketFunction) {
+  public addSocketFunction(socketFunctionArg: SocketFunction<any>) {
     this.allowedFunctions.add(socketFunctionArg);
   }
 }

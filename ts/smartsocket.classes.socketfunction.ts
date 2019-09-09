@@ -12,36 +12,44 @@ import { SmartsocketClient } from './smartsocket.classes.smartsocketclient';
 /**
  * interface of the contructor options of class SocketFunction
  */
-export interface ISocketFunctionConstructorOptions {
+export interface ISocketFunctionConstructorOptions<T extends plugins.typedrequestInterfaces.ITypedRequest> {
   funcName: string;
-  funcDef: TFuncDef;
+  funcDef: TFuncDef<T>;
   allowedRoles: SocketRole[]; // all roles that are allowed to execute a SocketFunction
 }
 
 /**
  * interface of the Socket Function call, in other words the object that routes a call to a function
  */
-export interface ISocketFunctionCall {
-  funcName: string;
-  funcDataArg: any;
+export interface ISocketFunctionCallDataRequest<T extends plugins.typedrequestInterfaces.ITypedRequest> {
+  funcName: T['method'];
+  funcDataArg: T['request'];
+}
+
+/**
+ * interface of the Socket Function call, in other words the object that routes a call to a function
+ */
+export interface ISocketFunctionCallDataResponse<T extends plugins.typedrequestInterfaces.ITypedRequest> {
+  funcName: T['method'];
+  funcDataArg: T['response'];
 }
 
 /**
  * interface for function definition of SocketFunction
  */
-export type TFuncDef = (dataArg: any, connectionArg: SocketConnection) => PromiseLike<any>;
+export type TFuncDef<T extends plugins.typedrequestInterfaces.ITypedRequest> = (dataArg: T['request'], connectionArg: SocketConnection) => PromiseLike<T['response']>;
 
 // export classes
 
 /**
  * class that respresents a function that can be transparently called using a SocketConnection
  */
-export class SocketFunction {
+export class SocketFunction<T extends plugins.typedrequestInterfaces.ITypedRequest> {
   // STATIC
-  public static getSocketFunctionByName(
+  public static getSocketFunctionByName<Q extends plugins.typedrequestInterfaces.ITypedRequest>(
     smartsocketRefArg: Smartsocket | SmartsocketClient,
     functionNameArg: string
-  ): SocketFunction {
+  ): SocketFunction<Q> {
     return smartsocketRefArg.socketFunctions.find(socketFunctionArg => {
       return socketFunctionArg.name === functionNameArg;
     });
@@ -49,13 +57,13 @@ export class SocketFunction {
 
   // INSTANCE
   public name: string;
-  public funcDef: TFuncDef;
+  public funcDef: TFuncDef<T>;
   public roles: SocketRole[];
 
   /**
    * the constructor for SocketFunction
    */
-  constructor(optionsArg: ISocketFunctionConstructorOptions) {
+  constructor(optionsArg: ISocketFunctionConstructorOptions<T>) {
     this.name = optionsArg.funcName;
     this.funcDef = optionsArg.funcDef;
     this.roles = optionsArg.allowedRoles;
@@ -67,20 +75,16 @@ export class SocketFunction {
   /**
    * invokes the function of this SocketFunction
    */
-  public invoke(dataArg: ISocketFunctionCall, socketConnectionArg: SocketConnection): Promise<any> {
-    const done = plugins.smartpromise.defer();
+  public async invoke(dataArg: ISocketFunctionCallDataRequest<T>, socketConnectionArg: SocketConnection): Promise<ISocketFunctionCallDataResponse<T>> {
     if (dataArg.funcName === this.name) {
-      this.funcDef(dataArg.funcDataArg, socketConnectionArg).then((resultData: any) => {
-        const funcResponseData: ISocketFunctionCall = {
-          funcName: this.name,
-          funcDataArg: resultData
-        };
-        done.resolve(funcResponseData);
-      });
+      const funcResponseData: ISocketFunctionCallDataResponse<T> = {
+        funcName: this.name,
+        funcDataArg: await this.funcDef(dataArg.funcDataArg, socketConnectionArg)
+      };
+      return funcResponseData;
     } else {
       throw new Error("SocketFunction.name does not match the data argument's .name!");
     }
-    return done.promise;
   }
 
   /**

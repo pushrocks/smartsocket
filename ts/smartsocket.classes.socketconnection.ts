@@ -115,10 +115,10 @@ export class SocketConnection {
   public listenToFunctionRequests() {
     const done = plugins.smartpromise.defer();
     if (this.authenticated) {
-      this.socket.on('function', (dataArg: ISocketRequestDataObject) => {
+      this.socket.on('function', (dataArg: ISocketRequestDataObject<any>) => {
         // check if requested function is available to the socket's scope
         plugins.smartlog.defaultLogger.log('info', 'function request received');
-        const referencedFunction: SocketFunction = this.role.allowedFunctions.find(
+        const referencedFunction: SocketFunction<any> = this.role.allowedFunctions.find(
           socketFunctionArg => {
             return socketFunctionArg.name === dataArg.funcCallData.funcName;
           }
@@ -139,7 +139,7 @@ export class SocketConnection {
           );
         }
       });
-      this.socket.on('functionResponse', (dataArg: ISocketRequestDataObject) => {
+      this.socket.on('functionResponse', (dataArg: ISocketRequestDataObject<any>) => {
         plugins.smartlog.defaultLogger.log(
           'info',
           `received response for request with id ${dataArg.shortId}`

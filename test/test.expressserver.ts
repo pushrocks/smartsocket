@@ -11,7 +11,7 @@ import smartsocket = require('../ts/index');
 let testSmartsocket: smartsocket.Smartsocket;
 let testSmartsocketClient: smartsocket.SmartsocketClient;
 let testSocketRole1: smartsocket.SocketRole;
-let testSocketFunction1: smartsocket.SocketFunction;
+let testSocketFunction1: smartsocket.SocketFunction<any>;
 let myseServer: smartexpress.Server;
 
 const testConfig = {
