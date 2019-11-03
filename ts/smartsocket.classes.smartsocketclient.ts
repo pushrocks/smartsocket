@@ -96,8 +96,9 @@ export class SmartsocketClient {
   /**
    * try a reconnection
    */
-  public async tryReconnect() {
-    
+  public async tryDebouncedReconnect() {
+    await plugins.smartdelay.delayForRandom(10000, 60000);
+    await this.connect();
   }
 
   /**

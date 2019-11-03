@@ -21,7 +21,7 @@ export interface IReqResClient {
   };
   response: {
     value1: string;
-  }
+  };
 }
 
 export interface IReqResServer {
