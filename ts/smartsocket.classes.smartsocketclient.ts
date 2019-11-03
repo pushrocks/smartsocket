@@ -70,6 +70,14 @@ export class SmartsocketClient {
         this.socketConnection.listenToFunctionRequests();
         done.resolve();
       });
+
+      // handle errors
+      this.socketConnection.socket.on('reconnect_failed', async () => {
+        this.disconnect();
+      });
+      this.socketConnection.socket.on('connect_error', async () => {
+        this.disconnect();
+      });
     });
     return done.promise;
   }
@@ -78,9 +86,18 @@ export class SmartsocketClient {
    * disconnect from the server
    */
   public async disconnect() {
-    this.socketConnection.socket.disconnect(true);
-    this.socketConnection = undefined;
-    plugins.smartlog.defaultLogger.log('ok', 'disconnected!');
+    if (this.socketConnection) {
+      this.socketConnection.socket.disconnect(true);
+      this.socketConnection = undefined;
+      plugins.smartlog.defaultLogger.log('ok', 'disconnected!');
+    }
+  }
+
+  /**
+   * try a reconnection
+   */
+  public async tryReconnect() {
+    
   }
 
   /**
