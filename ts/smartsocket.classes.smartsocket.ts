@@ -16,6 +16,10 @@ export interface ISmartsocketConstructorOptions {
 }
 
 export class Smartsocket {
+  /**
+   * a unique id to detect server restarts
+   */
+  public id = plugins.smartunique.shortId();
   public options: ISmartsocketConstructorOptions;
   public io: SocketIO.Server;
   public socketConnections = new Objectmap<SocketConnection>();
@@ -80,7 +84,7 @@ export class Smartsocket {
         funcName: functionNameArg
       },
       originSocketConnection: targetSocketConnectionArg,
-      shortId: plugins.shortid.generate(),
+      shortId: plugins.smartunique.shortId(),
       side: 'requesting'
     });
     const response: ISocketFunctionCallDataResponse<T> = await socketRequest.dispatch();

@@ -111,7 +111,7 @@ export class SmartsocketClient {
     const socketRequest = new SocketRequest<T>(this, {
       side: 'requesting',
       originSocketConnection: this.socketConnection,
-      shortId: plugins.shortid.generate(),
+      shortId: plugins.smartunique.shortId(),
       funcCallData: {
         funcName: functionNameArg,
         funcDataArg: dataArg

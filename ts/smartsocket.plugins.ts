@@ -10,6 +10,7 @@ import * as smarthash from '@pushrocks/smarthash';
 import * as smartdelay from '@pushrocks/smartdelay';
 import * as smartexpress from '@pushrocks/smartexpress';
 import * as smartpromise from '@pushrocks/smartpromise';
+import * as smartunique from '@pushrocks/smartunique';
 
 
 export {
@@ -18,16 +19,15 @@ export {
   smarthash,
   smartdelay,
   smartexpress,
-  smartpromise
+  smartpromise,
+  smartunique,
 };
 
 // third party scope
-import * as shortid from 'shortid';
 import socketIo from 'socket.io';
 import socketIoClient from 'socket.io-client';
 
 export {
-  shortid,
   socketIo,
   socketIoClient
 };
