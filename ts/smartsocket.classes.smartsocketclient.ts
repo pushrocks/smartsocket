@@ -23,6 +23,8 @@ export class SmartsocketClient {
   public serverUrl: string;
   public serverPort: number;
 
+  // public eventSubject = new plugins.smart
+
   public socketFunctions = new plugins.lik.Objectmap<SocketFunction<any>>();
   public socketRequests = new plugins.lik.Objectmap<SocketRequest<any>>();
   public socketRoles = new plugins.lik.Objectmap<SocketRole>();
@@ -55,7 +57,10 @@ export class SmartsocketClient {
       role: this.socketRole,
       side: 'client',
       smartsocketHost: this,
-      socket: plugins.socketIoClient(socketUrl, { multiplex: false })
+      socket: plugins.socketIoClient(socketUrl, {
+        multiplex: false,
+        reconnectionAttempts: 5,
+      })
     });
     this.socketConnection.socket.on('requestAuth', () => {
       plugins.smartlog.defaultLogger.log('info', 'server requested authentication');
