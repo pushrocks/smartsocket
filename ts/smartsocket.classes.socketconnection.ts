@@ -1,4 +1,5 @@
 import * as plugins from './smartsocket.plugins';
+import * as interfaces from './interfaces';
 
 import { Objectmap } from '@pushrocks/lik';
 
@@ -53,6 +54,9 @@ export class SocketConnection {
   public role: SocketRole;
   public smartsocketRef: Smartsocket | SmartsocketClient;
   public socket: SocketIO.Socket | SocketIOClient.Socket;
+
+  public eventSubject = new plugins.smartrx.rxjs.Subject();
+
   constructor(optionsArg: ISocketConnectionConstructorOptions) {
     this.alias = optionsArg.alias;
     this.authenticated = optionsArg.authenticated;
@@ -80,7 +84,7 @@ export class SocketConnection {
    */
   public authenticate() {
     const done = plugins.smartpromise.defer();
-    this.socket.on('dataAuth', (dataArg: ISocketConnectionAuthenticationObject) => {
+    this.socket.on('dataAuth', async (dataArg: ISocketConnectionAuthenticationObject) => {
       plugins.smartlog.defaultLogger.log(
         'info',
         'received authentication data. now hashing and comparing...'
@@ -99,11 +103,14 @@ export class SocketConnection {
         done.resolve(this);
       } else {
         this.authenticated = false;
-        this.socket.disconnect();
+        await this.disconnect();
         done.reject('not authenticated');
       }
     });
-    this.socket.emit('requestAuth');
+    const requestAuthPayload: interfaces.IRequestAuthPayload = {
+      serverShortId: this.smartsocketRef.shortId
+    };
+    this.socket.emit('requestAuth', requestAuthPayload);
     return done.promise;
   }
 
@@ -163,5 +170,8 @@ export class SocketConnection {
     return done.promise;
   }
 
-  // sending ----------------------
+  // disconnecting ----------------------
+  public async disconnect() {
+    this.socket.disconnect(true);
+  }
 }

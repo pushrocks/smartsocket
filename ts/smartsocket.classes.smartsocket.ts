@@ -19,7 +19,7 @@ export class Smartsocket {
   /**
    * a unique id to detect server restarts
    */
-  public id = plugins.smartunique.shortId();
+  public shortId = plugins.smartunique.shortId();
   public options: ISmartsocketConstructorOptions;
   public io: SocketIO.Server;
   public socketConnections = new Objectmap<SocketConnection>();
