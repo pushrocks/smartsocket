@@ -68,6 +68,11 @@ export class SocketConnection {
 
     // standard behaviour that is always true
     allSocketConnections.add(this);
+
+    // handle connection
+    this.socket.on('connect', async () => {
+      this.updateStatus('connected');
+    });
     this.socket.on('disconnect', async () => {
       plugins.smartlog.defaultLogger.log(
         'info',

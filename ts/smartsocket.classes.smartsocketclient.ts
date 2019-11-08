@@ -112,6 +112,11 @@ export class SmartsocketClient {
 
     });
 
+    // handle connection
+    this.socketConnection.socket.on('connect', async () => {
+      this.updateStatus('connected');
+    });
+
     // handle disconnection and errors
     this.socketConnection.socket.on('disconnect', async () => {
       await this.disconnect();
