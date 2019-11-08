@@ -55,7 +55,7 @@ export class SocketConnection {
   public smartsocketRef: Smartsocket | SmartsocketClient;
   public socket: SocketIO.Socket | SocketIOClient.Socket;
 
-  public eventSubject = new plugins.smartrx.rxjs.Subject();
+  public eventSubject = new plugins.smartrx.rxjs.Subject<interfaces.TConnectionEvent>();
 
   constructor(optionsArg: ISocketConnectionConstructorOptions) {
     this.alias = optionsArg.alias;
@@ -67,12 +67,12 @@ export class SocketConnection {
 
     // standard behaviour that is always true
     allSocketConnections.add(this);
-    this.socket.on('disconnect', () => {
+    this.socket.on('disconnect', async () => {
       plugins.smartlog.defaultLogger.log(
         'info',
         `SocketConnection with >alias ${this.alias} on >side ${this.side} disconnected`
       );
-      this.socket.disconnect();
+      await this.disconnect();
       allSocketConnections.remove(this);
     });
   }
@@ -173,5 +173,6 @@ export class SocketConnection {
   // disconnecting ----------------------
   public async disconnect() {
     this.socket.disconnect(true);
+    this.eventSubject.next('terminated');
   }
 }
