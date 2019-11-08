@@ -33,7 +33,7 @@ export class SmartsocketClient {
   public serverPort: number;
   public autoReconnect: boolean;
 
-  public eventSubject = new plugins.smartrx.rxjs.Subject();
+  public eventSubject = new plugins.smartrx.rxjs.Subject<interfaces.TConnectionEvent>();
 
   public socketFunctions = new plugins.lik.Objectmap<SocketFunction<any>>();
   public socketRequests = new plugins.lik.Objectmap<SocketRequest<any>>();
@@ -135,6 +135,7 @@ export class SmartsocketClient {
     }
     defaultLogger.log('warn', `disconnected from server ${this.remoteShortId}`);
     this.remoteShortId = null;
+    this.eventSubject.next('terminated');
 
     if (this.autoReconnect) {
       this.tryDebouncedReconnect();
