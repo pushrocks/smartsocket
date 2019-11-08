@@ -33,7 +33,9 @@ export class SmartsocketClient {
   public serverPort: number;
   public autoReconnect: boolean;
 
-  public eventSubject = new plugins.smartrx.rxjs.Subject<interfaces.TConnectionEvent>();
+  // status handling
+  public eventSubject = new plugins.smartrx.rxjs.Subject<interfaces.TConnectionStatus>();
+  public eventStatus: interfaces.TConnectionStatus = 'new';
 
   public socketFunctions = new plugins.lik.Objectmap<SocketFunction<any>>();
   public socketRequests = new plugins.lik.Objectmap<SocketRequest<any>>();
@@ -135,7 +137,7 @@ export class SmartsocketClient {
     }
     defaultLogger.log('warn', `disconnected from server ${this.remoteShortId}`);
     this.remoteShortId = null;
-    this.eventSubject.next('terminated');
+    this.updateStatus('disconnected');
 
     if (this.autoReconnect) {
       this.tryDebouncedReconnect();
@@ -169,5 +171,12 @@ export class SmartsocketClient {
     const response = await socketRequest.dispatch();
     const result = response.funcDataArg;
     return result;
+  }
+
+  private updateStatus (statusArg: interfaces.TConnectionStatus) {
+    if (this.eventStatus !== statusArg) {
+      this.eventSubject.next(statusArg);
+    }
+    this.eventStatus = statusArg;
   }
 }

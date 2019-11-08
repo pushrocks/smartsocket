@@ -2,4 +2,4 @@ export interface IRequestAuthPayload {
   serverShortId: string;
 }
 
-export type TConnectionEvent = 'terminated' | 'error';
+export type TConnectionStatus = 'new' | 'connecting' | 'connected' | 'disconnecting' | 'disconnected';

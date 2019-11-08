@@ -55,7 +55,8 @@ export class SocketConnection {
   public smartsocketRef: Smartsocket | SmartsocketClient;
   public socket: SocketIO.Socket | SocketIOClient.Socket;
 
-  public eventSubject = new plugins.smartrx.rxjs.Subject<interfaces.TConnectionEvent>();
+  public eventSubject = new plugins.smartrx.rxjs.Subject<interfaces.TConnectionStatus>();
+  public eventStatus: interfaces.TConnectionStatus = 'new';
 
   constructor(optionsArg: ISocketConnectionConstructorOptions) {
     this.alias = optionsArg.alias;
@@ -173,6 +174,13 @@ export class SocketConnection {
   // disconnecting ----------------------
   public async disconnect() {
     this.socket.disconnect(true);
-    this.eventSubject.next('terminated');
+    this.updateStatus('disconnected');
+  }
+
+  private updateStatus (statusArg: interfaces.TConnectionStatus) {
+    if (this.eventStatus !== statusArg) {
+      this.eventSubject.next(statusArg);
+    }
+    this.eventStatus = statusArg;
   }
 }
