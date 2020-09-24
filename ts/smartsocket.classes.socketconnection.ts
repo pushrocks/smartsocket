@@ -1,8 +1,6 @@
 import * as plugins from './smartsocket.plugins';
 import * as interfaces from './interfaces';
 
-import { Objectmap } from '@pushrocks/lik';
-
 // import classes
 import { Smartsocket } from './smartsocket.classes.smartsocket';
 import { SocketFunction } from './smartsocket.classes.socketfunction';
@@ -12,6 +10,7 @@ import { SocketRole } from './smartsocket.classes.socketrole';
 // socket.io
 import * as SocketIO from 'socket.io';
 import { SmartsocketClient } from './smartsocket.classes.smartsocketclient';
+import { logger } from './smartsocket.logging';
 
 // export interfaces
 
@@ -42,7 +41,7 @@ export interface ISocketConnectionAuthenticationObject {
 }
 
 // export classes
-export let allSocketConnections = new Objectmap<SocketConnection>();
+export let allSocketConnections = new plugins.lik.ObjectMap<SocketConnection>();
 
 /**
  * class SocketConnection represents a websocket connection
@@ -74,7 +73,7 @@ export class SocketConnection {
       this.updateStatus('connected');
     });
     this.socket.on('disconnect', async () => {
-      plugins.smartlog.defaultLogger.log(
+      logger.log(
         'info',
         `SocketConnection with >alias ${this.alias} on >side ${this.side} disconnected`
       );
@@ -91,7 +90,7 @@ export class SocketConnection {
   public authenticate() {
     const done = plugins.smartpromise.defer();
     this.socket.on('dataAuth', async (dataArg: ISocketConnectionAuthenticationObject) => {
-      plugins.smartlog.defaultLogger.log(
+      logger.log(
         'info',
         'received authentication data. now hashing and comparing...'
       );
@@ -102,7 +101,7 @@ export class SocketConnection {
         this.authenticated = true;
         this.role = SocketRole.getSocketRoleByName(this.smartsocketRef, dataArg.role);
         this.socket.emit('authenticated');
-        plugins.smartlog.defaultLogger.log(
+        logger.log(
           'ok',
           `socket with >>alias ${this.alias} >>role ${this.role} is authenticated!`
         );
@@ -130,14 +129,14 @@ export class SocketConnection {
     if (this.authenticated) {
       this.socket.on('function', (dataArg: ISocketRequestDataObject<any>) => {
         // check if requested function is available to the socket's scope
-        plugins.smartlog.defaultLogger.log('info', 'function request received');
+        logger.log('info', 'function request received');
         const referencedFunction: SocketFunction<any> = this.role.allowedFunctions.find(
           socketFunctionArg => {
             return socketFunctionArg.name === dataArg.funcCallData.funcName;
           }
         );
         if (referencedFunction) {
-          plugins.smartlog.defaultLogger.log('ok', 'function in access scope');
+          logger.log('ok', 'function in access scope');
           const localSocketRequest = new SocketRequest(this.smartsocketRef, {
             side: 'responding',
             originSocketConnection: this,
@@ -146,14 +145,14 @@ export class SocketConnection {
           });
           localSocketRequest.createResponse(); // takes care of creating response and sending it back
         } else {
-          plugins.smartlog.defaultLogger.log(
+          logger.log(
             'warn',
             'function not existent or out of access scope'
           );
         }
       });
       this.socket.on('functionResponse', (dataArg: ISocketRequestDataObject<any>) => {
-        plugins.smartlog.defaultLogger.log(
+        logger.log(
           'info',
           `received response for request with id ${dataArg.shortId}`
         );
@@ -163,14 +162,14 @@ export class SocketConnection {
         );
         targetSocketRequest.handleResponse(dataArg);
       });
-      plugins.smartlog.defaultLogger.log(
+      logger.log(
         'info',
         `now listening to function requests for ${this.alias}`
       );
       done.resolve(this);
     } else {
       const errMessage = 'socket needs to be authenticated first';
-      plugins.smartlog.defaultLogger.log('error', errMessage);
+      logger.log('error', errMessage);
       done.reject(errMessage);
     }
     return done.promise;

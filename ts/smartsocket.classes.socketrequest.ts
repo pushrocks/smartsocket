@@ -4,9 +4,8 @@ import * as plugins from './smartsocket.plugins';
 import { SocketFunction, ISocketFunctionCallDataRequest, ISocketFunctionCallDataResponse } from './smartsocket.classes.socketfunction';
 
 // import classes
-import { Objectmap } from '@pushrocks/lik';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
-import { defaultLogger } from '@pushrocks/smartlog';
+import { logger } from './smartsocket.logging';
 import { Smartsocket } from './smartsocket.classes.smartsocket';
 import { SmartsocketClient } from './smartsocket.classes.smartsocketclient';
 
@@ -85,7 +84,7 @@ export class SocketRequest<T extends plugins.typedrequestInterfaces.ITypedReques
    * handles the response that is received by the requesting side
    */
   public async handleResponse(responseDataArg: ISocketRequestDataObject<T>) {
-    plugins.smartlog.defaultLogger.log('info', 'handling response!');
+    logger.log('info', 'handling response!');
     this.done.resolve(responseDataArg.funcCallData);
     this.smartsocketRef.socketRequests.remove(this);
   }
@@ -102,16 +101,16 @@ export class SocketRequest<T extends plugins.typedrequestInterfaces.ITypedReques
     );
 
     if (!targetSocketFunction) {
-      defaultLogger.log(
+      logger.log(
         'warn',
         `There is no SocketFunction defined for ${this.funcCallData.funcName}`
       );
-      defaultLogger.log('warn', `So now response is being sent.`);
+      logger.log('warn', `So now response is being sent.`);
       return;
     }
-    plugins.smartlog.defaultLogger.log('info', `invoking ${targetSocketFunction.name}`);
+    logger.log('info', `invoking ${targetSocketFunction.name}`);
     targetSocketFunction.invoke(this.funcCallData, this.originSocketConnection).then(resultData => {
-      plugins.smartlog.defaultLogger.log('info', 'got resultData. Sending it to requesting party.');
+      logger.log('info', 'got resultData. Sending it to requesting party.');
       const responseData: ISocketRequestDataObject<T> = {
         funcCallData: resultData,
         shortId: this.shortid

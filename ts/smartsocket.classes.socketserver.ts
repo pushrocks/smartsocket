@@ -4,6 +4,7 @@ import * as plugins from './smartsocket.plugins';
 import * as http from 'http';
 import * as https from 'https';
 import { Smartsocket } from './smartsocket.classes.smartsocket';
+import { logger } from './smartsocket.logging';
 
 /**
  * class socketServer
@@ -55,11 +56,11 @@ export class SocketServer {
     // in case an external server has been set "this.standaloneServer" should be false
     if (this.httpServer && this.standaloneServer) {
       if (!this.smartsocket.options.port) {
-        plugins.smartlog.defaultLogger.log('error', 'there should be a port specifed for smartsocket!');
+        logger.log('error', 'there should be a port specifed for smartsocket!');
         throw new Error('there should be a port specified for smartsocket');
       }
       this.httpServer.listen(this.smartsocket.options.port, () => {
-        plugins.smartlog.defaultLogger.log('success', `Server started in standalone mode on ${this.smartsocket.options.port}`);
+        logger.log('success', `Server started in standalone mode on ${this.smartsocket.options.port}`);
         done.resolve();
       });
     } else {

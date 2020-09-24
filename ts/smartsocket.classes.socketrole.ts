@@ -1,7 +1,6 @@
 import * as plugins from './smartsocket.plugins';
 
 // import classes
-import { Objectmap } from '@pushrocks/lik';
 import { SocketFunction } from './smartsocket.classes.socketfunction';
 import { Smartsocket } from './smartsocket.classes.smartsocket';
 import { SmartsocketClient } from './smartsocket.classes.smartsocketclient';
@@ -42,7 +41,7 @@ export class SocketRole {
   // INSTANCE
   public name: string;
   public passwordHash: string;
-  public allowedFunctions = new Objectmap<SocketFunction<any>>();
+  public allowedFunctions = new plugins.lik.ObjectMap<SocketFunction<any>>();
   constructor(optionsArg: ISocketRoleOptions) {
     this.name = optionsArg.name;
     this.passwordHash = optionsArg.passwordHash;

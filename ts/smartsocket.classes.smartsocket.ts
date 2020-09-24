@@ -1,7 +1,6 @@
 import * as plugins from './smartsocket.plugins';
 
 // classes
-import { Objectmap } from '@pushrocks/lik';
 import { SocketConnection } from './smartsocket.classes.socketconnection';
 import { ISocketFunctionCallDataRequest, SocketFunction, ISocketFunctionCallDataResponse } from './smartsocket.classes.socketfunction';
 import { SocketRequest } from './smartsocket.classes.socketrequest';
@@ -10,6 +9,7 @@ import { SocketServer } from './smartsocket.classes.socketserver';
 
 // socket.io
 import * as SocketIO from 'socket.io';
+import { logger } from './smartsocket.logging';
 
 export interface ISmartsocketConstructorOptions {
   port?: number;
@@ -22,10 +22,10 @@ export class Smartsocket {
   public shortId = plugins.smartunique.shortId();
   public options: ISmartsocketConstructorOptions;
   public io: SocketIO.Server;
-  public socketConnections = new Objectmap<SocketConnection>();
-  public socketRoles = new Objectmap<SocketRole>();
-  public socketFunctions = new Objectmap<SocketFunction<any>>();
-  public socketRequests = new Objectmap<SocketRequest<any>>();
+  public socketConnections = new plugins.lik.ObjectMap<SocketConnection>();
+  public socketRoles = new plugins.lik.ObjectMap<SocketRole>();
+  public socketFunctions = new plugins.lik.ObjectMap<SocketFunction<any>>();
+  public socketRequests = new plugins.lik.ObjectMap<SocketRequest<any>>();
 
   private socketServer = new SocketServer(this);
 
@@ -55,7 +55,7 @@ export class Smartsocket {
   public async stop() {
     await plugins.smartdelay.delayFor(1000);
     this.socketConnections.forEach((socketObjectArg: SocketConnection) => {
-      plugins.smartlog.defaultLogger.log(
+      logger.log(
         'info',
         `disconnect socket with >>alias ${socketObjectArg.alias}`
       );
@@ -118,7 +118,7 @@ export class Smartsocket {
       smartsocketHost: this,
       socket: socketArg
     });
-    plugins.smartlog.defaultLogger.log('info', 'Socket connected. Trying to authenticate...');
+    logger.log('info', 'Socket connected. Trying to authenticate...');
     this.socketConnections.add(socketConnection);
     await socketConnection.authenticate();
     await socketConnection.listenToFunctionRequests();
