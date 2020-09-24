@@ -30,12 +30,12 @@ export interface IReqResServer {
     hi: string;
   };
   response: {
-    hi: string
-  }
+    hi: string;
+  };
 }
 
 const testConfig = {
-  port: 3000
+  port: 3000,
 };
 
 // class smartsocket
@@ -48,7 +48,7 @@ tap.test('should create a new smartsocket', async () => {
 tap.test('should add a socketrole', async () => {
   testSocketRole1 = new smartsocket.SocketRole({
     name: 'testRole1',
-    passwordHash: smarthash.sha256FromStringSync('testPassword')
+    passwordHash: smarthash.sha256FromStringSync('testPassword'),
   });
   testSmartsocket.addSocketRoles([testSocketRole1]);
 });
@@ -60,7 +60,7 @@ tap.test('should register a new Function', async () => {
     funcDef: async (dataArg, socketConnectionArg) => {
       return dataArg;
     },
-    funcName: 'testFunction1'
+    funcName: 'testFunction1',
   });
   testSmartsocket.addSocketFunction(testSocketFunctionForServer);
 
@@ -69,7 +69,7 @@ tap.test('should register a new Function', async () => {
     funcDef: async (dataArg, socketConnectionArg) => {
       return dataArg;
     },
-    funcName: 'testFunction2'
+    funcName: 'testFunction2',
   });
   testSmartsocket.addSocketFunction(testSocketFunctionForServer);
   console.log(testSmartsocket.socketFunctions);
@@ -86,7 +86,7 @@ tap.test('should react to a new websocket connection from client', async () => {
     url: 'http://localhost',
     password: 'testPassword',
     alias: 'testClient1',
-    role: 'testRole1'
+    role: 'testRole1',
   });
   testSmartsocketClient.addSocketFunction(testSocketFunctionClient);
   console.log(testSmartsocketClient.socketFunctions);
@@ -99,7 +99,7 @@ tap.test('2 clients should connect in parallel', async () => {
 
 tap.test('should be able to make a functionCall from client to server', async () => {
   const response = await testSmartsocketClient.serverCall<IReqResClient>('testFunction1', {
-    value1: 'hello'
+    value1: 'hello',
   });
   console.log(response);
   expect(response.value1).to.equal('hello');
@@ -109,9 +109,9 @@ tap.test('should be able to make a functionCall from server to client', async ()
   const response = await testSmartsocket.clientCall<IReqResServer>(
     'testFunction2',
     {
-      hi: 'hi there from server'
+      hi: 'hi there from server',
     },
-    testSmartsocket.socketConnections.find(socketConnection => {
+    testSmartsocket.socketConnections.find((socketConnection) => {
       return true;
     })
   );
@@ -119,7 +119,7 @@ tap.test('should be able to make a functionCall from server to client', async ()
   expect(response.hi).to.equal('hi there from server');
 });
 
-tap.test('client should disconnect and reconnect', async tools => {
+tap.test('client should disconnect and reconnect', async (tools) => {
   await testSmartsocketClient.disconnect();
   await tools.delayFor(100);
   await testSmartsocketClient.connect();

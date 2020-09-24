@@ -15,7 +15,7 @@ let testSocketFunction1: smartsocket.SocketFunction<any>;
 let myseServer: smartexpress.Server;
 
 const testConfig = {
-  port: 3000
+  port: 3000,
 };
 
 // class smartsocket
@@ -28,7 +28,7 @@ tap.test('Should accept an smartExpressServer as server', async () => {
   myseServer = new smartexpress.Server({
     cors: true,
     forceSsl: false,
-    port: testConfig.port
+    port: testConfig.port,
   });
 
   testSmartsocket.setExternalServer('smartexpress', myseServer);
@@ -40,7 +40,7 @@ tap.test('Should accept an smartExpressServer as server', async () => {
 tap.test('should add a socketrole', async () => {
   testSocketRole1 = new smartsocket.SocketRole({
     name: 'testRole1',
-    passwordHash: smarthash.sha256FromStringSync('testPassword')
+    passwordHash: smarthash.sha256FromStringSync('testPassword'),
   });
   testSmartsocket.addSocketRoles([testSocketRole1]);
 });
@@ -52,7 +52,7 @@ tap.test('should register a new Function', async () => {
     funcDef: async (dataArg, socketConnectionArg) => {
       return dataArg;
     },
-    funcName: 'testFunction1'
+    funcName: 'testFunction1',
   });
   testSmartsocket.addSocketFunction(testSocketFunction1);
   console.log(testSmartsocket.socketFunctions);
@@ -69,14 +69,14 @@ tap.test('should react to a new websocket connection from client', async () => {
     url: 'http://localhost',
     password: 'testPassword',
     alias: 'testClient1',
-    role: 'testRole1'
+    role: 'testRole1',
   });
   testSmartsocketClient.addSocketFunction(testSocketFunction1);
   console.log(testSmartsocketClient.socketFunctions);
   await testSmartsocketClient.connect();
 });
 
-tap.test('client should disconnect and reconnect', async tools => {
+tap.test('client should disconnect and reconnect', async (tools) => {
   await testSmartsocketClient.disconnect();
   await tools.delayFor(100);
   await testSmartsocketClient.connect();
@@ -88,7 +88,7 @@ tap.test('2 clients should connect in parallel', async () => {
 
 tap.test('should be able to make a functionCall from client to server', async () => {
   const response = await testSmartsocketClient.serverCall('testFunction1', {
-    value1: 'hello'
+    value1: 'hello',
   });
   console.log(response);
 });

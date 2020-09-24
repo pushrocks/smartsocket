@@ -1,7 +1,7 @@
 // apiglobal scope
 import * as typedrequestInterfaces from '@apiglobal/typedrequest-interfaces';
 
-export {typedrequestInterfaces};
+export { typedrequestInterfaces };
 
 // pushrocks scope
 import * as lik from '@pushrocks/lik';
@@ -14,7 +14,6 @@ import * as smarttime from '@pushrocks/smarttime';
 import * as smartunique from '@pushrocks/smartunique';
 import * as smartrx from '@pushrocks/smartrx';
 
-
 export {
   lik,
   smartlog,
@@ -24,14 +23,11 @@ export {
   smartpromise,
   smarttime,
   smartunique,
-  smartrx
+  smartrx,
 };
 
 // third party scope
 import socketIo from 'socket.io';
 import socketIoClient from 'socket.io-client';
 
-export {
-  socketIo,
-  socketIoClient
-};
+export { socketIo, socketIoClient };

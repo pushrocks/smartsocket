@@ -2,7 +2,11 @@ import * as plugins from './smartsocket.plugins';
 
 // classes
 import { SocketConnection } from './smartsocket.classes.socketconnection';
-import { ISocketFunctionCallDataRequest, SocketFunction, ISocketFunctionCallDataResponse } from './smartsocket.classes.socketfunction';
+import {
+  ISocketFunctionCallDataRequest,
+  SocketFunction,
+  ISocketFunctionCallDataResponse,
+} from './smartsocket.classes.socketfunction';
 import { SocketRequest } from './smartsocket.classes.socketrequest';
 import { SocketRole } from './smartsocket.classes.socketrole';
 import { SocketServer } from './smartsocket.classes.socketserver';
@@ -44,7 +48,7 @@ export class Smartsocket {
   public async start() {
     this.io = plugins.socketIo(this.socketServer.getServerForSocketIo());
     await this.socketServer.start();
-    this.io.on('connection', socketArg => {
+    this.io.on('connection', (socketArg) => {
       this._handleSocketConnection(socketArg);
     });
   }
@@ -55,10 +59,7 @@ export class Smartsocket {
   public async stop() {
     await plugins.smartdelay.delayFor(1000);
     this.socketConnections.forEach((socketObjectArg: SocketConnection) => {
-      logger.log(
-        'info',
-        `disconnect socket with >>alias ${socketObjectArg.alias}`
-      );
+      logger.log('info', `disconnect socket with >>alias ${socketObjectArg.alias}`);
       socketObjectArg.socket.disconnect();
     });
     this.socketConnections.wipe();
@@ -81,11 +82,11 @@ export class Smartsocket {
     const socketRequest = new SocketRequest<T>(this, {
       funcCallData: {
         funcDataArg: dataArg,
-        funcName: functionNameArg
+        funcName: functionNameArg,
       },
       originSocketConnection: targetSocketConnectionArg,
       shortId: plugins.smartunique.shortId(),
-      side: 'requesting'
+      side: 'requesting',
     });
     const response: ISocketFunctionCallDataResponse<T> = await socketRequest.dispatch();
     const result = response.funcDataArg;
@@ -116,7 +117,7 @@ export class Smartsocket {
       role: undefined,
       side: 'server',
       smartsocketHost: this,
-      socket: socketArg
+      socket: socketArg,
     });
     logger.log('info', 'Socket connected. Trying to authenticate...');
     this.socketConnections.add(socketConnection);

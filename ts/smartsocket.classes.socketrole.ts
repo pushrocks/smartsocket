@@ -23,7 +23,7 @@ export class SocketRole {
     referenceSmartsocket: Smartsocket | SmartsocketClient,
     socketRoleNameArg: string
   ): SocketRole {
-    return referenceSmartsocket.socketRoles.find(socketRoleArg => {
+    return referenceSmartsocket.socketRoles.find((socketRoleArg) => {
       return socketRoleArg.name === socketRoleNameArg;
     });
   }

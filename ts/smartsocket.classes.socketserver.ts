@@ -60,7 +60,10 @@ export class SocketServer {
         throw new Error('there should be a port specified for smartsocket');
       }
       this.httpServer.listen(this.smartsocket.options.port, () => {
-        logger.log('success', `Server started in standalone mode on ${this.smartsocket.options.port}`);
+        logger.log(
+          'success',
+          `Server started in standalone mode on ${this.smartsocket.options.port}`
+        );
         done.resolve();
       });
     } else {

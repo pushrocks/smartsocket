@@ -1,7 +1,11 @@
 import * as plugins from './smartsocket.plugins';
 
 // import interfaces
-import { SocketFunction, ISocketFunctionCallDataRequest, ISocketFunctionCallDataResponse } from './smartsocket.classes.socketfunction';
+import {
+  SocketFunction,
+  ISocketFunctionCallDataRequest,
+  ISocketFunctionCallDataResponse,
+} from './smartsocket.classes.socketfunction';
 
 // import classes
 import { SocketConnection } from './smartsocket.classes.socketconnection';
@@ -16,7 +20,9 @@ export type TSocketRequestSide = 'requesting' | 'responding';
 /**
  * interface of constructor of class SocketRequest
  */
-export interface ISocketRequestConstructorOptions<T extends plugins.typedrequestInterfaces.ITypedRequest> {
+export interface ISocketRequestConstructorOptions<
+  T extends plugins.typedrequestInterfaces.ITypedRequest
+> {
   side: TSocketRequestSide;
   originSocketConnection: SocketConnection;
   shortId: string;
@@ -39,7 +45,7 @@ export class SocketRequest<T extends plugins.typedrequestInterfaces.ITypedReques
     smartsocketRef: Smartsocket | SmartsocketClient,
     shortIdArg: string
   ): SocketRequest<any> {
-    return smartsocketRef.socketRequests.find(socketRequestArg => {
+    return smartsocketRef.socketRequests.find((socketRequestArg) => {
       return socketRequestArg.shortid === shortIdArg;
     });
   }
@@ -74,7 +80,7 @@ export class SocketRequest<T extends plugins.typedrequestInterfaces.ITypedReques
   public dispatch(): Promise<ISocketFunctionCallDataResponse<T>> {
     const requestData: ISocketRequestDataObject<T> = {
       funcCallData: this.funcCallData,
-      shortId: this.shortid
+      shortId: this.shortid,
     };
     this.originSocketConnection.socket.emit('function', requestData);
     return this.done.promise;
@@ -101,22 +107,21 @@ export class SocketRequest<T extends plugins.typedrequestInterfaces.ITypedReques
     );
 
     if (!targetSocketFunction) {
-      logger.log(
-        'warn',
-        `There is no SocketFunction defined for ${this.funcCallData.funcName}`
-      );
+      logger.log('warn', `There is no SocketFunction defined for ${this.funcCallData.funcName}`);
       logger.log('warn', `So now response is being sent.`);
       return;
     }
     logger.log('info', `invoking ${targetSocketFunction.name}`);
-    targetSocketFunction.invoke(this.funcCallData, this.originSocketConnection).then(resultData => {
-      logger.log('info', 'got resultData. Sending it to requesting party.');
-      const responseData: ISocketRequestDataObject<T> = {
-        funcCallData: resultData,
-        shortId: this.shortid
-      };
-      this.originSocketConnection.socket.emit('functionResponse', responseData);
-      this.smartsocketRef.socketRequests.remove(this);
-    });
+    targetSocketFunction
+      .invoke(this.funcCallData, this.originSocketConnection)
+      .then((resultData) => {
+        logger.log('info', 'got resultData. Sending it to requesting party.');
+        const responseData: ISocketRequestDataObject<T> = {
+          funcCallData: resultData,
+          shortId: this.shortid,
+        };
+        this.originSocketConnection.socket.emit('functionResponse', responseData);
+        this.smartsocketRef.socketRequests.remove(this);
+      });
   }
 }

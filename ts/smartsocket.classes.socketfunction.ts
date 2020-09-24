@@ -11,7 +11,9 @@ import { SmartsocketClient } from './smartsocket.classes.smartsocketclient';
 /**
  * interface of the contructor options of class SocketFunction
  */
-export interface ISocketFunctionConstructorOptions<T extends plugins.typedrequestInterfaces.ITypedRequest> {
+export interface ISocketFunctionConstructorOptions<
+  T extends plugins.typedrequestInterfaces.ITypedRequest
+> {
   funcName: T['method'];
   funcDef: TFuncDef<T>;
   allowedRoles: SocketRole[]; // all roles that are allowed to execute a SocketFunction
@@ -20,7 +22,9 @@ export interface ISocketFunctionConstructorOptions<T extends plugins.typedreques
 /**
  * interface of the Socket Function call, in other words the object that routes a call to a function
  */
-export interface ISocketFunctionCallDataRequest<T extends plugins.typedrequestInterfaces.ITypedRequest> {
+export interface ISocketFunctionCallDataRequest<
+  T extends plugins.typedrequestInterfaces.ITypedRequest
+> {
   funcName: T['method'];
   funcDataArg: T['request'];
 }
@@ -28,7 +32,9 @@ export interface ISocketFunctionCallDataRequest<T extends plugins.typedrequestIn
 /**
  * interface of the Socket Function call, in other words the object that routes a call to a function
  */
-export interface ISocketFunctionCallDataResponse<T extends plugins.typedrequestInterfaces.ITypedRequest> {
+export interface ISocketFunctionCallDataResponse<
+  T extends plugins.typedrequestInterfaces.ITypedRequest
+> {
   funcName: T['method'];
   funcDataArg: T['response'];
 }
@@ -36,7 +42,10 @@ export interface ISocketFunctionCallDataResponse<T extends plugins.typedrequestI
 /**
  * interface for function definition of SocketFunction
  */
-export type TFuncDef<T extends plugins.typedrequestInterfaces.ITypedRequest> = (dataArg: T['request'], connectionArg: SocketConnection) => PromiseLike<T['response']>;
+export type TFuncDef<T extends plugins.typedrequestInterfaces.ITypedRequest> = (
+  dataArg: T['request'],
+  connectionArg: SocketConnection
+) => PromiseLike<T['response']>;
 
 // export classes
 
@@ -49,7 +58,7 @@ export class SocketFunction<T extends plugins.typedrequestInterfaces.ITypedReque
     smartsocketRefArg: Smartsocket | SmartsocketClient,
     functionNameArg: string
   ): SocketFunction<Q> {
-    return smartsocketRefArg.socketFunctions.find(socketFunctionArg => {
+    return smartsocketRefArg.socketFunctions.find((socketFunctionArg) => {
       return socketFunctionArg.name === functionNameArg;
     });
   }
@@ -74,11 +83,14 @@ export class SocketFunction<T extends plugins.typedrequestInterfaces.ITypedReque
   /**
    * invokes the function of this SocketFunction
    */
-  public async invoke(dataArg: ISocketFunctionCallDataRequest<T>, socketConnectionArg: SocketConnection): Promise<ISocketFunctionCallDataResponse<T>> {
+  public async invoke(
+    dataArg: ISocketFunctionCallDataRequest<T>,
+    socketConnectionArg: SocketConnection
+  ): Promise<ISocketFunctionCallDataResponse<T>> {
     if (dataArg.funcName === this.name) {
       const funcResponseData: ISocketFunctionCallDataResponse<T> = {
         funcName: this.name,
-        funcDataArg: await this.funcDef(dataArg.funcDataArg, socketConnectionArg)
+        funcDataArg: await this.funcDef(dataArg.funcDataArg, socketConnectionArg),
       };
       return funcResponseData;
     } else {

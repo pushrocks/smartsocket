@@ -90,10 +90,7 @@ export class SocketConnection {
   public authenticate() {
     const done = plugins.smartpromise.defer();
     this.socket.on('dataAuth', async (dataArg: ISocketConnectionAuthenticationObject) => {
-      logger.log(
-        'info',
-        'received authentication data. now hashing and comparing...'
-      );
+      logger.log('info', 'received authentication data. now hashing and comparing...');
       this.socket.removeListener('dataAuth', () => {});
       if (SocketRole.checkPasswordForRole(dataArg, this.smartsocketRef)) {
         // TODO: authenticate password
@@ -101,10 +98,7 @@ export class SocketConnection {
         this.authenticated = true;
         this.role = SocketRole.getSocketRoleByName(this.smartsocketRef, dataArg.role);
         this.socket.emit('authenticated');
-        logger.log(
-          'ok',
-          `socket with >>alias ${this.alias} >>role ${this.role} is authenticated!`
-        );
+        logger.log('ok', `socket with >>alias ${this.alias} >>role ${this.role} is authenticated!`);
         done.resolve(this);
       } else {
         this.authenticated = false;
@@ -113,7 +107,7 @@ export class SocketConnection {
       }
     });
     const requestAuthPayload: interfaces.IRequestAuthPayload = {
-      serverShortId: this.smartsocketRef.shortId
+      serverShortId: this.smartsocketRef.shortId,
     };
     this.socket.emit('requestAuth', requestAuthPayload);
     return done.promise;
@@ -131,7 +125,7 @@ export class SocketConnection {
         // check if requested function is available to the socket's scope
         logger.log('info', 'function request received');
         const referencedFunction: SocketFunction<any> = this.role.allowedFunctions.find(
-          socketFunctionArg => {
+          (socketFunctionArg) => {
             return socketFunctionArg.name === dataArg.funcCallData.funcName;
           }
         );
@@ -141,31 +135,22 @@ export class SocketConnection {
             side: 'responding',
             originSocketConnection: this,
             shortId: dataArg.shortId,
-            funcCallData: dataArg.funcCallData
+            funcCallData: dataArg.funcCallData,
           });
           localSocketRequest.createResponse(); // takes care of creating response and sending it back
         } else {
-          logger.log(
-            'warn',
-            'function not existent or out of access scope'
-          );
+          logger.log('warn', 'function not existent or out of access scope');
         }
       });
       this.socket.on('functionResponse', (dataArg: ISocketRequestDataObject<any>) => {
-        logger.log(
-          'info',
-          `received response for request with id ${dataArg.shortId}`
-        );
+        logger.log('info', `received response for request with id ${dataArg.shortId}`);
         const targetSocketRequest = SocketRequest.getSocketRequestById(
           this.smartsocketRef,
           dataArg.shortId
         );
         targetSocketRequest.handleResponse(dataArg);
       });
-      logger.log(
-        'info',
-        `now listening to function requests for ${this.alias}`
-      );
+      logger.log('info', `now listening to function requests for ${this.alias}`);
       done.resolve(this);
     } else {
       const errMessage = 'socket needs to be authenticated first';
@@ -181,7 +166,7 @@ export class SocketConnection {
     this.updateStatus('disconnected');
   }
 
-  private updateStatus (statusArg: interfaces.TConnectionStatus) {
+  private updateStatus(statusArg: interfaces.TConnectionStatus) {
     if (this.eventStatus !== statusArg) {
       this.eventSubject.next(statusArg);
     }
