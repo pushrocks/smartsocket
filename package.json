@@ -1,6 +1,6 @@
 {
   "name": "@pushrocks/smartsocket",
-  "version": "1.1.65",
+  "version": "1.1.66",
   "description": "easy and secure websocket communication",
   "main": "dist_ts/index.js",
   "typings": "dist_ts/index.d.ts",
