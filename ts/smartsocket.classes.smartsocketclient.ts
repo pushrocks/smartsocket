@@ -64,8 +64,16 @@ export class SmartsocketClient {
   /**
    * connect the client to the server
    */
-  public connect() {
+  public async connect() {
     const done = plugins.smartpromise.defer();
+    const smartenvInstance = new plugins.smartenv.Smartenv();
+    const socketIoClient = await smartenvInstance.getEnvAwareModule({
+      nodeModuleName: 'socket.io-client',
+      webUrlArg: 'https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js',
+      getFunction: () => {
+        return globalThis.io;
+      }
+    });
     logger.log('info', 'trying to connect...');
     const socketUrl = `${this.serverUrl}:${this.serverPort}`;
     this.socketConnection = new SocketConnection({
@@ -74,7 +82,7 @@ export class SmartsocketClient {
       role: this.socketRole,
       side: 'client',
       smartsocketHost: this,
-      socket: plugins.socketIoClient(socketUrl, {
+      socket: await socketIoClient.connect(socketUrl, {
         multiplex: false,
         reconnectionAttempts: 5,
       }),

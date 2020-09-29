@@ -25,10 +25,3 @@ export {
   smarttime,
   smartrx,
 };
-
-// third party
-import socketIoClient from 'socket.io-client';
-
-export {
-  socketIoClient
-};
