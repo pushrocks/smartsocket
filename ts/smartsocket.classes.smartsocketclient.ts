@@ -72,7 +72,7 @@ export class SmartsocketClient {
       webUrlArg: 'https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js',
       getFunction: () => {
         return globalThis.io;
-      }
+      },
     });
     logger.log('info', 'trying to connect...');
     const socketUrl = `${this.serverUrl}:${this.serverPort}`;
