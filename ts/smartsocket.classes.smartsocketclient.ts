@@ -1,4 +1,5 @@
 import * as plugins from './smartsocket.plugins';
+import * as pluginsTyped from './smartsocket.pluginstyped';
 import * as interfaces from './interfaces';
 
 import { SocketConnection } from './smartsocket.classes.socketconnection';
@@ -24,7 +25,7 @@ export interface ISmartsocketClientOptions {
 
 export class SmartsocketClient {
   // a unique id
-  public shortId = plugins.smartunique.shortId();
+  public shortId = plugins.isounique.uni();
 
   // the shortId of the remote we connect to
   public remoteShortId: string = null;
@@ -175,7 +176,7 @@ export class SmartsocketClient {
     const socketRequest = new SocketRequest<T>(this, {
       side: 'requesting',
       originSocketConnection: this.socketConnection,
-      shortId: plugins.smartunique.shortId(),
+      shortId: plugins.isounique.uni(),
       funcCallData: {
         funcName: functionNameArg,
         funcDataArg: dataArg,

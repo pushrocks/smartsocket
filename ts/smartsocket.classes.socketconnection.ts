@@ -92,7 +92,7 @@ export class SocketConnection {
     this.socket.on('dataAuth', async (dataArg: ISocketConnectionAuthenticationObject) => {
       logger.log('info', 'received authentication data. now hashing and comparing...');
       this.socket.removeListener('dataAuth', () => {});
-      if (SocketRole.checkPasswordForRole(dataArg, this.smartsocketRef)) {
+      if (await SocketRole.checkPasswordForRole(dataArg, this.smartsocketRef)) {
         // TODO: authenticate password
         this.alias = dataArg.alias;
         this.authenticated = true;
@@ -123,14 +123,14 @@ export class SocketConnection {
     if (this.authenticated) {
       this.socket.on('function', (dataArg: ISocketRequestDataObject<any>) => {
         // check if requested function is available to the socket's scope
-        logger.log('info', 'function request received');
+        // logger.log('info', 'function request received');
         const referencedFunction: SocketFunction<any> = this.role.allowedFunctions.find(
           (socketFunctionArg) => {
             return socketFunctionArg.name === dataArg.funcCallData.funcName;
           }
         );
         if (referencedFunction) {
-          logger.log('ok', 'function in access scope');
+          // logger.log('ok', 'function in access scope');
           const localSocketRequest = new SocketRequest(this.smartsocketRef, {
             side: 'responding',
             originSocketConnection: this,

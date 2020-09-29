@@ -1,8 +1,7 @@
 import * as plugins from './smartsocket.plugins';
+import * as pluginsTyped from './smartsocket.pluginstyped';
 
 // used in case no other server is supplied
-import * as http from 'http';
-import * as https from 'https';
 import { Smartsocket } from './smartsocket.classes.smartsocket';
 import { logger } from './smartsocket.logging';
 
@@ -12,7 +11,7 @@ import { logger } from './smartsocket.logging';
  */
 export class SocketServer {
   private smartsocket: Smartsocket;
-  private httpServer: http.Server | https.Server;
+  private httpServer: pluginsTyped.http.Server | pluginsTyped.https.Server;
   // wether httpServer is standalone
   private standaloneServer = false;
   private expressServer: any;
@@ -27,7 +26,7 @@ export class SocketServer {
    */
   public async setExternalServer(
     serverType: 'smartexpress',
-    serverArg: plugins.smartexpress.Server
+    serverArg: pluginsTyped.smartexpress.Server
   ) {
     await serverArg.startedPromise;
     this.httpServer = serverArg.httpServer;
@@ -40,7 +39,8 @@ export class SocketServer {
     if (this.httpServer) {
       return this.httpServer;
     } else {
-      this.httpServer = new http.Server();
+      const httpModule = this.smartsocket.smartenv.getSafeNodeModule('http');
+      this.httpServer = new httpModule.Server();
       this.standaloneServer = true;
       return this.httpServer;
     }

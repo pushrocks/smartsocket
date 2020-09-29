@@ -107,8 +107,7 @@ export class SocketRequest<T extends plugins.typedrequestInterfaces.ITypedReques
     );
 
     if (!targetSocketFunction) {
-      logger.log('warn', `There is no SocketFunction defined for ${this.funcCallData.funcName}`);
-      logger.log('warn', `So now response is being sent.`);
+      logger.log('error', `There is no SocketFunction defined for ${this.funcCallData.funcName}`);
       return;
     }
     logger.log('info', `invoking ${targetSocketFunction.name}`);

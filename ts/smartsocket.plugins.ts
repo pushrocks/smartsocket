@@ -4,30 +4,31 @@ import * as typedrequestInterfaces from '@apiglobal/typedrequest-interfaces';
 export { typedrequestInterfaces };
 
 // pushrocks scope
+import * as isohash from '@pushrocks/isohash';
+import * as isounique from '@pushrocks/isounique';
 import * as lik from '@pushrocks/lik';
+import * as smartenv from '@pushrocks/smartenv';
 import * as smartlog from '@pushrocks/smartlog';
-import * as smarthash from '@pushrocks/smarthash';
 import * as smartdelay from '@pushrocks/smartdelay';
-import * as smartexpress from '@pushrocks/smartexpress';
 import * as smartpromise from '@pushrocks/smartpromise';
 import * as smarttime from '@pushrocks/smarttime';
-import * as smartunique from '@pushrocks/smartunique';
 import * as smartrx from '@pushrocks/smartrx';
 
 export {
+  isohash,
+  isounique,
   lik,
+  smartenv,
   smartlog,
-  smarthash,
   smartdelay,
-  smartexpress,
   smartpromise,
   smarttime,
-  smartunique,
   smartrx,
 };
 
-// third party scope
-import socketIo from 'socket.io';
+// third party
 import socketIoClient from 'socket.io-client';
 
-export { socketIo, socketIoClient };
+export {
+  socketIoClient
+};

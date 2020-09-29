@@ -1,4 +1,5 @@
 import * as plugins from './smartsocket.plugins';
+import * as pluginsTyped from './smartsocket.pluginstyped';
 
 // classes
 import { SocketConnection } from './smartsocket.classes.socketconnection';
@@ -11,8 +12,6 @@ import { SocketRequest } from './smartsocket.classes.socketrequest';
 import { SocketRole } from './smartsocket.classes.socketrole';
 import { SocketServer } from './smartsocket.classes.socketserver';
 
-// socket.io
-import * as SocketIO from 'socket.io';
 import { logger } from './smartsocket.logging';
 
 export interface ISmartsocketConstructorOptions {
@@ -23,9 +22,10 @@ export class Smartsocket {
   /**
    * a unique id to detect server restarts
    */
-  public shortId = plugins.smartunique.shortId();
+  public shortId = plugins.isounique.uni();
+  public smartenv = new plugins.smartenv.Smartenv();
   public options: ISmartsocketConstructorOptions;
-  public io: SocketIO.Server;
+  public io: pluginsTyped.socketIo.Server;
   public socketConnections = new plugins.lik.ObjectMap<SocketConnection>();
   public socketRoles = new plugins.lik.ObjectMap<SocketRole>();
   public socketFunctions = new plugins.lik.ObjectMap<SocketFunction<any>>();
@@ -46,7 +46,8 @@ export class Smartsocket {
    * starts smartsocket
    */
   public async start() {
-    this.io = plugins.socketIo(this.socketServer.getServerForSocketIo());
+    const socketIoModule = this.smartenv.getSafeNodeModule('socket.io');
+    this.io = socketIoModule(this.socketServer.getServerForSocketIo());
     await this.socketServer.start();
     this.io.on('connection', (socketArg) => {
       this._handleSocketConnection(socketArg);
@@ -85,7 +86,7 @@ export class Smartsocket {
         funcName: functionNameArg,
       },
       originSocketConnection: targetSocketConnectionArg,
-      shortId: plugins.smartunique.shortId(),
+      shortId: plugins.isounique.uni(),
       side: 'requesting',
     });
     const response: ISocketFunctionCallDataResponse<T> = await socketRequest.dispatch();
@@ -110,7 +111,7 @@ export class Smartsocket {
   /**
    * the standard handler for new socket connections
    */
-  private async _handleSocketConnection(socketArg: plugins.socketIo.Socket) {
+  private async _handleSocketConnection(socketArg: pluginsTyped.socketIo.Socket) {
     const socketConnection: SocketConnection = new SocketConnection({
       alias: undefined,
       authenticated: false,

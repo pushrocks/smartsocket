@@ -28,13 +28,13 @@ export class SocketRole {
     });
   }
 
-  public static checkPasswordForRole(
+  public static async checkPasswordForRole(
     dataArg: ISocketConnectionAuthenticationObject,
     referenceSmartsocket: Smartsocket | SmartsocketClient
-  ): boolean {
+  ): Promise<boolean> {
     const targetPasswordHash = SocketRole.getSocketRoleByName(referenceSmartsocket, dataArg.role)
       .passwordHash;
-    const computedCompareHash = plugins.smarthash.sha256FromStringSync(dataArg.password);
+    const computedCompareHash = await plugins.isohash.sha256FromString(dataArg.password);
     return targetPasswordHash === computedCompareHash;
   }
 
