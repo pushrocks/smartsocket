@@ -14,7 +14,6 @@ export class SocketServer {
   private httpServer: pluginsTyped.http.Server | pluginsTyped.https.Server;
   // wether httpServer is standalone
   private standaloneServer = false;
-  private expressServer: any;
 
   constructor(smartSocketInstance: Smartsocket) {
     this.smartsocket = smartSocketInstance;

@@ -60,8 +60,10 @@ export class Smartsocket {
   public async stop() {
     await plugins.smartdelay.delayFor(1000);
     this.socketConnections.forEach((socketObjectArg: SocketConnection) => {
-      logger.log('info', `disconnect socket with >>alias ${socketObjectArg.alias}`);
-      socketObjectArg.socket.disconnect();
+      if (socketObjectArg) {
+        logger.log('info', `disconnect socket with >>alias ${socketObjectArg.alias}`);
+        socketObjectArg.socket.disconnect();
+      }
     });
     this.socketConnections.wipe();
     this.io.close();
