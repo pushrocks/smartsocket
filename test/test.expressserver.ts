@@ -87,17 +87,23 @@ tap.test('2 clients should connect in parallel', async () => {
 });
 
 tap.test('should be able to make a functionCall from client to server', async () => {
-  const totalCycles = 20000
+  const totalCycles = 20000;
   let counter = 0;
   let startTime = Date.now();
   while (counter < totalCycles) {
-    const response = await testSmartsocketClient.serverCall('testFunction1', {
-      value1: 'hello',
+    const randomString = `hello ${Math.random()}`;
+    const response: any = await testSmartsocketClient.serverCall('testFunction1', {
+      value1: randomString,
     });
+    expect(response.value1).to.equal(randomString);
     if (counter % 100 === 0) {
-      console.log(`processed 100 more messages in ${Date.now() - startTime}ms. ${totalCycles - counter} messages to go.`);
+      console.log(
+        `processed 100 more messages in ${Date.now() - startTime}ms. ${
+          totalCycles - counter
+        } messages to go.`
+      );
       startTime = Date.now();
-    };
+    }
     counter++;
   }
 });
