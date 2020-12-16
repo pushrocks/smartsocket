@@ -143,7 +143,7 @@ export class SocketConnection {
         }
       });
       this.socket.on('functionResponse', (dataArg: ISocketRequestDataObject<any>) => {
-        logger.log('info', `received response for request with id ${dataArg.shortId}`);
+        // logger.log('info', `received response for request with id ${dataArg.shortId}`);
         const targetSocketRequest = SocketRequest.getSocketRequestById(
           this.smartsocketRef,
           dataArg.shortId

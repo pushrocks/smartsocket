@@ -15,7 +15,7 @@ let testSocketFunction1: smartsocket.SocketFunction<any>;
 let myseServer: smartexpress.Server;
 
 const testConfig = {
-  port: 3000,
+  port: 3005,
 };
 
 // class smartsocket
@@ -87,10 +87,19 @@ tap.test('2 clients should connect in parallel', async () => {
 });
 
 tap.test('should be able to make a functionCall from client to server', async () => {
-  const response = await testSmartsocketClient.serverCall('testFunction1', {
-    value1: 'hello',
-  });
-  console.log(response);
+  const totalCycles = 20000
+  let counter = 0;
+  let startTime = Date.now();
+  while (counter < totalCycles) {
+    const response = await testSmartsocketClient.serverCall('testFunction1', {
+      value1: 'hello',
+    });
+    if (counter % 100 === 0) {
+      console.log(`processed 100 more messages in ${Date.now() - startTime}ms. ${totalCycles - counter} messages to go.`);
+      startTime = Date.now();
+    };
+    counter++;
+  }
 });
 
 tap.test('should be able to make a functionCall from server to client', async () => {});

@@ -90,7 +90,7 @@ export class SocketRequest<T extends plugins.typedrequestInterfaces.ITypedReques
    * handles the response that is received by the requesting side
    */
   public async handleResponse(responseDataArg: ISocketRequestDataObject<T>) {
-    logger.log('info', 'handling response!');
+    // logger.log('info', 'handling response!');
     this.done.resolve(responseDataArg.funcCallData);
     this.smartsocketRef.socketRequests.remove(this);
   }
@@ -110,11 +110,11 @@ export class SocketRequest<T extends plugins.typedrequestInterfaces.ITypedReques
       logger.log('error', `There is no SocketFunction defined for ${this.funcCallData.funcName}`);
       return;
     }
-    logger.log('info', `invoking ${targetSocketFunction.name}`);
+    // logger.log('info', `invoking ${targetSocketFunction.name}`);
     targetSocketFunction
       .invoke(this.funcCallData, this.originSocketConnection)
       .then((resultData) => {
-        logger.log('info', 'got resultData. Sending it to requesting party.');
+        // logger.log('info', 'got resultData. Sending it to requesting party.');
         const responseData: ISocketRequestDataObject<T> = {
           funcCallData: resultData,
           shortId: this.shortid,
