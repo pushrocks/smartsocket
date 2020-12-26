@@ -164,6 +164,14 @@ export class SmartsocketClient {
   }
 
   /**
+   * stops the client completely
+   */
+  public async stop() {
+    this.autoReconnect = false;
+    await this.disconnect();
+  }
+
+  /**
    * try a reconnection
    */
   public async tryDebouncedReconnect() {
