@@ -1,11 +1,8 @@
 // tslint:disable-next-line:no-implicit-dependencies
 import { expect, tap } from '@pushrocks/tapbundle';
 
-import * as smarthash from '@pushrocks/smarthash';
-import * as smartpromise from '@pushrocks/smartpromise';
-
-import socketIoClient = require('socket.io-client');
 import smartsocket = require('../ts/index');
+import * as isohash from '@pushrocks/isohash';
 
 let testSmartsocket: smartsocket.Smartsocket;
 let testSmartsocketClient: smartsocket.SmartsocketClient;
@@ -48,7 +45,7 @@ tap.test('should create a new smartsocket', async () => {
 tap.test('should add a socketrole', async () => {
   testSocketRole1 = new smartsocket.SocketRole({
     name: 'testRole1',
-    passwordHash: smarthash.sha256FromStringSync('testPassword'),
+    passwordHash: await isohash.sha256FromString('testPassword'),
   });
   testSmartsocket.addSocketRoles([testSocketRole1]);
 });

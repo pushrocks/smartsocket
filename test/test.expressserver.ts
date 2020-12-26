@@ -2,10 +2,8 @@
 import { expect, tap } from '@pushrocks/tapbundle';
 
 import * as isohash from '@pushrocks/isohash';
-import * as smartpromise from '@pushrocks/smartpromise';
 import * as smartexpress from '@pushrocks/smartexpress';
 
-import socketIoClient = require('socket.io-client');
 import smartsocket = require('../ts/index');
 
 let testSmartsocket: smartsocket.Smartsocket;
