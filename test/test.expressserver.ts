@@ -13,7 +13,7 @@ let testSocketFunction1: smartsocket.SocketFunction<any>;
 let myseServer: smartexpress.Server;
 
 const testConfig = {
-  port: 3005,
+  port: 3000,
 };
 
 // class smartsocket
