@@ -85,6 +85,7 @@ export class SmartsocketClient {
       socket: await socketIoClient.connect(socketUrl, {
         multiplex: false,
         reconnectionAttempts: 5,
+        rejectUnauthorized: socketUrl.startsWith('https://localhost') ? false : true,
       }),
     });
 
