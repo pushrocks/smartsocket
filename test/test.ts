@@ -90,7 +90,7 @@ tap.test('should react to a new websocket connection from client', async () => {
   await testSmartsocketClient.connect();
 });
 
-tap.test('should be able to tag a connection', async (tools) => {
+tap.test('should be able to tag a connection from client', async (tools) => {
   await testSmartsocketClient.addTag({
     id: 'awesome',
     payload: 'yes',
@@ -101,6 +101,18 @@ tap.test('should be able to tag a connection', async (tools) => {
     })
     .getTagById('awesome');
   expect(tagOnServerSide.payload).to.equal('yes');
+});
+
+tap.test('should be able to tag a connection from server', async (tools) => {
+  await testSmartsocket.socketConnections
+  .find((socketConnection) => {
+    return true;
+  }).addTag({
+    id: 'awesome2',
+    payload: 'absolutely',
+  });
+  const tagOnClientSide = await testSmartsocketClient.socketConnection.getTagById('awesome2');
+  expect(tagOnClientSide.payload).to.equal('absolutely');
 });
 
 tap.test('2 clients should connect in parallel', async () => {
