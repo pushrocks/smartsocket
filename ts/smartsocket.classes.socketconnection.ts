@@ -192,11 +192,7 @@ export class SocketConnection {
       });
 
       this.socket.on('updateTagStore', async (tagStoreArg: interfaces.TTagStore) => {
-        const exitingStoreString = plugins.smartjson.stringify(this.tagStore);
-        const newStoreString = plugins.smartjson.stringify(tagStoreArg);
-        console.log(exitingStoreString);
-        console.log(newStoreString);
-        if (exitingStoreString !== newStoreString) {
+        if (!plugins.smartjson.deepEqualObjects(this.tagStore, tagStoreArg)) {
           this.tagStore = tagStoreArg;
           this.socket.emit('updateTagStore', this.tagStore);
           this.tagStoreObservable.next(this.tagStore);
