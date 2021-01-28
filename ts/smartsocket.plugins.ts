@@ -8,6 +8,7 @@ import * as isohash from '@pushrocks/isohash';
 import * as isounique from '@pushrocks/isounique';
 import * as lik from '@pushrocks/lik';
 import * as smartenv from '@pushrocks/smartenv';
+import * as smartjson from '@pushrocks/smartjson';
 import * as smartlog from '@pushrocks/smartlog';
 import * as smartdelay from '@pushrocks/smartdelay';
 import * as smartpromise from '@pushrocks/smartpromise';
@@ -19,6 +20,7 @@ export {
   isounique,
   lik,
   smartenv,
+  smartjson,
   smartlog,
   smartdelay,
   smartpromise,

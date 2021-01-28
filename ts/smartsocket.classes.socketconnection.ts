@@ -57,6 +57,10 @@ export class SocketConnection {
   public eventSubject = new plugins.smartrx.rxjs.Subject<interfaces.TConnectionStatus>();
   public eventStatus: interfaces.TConnectionStatus = 'new';
 
+  private tagStore: interfaces.TTagStore = {};
+  public tagStoreObservable = new plugins.smartrx.rxjs.Subject<interfaces.TTagStore>();
+  public remoteTagStoreObservable = new plugins.smartrx.rxjs.Subject<interfaces.TTagStore>();
+
   constructor(optionsArg: ISocketConnectionConstructorOptions) {
     this.alias = optionsArg.alias;
     this.authenticated = optionsArg.authenticated;
@@ -82,6 +86,42 @@ export class SocketConnection {
     });
   }
 
+  /**
+   * adds a tag to a connection
+   */
+  public async addTag(tagArg: interfaces.ITag) {
+    const done = plugins.smartpromise.defer();
+    this.tagStore[tagArg.id] = tagArg;
+    this.tagStoreObservable.next(this.tagStore);
+    const remoteSubscription = this.remoteTagStoreObservable.subscribe((remoteTagStore) => {
+      const localTagString = plugins.smartjson.stringify(tagArg);
+      const remoteTagString = plugins.smartjson.stringify(remoteTagStore[tagArg.id])
+      if (localTagString === remoteTagString) {
+        remoteSubscription.unsubscribe();
+        done.resolve();
+      }
+    })
+    this.socket.emit('updateTagStore', this.tagStore);
+    await done.promise;
+  }
+
+  /**
+   * gets a tag by id
+   * @param tagIdArg
+   */
+  public async getTagById(tagIdArg: interfaces.ITag['id']) {
+    return this.tagStore[tagIdArg];
+  };
+
+  /**
+   * removes a tag from a connection
+   */
+  public async removeTagById(tagIdArg: interfaces.ITag['id']) {
+    delete this.tagStore[tagIdArg];
+    this.tagStoreObservable.next(this.tagStore);
+    this.socket.emit('updateTagStore', this.tagStore);
+  }
+
   // authenticating --------------------------
 
   /**
@@ -91,7 +131,7 @@ export class SocketConnection {
     const done = plugins.smartpromise.defer();
     this.socket.on('dataAuth', async (dataArg: ISocketConnectionAuthenticationObject) => {
       logger.log('info', 'received authentication data. now hashing and comparing...');
-      this.socket.removeListener('dataAuth', () => {});
+      this.socket.removeAllListeners('dataAuth');
       if (await SocketRole.checkPasswordForRole(dataArg, this.smartsocketRef)) {
         // TODO: authenticate password
         this.alias = dataArg.alias;
@@ -150,6 +190,20 @@ export class SocketConnection {
         );
         targetSocketRequest.handleResponse(dataArg);
       });
+
+      this.socket.on('updateTagStore', async (tagStoreArg: interfaces.TTagStore) => {
+        const exitingStoreString = plugins.smartjson.stringify(this.tagStore);
+        const newStoreString = plugins.smartjson.stringify(tagStoreArg);
+        console.log(exitingStoreString);
+        console.log(newStoreString);
+        if (exitingStoreString !== newStoreString) {
+          this.tagStore = tagStoreArg;
+          this.socket.emit('updateTagStore', this.tagStore);
+          this.tagStoreObservable.next(this.tagStore);
+        }
+        this.remoteTagStoreObservable.next(tagStoreArg);
+      })
+
       logger.log('info', `now listening to function requests for ${this.alias}`);
       done.resolve(this);
     } else {
