@@ -46,7 +46,7 @@ export class SmartsocketClient {
   public socketRoles = new plugins.lik.ObjectMap<SocketRole>();
 
   // tagStore
-  private tagStore: {[key: string]: interfaces.ITag} = {};
+  private tagStore: { [key: string]: interfaces.ITag } = {};
   private tagStoreSubscription: plugins.smartrx.rxjs.Subscription;
 
   /**
@@ -66,7 +66,7 @@ export class SmartsocketClient {
    */
   public async getTagById(tagIdArg: interfaces.ITag['id']) {
     return this.tagStore[tagIdArg];
-  };
+  }
 
   /**
    * removes a tag from a connection
@@ -164,12 +164,15 @@ export class SmartsocketClient {
     // handle connection
     this.socketConnection.socket.on('connect', async () => {
       this.tagStoreSubscription?.unsubscribe();
-      this.tagStoreSubscription = this.socketConnection.tagStoreObservable.subscribe(tagStoreArg => {
-        this.tagStore = tagStoreArg
-      });
       for (const keyArg of Object.keys(this.tagStore)) {
         this.socketConnection.addTag(this.tagStore[keyArg]);
       }
+      this.tagStoreSubscription = this.socketConnection.tagStoreObservable.subscribe(
+        (tagStoreArg) => {
+          this.tagStore = tagStoreArg;
+        }
+      );
+      
       this.updateStatus('connected');
     });
 

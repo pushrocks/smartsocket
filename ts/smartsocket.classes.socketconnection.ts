@@ -95,12 +95,12 @@ export class SocketConnection {
     this.tagStoreObservable.next(this.tagStore);
     const remoteSubscription = this.remoteTagStoreObservable.subscribe((remoteTagStore) => {
       const localTagString = plugins.smartjson.stringify(tagArg);
-      const remoteTagString = plugins.smartjson.stringify(remoteTagStore[tagArg.id])
+      const remoteTagString = plugins.smartjson.stringify(remoteTagStore[tagArg.id]);
       if (localTagString === remoteTagString) {
         remoteSubscription.unsubscribe();
         done.resolve();
       }
-    })
+    });
     this.socket.emit('updateTagStore', this.tagStore);
     await done.promise;
   }
@@ -111,7 +111,7 @@ export class SocketConnection {
    */
   public async getTagById(tagIdArg: interfaces.ITag['id']) {
     return this.tagStore[tagIdArg];
-  };
+  }
 
   /**
    * removes a tag from a connection
@@ -202,7 +202,7 @@ export class SocketConnection {
           this.tagStoreObservable.next(this.tagStore);
         }
         this.remoteTagStoreObservable.next(tagStoreArg);
-      })
+      });
 
       logger.log('info', `now listening to function requests for ${this.alias}`);
       done.resolve(this);
