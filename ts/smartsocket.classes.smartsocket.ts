@@ -124,6 +124,12 @@ export class Smartsocket {
     });
     logger.log('info', 'Socket connected. Trying to authenticate...');
     this.socketConnections.add(socketConnection);
+    const disconnectSubscription =  socketConnection.eventSubject.subscribe((eventArg) => {
+       if (eventArg === 'disconnected') {
+         this.socketConnections.remove(socketConnection);
+         disconnectSubscription.unsubscribe();
+       } 
+    })
     await socketConnection.authenticate();
     await socketConnection.listenToFunctionRequests();
   }

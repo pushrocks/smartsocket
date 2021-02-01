@@ -83,6 +83,7 @@ export class SocketConnection {
       );
       await this.disconnect();
       allSocketConnections.remove(this);
+      this.eventSubject.next('disconnected');
     });
   }
 
